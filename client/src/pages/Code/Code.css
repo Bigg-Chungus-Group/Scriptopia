@@ -1,0 +1,206 @@
+.Code .container {
+  height: 100vh;
+  background-color: var(--bg);
+  color: var(--text-color);
+}
+
+.Code a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.Code a:hover {
+  color: var(--accent-color);
+}
+
+.Code .profile {
+  background: url("https://i.pravatar.cc/300") no-repeat center center/cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.Code .profile:hover {
+  opacity: 0.8;
+}
+
+.Code .main {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  gap: 10px;
+}
+
+.Code .main .left {
+  height: 85vh;
+  width: 50%;
+  border-radius: 10px;
+  background-color: #292c35;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  box-sizing: border-box;
+}
+
+.Code .main .left .top {
+  padding: 10px 20px;
+}
+
+.Code #editor {
+  height: 80vh;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.Code .main .right {
+  height: 87vh;
+  width: 50%;
+  padding-top: 10px;
+}
+
+.Code #accordion {
+  height: 85vh;
+  width: 100%;
+}
+
+.Code .prob {
+  background-color: var(--secondary-bg);
+  height: 84%;
+  overflow-y: auto;
+  margin-bottom: 2%;
+  box-sizing: border-box;
+  padding: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.Code .prob span {
+  color: var(--text-color-light);
+}
+
+.Code .nf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--accent-color);
+}
+
+.Code .output {
+  background-color: #002b36;
+  height: 81%;
+  overflow-y: auto;
+  padding: 10px;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.Code .buttons {
+  justify-self: flex-end;
+  justify-items: flex-end;
+  margin-left: auto;
+}
+
+.Code .buttons button {
+  background-color: var(--secondary-bg);
+  border: none;
+  outline: none;
+  color: var(--text-color-light);
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.Code .button-wrapper {
+  background-color: var(--primary-bg);
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  height: 8vh;
+}
+
+.Code #accordion p {
+  margin: 0;
+  padding: 10px;
+  font-size: 1rem;
+  color: var(--text-color-light);
+  background-color: var(--primary-bg);
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  cursor: pointer;
+  align-self: center;
+}
+
+.Code #accordion p:nth-child(3) {
+  margin-top: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #888;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 960px) {
+  .Code .main {
+    padding: 0 20px;
+  }
+
+  .Code .main {
+    flex-direction: column-reverse;
+    gap: 20px;
+  }
+
+  .Code .main .left {
+    width: 100%;
+  }
+
+  .Code #editor {
+    width: 100%;
+  }
+
+  .Code .main .right {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .Code #accordion {
+    width: 100%;
+    height: 56vh;
+  }
+
+  .Code .prob {
+    height: 50%;
+  }
+
+  .Code .output {
+    height: 50%;
+  }
+
+  .Code .button-wrapper {
+    height: 10vh;
+  }
+}

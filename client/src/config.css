@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+
+:root {
+  --bg: #1a1a1d;
+  --primary-bg: #323238;
+  --secondary-bg: #273239;
+  --ternary-bg: #28282b;
+  --text-color: aliceblue;
+  --text-color-light: #a8b8ba;
+  --accent-color: #068fff;
+  --primary-shade: #292c35;
+}
+
+* {
+  font-family: 'Raleway', sans-serif
+}
+
+html {
+  background-color: var(--bg);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

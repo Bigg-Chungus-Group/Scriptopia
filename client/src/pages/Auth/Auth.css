@@ -1,0 +1,138 @@
+.Auth .container {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  color: aliceblue;
+}
+
+.Auth .left {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+}
+
+.Auth .left > form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Auth form input {
+  width: 300px;
+  height: 40px;
+  margin: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-bg);
+  color: white;
+  outline: none;
+}
+
+.Auth .left > h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.Auth .left > i {
+  color: var(--accent-color);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.Auth button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.Auth .credit {
+  color: rgba(240, 248, 255, 0.241);
+  margin-bottom: 20px;
+}
+
+.Auth .right {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Auth .right > h3 {
+  color: var(--accent-color);
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.Auth .right > p {
+  color: rgba(240, 248, 255, 0.403);
+  font-size: 1rem;
+  margin-bottom: 20px;
+  padding: 0 100px;
+  line-height: 1.5;
+}
+
+.pwd {
+  position: relative;
+}
+
+.pwd  i {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+@media (max-width: 960px) {
+  .Auth .right {
+    display: none;
+  }
+
+  .Auth .left {
+    width: 100%;
+  }
+
+  .Auth input {
+    width: 100%;
+  }
+
+  .Auth .left > h2 {
+    font-size: 1.5rem;
+  }
+
+  .Auth .left > i {
+    font-size: 2.5rem;
+  }
+
+  .Auth .right > h3 {
+    font-size: 1.5rem;
+  }
+
+  .Auth .right > p {
+    font-size: 0.8rem;
+  }
+
+  .pwd {
+    position: relative;
+  }
+
+  .pwd > i {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+}
