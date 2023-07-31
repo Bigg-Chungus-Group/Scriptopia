@@ -18,8 +18,21 @@
   color: rgba(240, 248, 255, 0.547);
   text-align: center;
 }
+
 span {
   color: var(--accent-color);
+}
+
+.fzf a {
+  text-decoration: underline;
+  color: var(--accent-color);
+  font-weight: bold;
+  transition: all 0.1s ease-in-out;
+}
+
+.fzf a:hover {
+  color: rgba(240, 248, 255, 0.547);
+  text-decoration: none;
 }
 
 @media screen and (max-width: 768px) {

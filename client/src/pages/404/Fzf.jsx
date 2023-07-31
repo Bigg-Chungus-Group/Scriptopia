@@ -9,7 +9,8 @@ const fzf = () => {
       
       <h1>Four<span>-</span>Zero<span>-</span>Four</h1>
       <h2>Page Not Found</h2>
-      <p>It may be deleted, moved to, or you may not have access to it.</p>
+      <p>It may be deleted, moved, or you may not have access to it.</p>
+      <p>Think Its a Bug? Ight, Send Feedback <a href="/feedback">Here</a></p>
       <Button
         colorScheme="blue"
         variant="solid"
