@@ -2,23 +2,26 @@ import React, { useState } from "react";
 import "../../assets/fa/css/all.css";
 import "./Auth.css";
 import validator from "validator";
-import { Button } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  Input,
+  InputGroup,
+  InputRightElement,
+} from "@chakra-ui/react";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
 
   const validateAndSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     const mid = document.querySelector("#mid").value;
-    const pwd = document.querySelector(".pwd input").value;
+    const pwd = document.querySelector("#pw").value;
     const err = document.querySelector("#err");
-    const btn = document.querySelector("#btn");
-
-    btn.setAttribute("isLoading", "true");
-
     err.innerHTML = "&nbsp;";
 
     try {
@@ -45,64 +48,51 @@ const Auth = () => {
 
   const handleInvalidCredentials = () => {
     const err = document.querySelector("#err");
-    const btn = document.querySelector("#btn");
     err.innerHTML = "Invalid Credentials";
     setIsLoading(false);
   };
 
   return (
-    <div className="Auth">
-      <div className="container">
-        <div className="left">
-          <i className="fa-duotone fa-code 2xs"></i>
-
-          <h2>Welcome to Scriptopia</h2>
-
-          <form action="" method="POST">
-            <input type="number" placeholder="Moodle ID" id="mid" />
-            <div className="pwd">
-              <input type={show ? "text" : "password"} placeholder="Password" />
-              <i
-                class={
-                  show
-                    ? "fa-sharp fa-solid fa-eye"
-                    : "fa-sharp fa-solid fa-eye-low-vision"
-                }
-                onClick={handleClick}
-              ></i>
-            </div>
-
-            <Button
-              colorScheme="brand"
-              isLoading={isLoading}
-              onClick={validateAndSubmit}
-              id="btn"
-            >
-              Login
+    <Box className="Auth">
+      <Box className="left">
+        <i className="fa-duotone fa-code"></i>
+        <Heading className="heading">Welcome to Scriptopia</Heading>
+        <Input placeholder="Moodle ID" id="mid"/>
+        <InputGroup size="md" className="pw">
+          <Input id="pw" type={show ? "text" : "password"} placeholder="Password" />
+          <InputRightElement width="4.5rem">
+            <Button onClick={handleClick} className="showpw" colorScheme="blue">
+              {show ? "Hide" : "Show"}
             </Button>
-
-            <p className="credit">A Project By Bigg Chungus</p>
-
-            <p id="err">&nbsp;</p>
-          </form>
-        </div>
-
-        <div className="right">
-          <h3>Did You Know?</h3>
-          <p>
-            the term "bug" in computer programming originated from a literal
-            insect? In 1947, while working on the Harvard Mark II computer,
-            computer scientist Grace Hopper encountered a malfunction caused by
-            a moth that was trapped in a relay. The moth was carefully removed
-            and taped to the logbook, along with a note that read "First actual
-            case of bug being found." This incident led to the use of the term
-            "bug" to describe a flaw or error in a computer program. Today, the
-            term "debugging" is commonly used to refer to the process of
-            identifying and fixing software issues.
-          </p>
-        </div>
-      </div>
-    </div>
+          </InputRightElement>
+        </InputGroup>
+        <Button
+          type="submit"
+          onClick={validateAndSubmit}
+          className="submit"
+          colorScheme="brand"
+          isLoading={isLoading}
+        >
+          Login
+        </Button>
+        <p className="creds">A Project By Bigg Chungus</p>
+        <p id="err">&nbsp;</p>
+      </Box>
+      <Box className="right">
+        <h1>Did You Know?</h1>
+        <p>
+          the term "bug" in computer programming originated from a literal
+          insect? In 1947, while working on the Harvard Mark II computer,
+          computer scientist Grace Hopper encountered a malfunction caused by a
+          moth that was trapped in a relay. The moth was carefully removed and
+          taped to the logbook, along with a note that read "First actual case
+          of bug being found." This incident led to the use of the term "bug" to
+          describe a flaw or error in a computer program. Today, the term
+          "debugging" is commonly used to refer to the process of identifying
+          and fixing software issues.
+        </p>
+      </Box>
+    </Box>
   );
 };
 

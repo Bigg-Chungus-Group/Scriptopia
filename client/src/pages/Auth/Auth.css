@@ -1,67 +1,77 @@
-.Auth .container {
-  height: 100vh;
+.Auth {
+  background-color: var(--bg);
   display: flex;
-  flex-direction: row;
+  height: 100vh;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg);
-  color: aliceblue;
+  gap: 80px;
+}
+
+.Auth i:first-child {
+  color: var(--accent-color);
+  font-size: 2.5rem;
 }
 
 .Auth .left {
-  width: 50%;
-  height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg);
-}
-
-.Auth .left > form {
-  display: flex;
+  gap: 10px;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  width: 45vw;
 }
 
-.Auth form input {
-  width: 300px;
-  height: 40px;
-  margin: 10px;
-  padding: 10px;
+.Auth .left .pwd {
+  position: relative;
+}
+
+.Auth .left .pwd i {
+  position: absolute;
+  cursor: pointer;
+}
+
+.Auth input {
+  background-color: var(--primary-bg);
   border: none;
   border-radius: 5px;
-  background-color: var(--primary-bg);
-  color: white;
-  outline: none;
+  padding: 10px 20px;
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  width: 300px;
 }
 
-.Auth .left > h2 {
-  color: white;
-  font-size: 2rem;
+.Auth #pw {
+  padding-right: 70px;
+}
+
+.Auth .showpw {
+  background-color: transparent;
+  color: var(--text-color);
+  height: 1.75rem;
+  margin-right: 10px;
+}
+
+.Auth .pw {
+  position: relative;
+  width: 300px;
+}
+
+.Auth .heading {
+  color: var(--accent-color);
   margin-bottom: 20px;
+  font-weight: normal;
+  font-family: "Raleway", sans-serif;
   text-align: center;
 }
 
-.Auth .left > i {
-  color: var(--accent-color);
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-}
-
-.Auth button {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.Auth .credit {
+.Auth .creds {
   color: rgba(240, 248, 255, 0.241);
   margin-bottom: 20px;
 }
 
 .Auth .right {
-  width: 50%;
+  width: 45vw;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -69,70 +79,33 @@
   justify-content: center;
 }
 
-.Auth .right > h3 {
+.Auth .right h1 {
   color: var(--accent-color);
   font-size: 2rem;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
-.Auth .right > p {
+.Auth .right p {
   color: rgba(240, 248, 255, 0.403);
   font-size: 1rem;
   margin-bottom: 20px;
-  padding: 0 100px;
+  padding: 0 50px;
   line-height: 1.5;
 }
 
-.pwd {
-  position: relative;
+.Auth .submit {
+  background-color: var(--accent-color);
+  color: black;
 }
 
-.pwd  i {
-  position: absolute;
-  top: 50%;
-  right: 15px;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-}
-
-@media (max-width: 960px) {
-  .Auth .right {
-    display: none;
-  }
-
+@media screen and (max-width: 768px) {
   .Auth .left {
     width: 100%;
+    gap: 20px;
   }
 
-  .Auth input {
-    width: 100%;
-  }
-
-  .Auth .left > h2 {
-    font-size: 1.5rem;
-  }
-
-  .Auth .left > i {
-    font-size: 2.5rem;
-  }
-
-  .Auth .right > h3 {
-    font-size: 1.5rem;
-  }
-
-  .Auth .right > p {
-    font-size: 0.8rem;
-  }
-
-  .pwd {
-    position: relative;
-  }
-
-  .pwd > i {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
+  .Auth .right {
+    display: none;
   }
 }
