@@ -4,6 +4,7 @@ import "./assets/normalize.css";
 import Code from "./pages/Code/Code.jsx";
 import "./config.css"
 import Profile from "./pages/Profile/Profile.jsx";
+import Fzf from "./pages/404/Fzf.jsx";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/auth" element={<Auth/>} />
           <Route path="/editor/:lang/:id" element={<Code />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="*" element={<Fzf/>} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
