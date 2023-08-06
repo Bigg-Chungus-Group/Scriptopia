@@ -23,3 +23,6 @@ try {
 
 const db = client.db("Scriptopia");
 export const problemDB = db.collection("problems");
+export const userDB = db.collection("users");
+export const badgeDB = db.collection("badges");
+export const courseDB = db.collection("courses");

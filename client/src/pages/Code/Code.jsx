@@ -4,6 +4,16 @@ import "jquery";
 import "jquery-ui/dist/jquery-ui";
 import { useParams } from "react-router";
 import Navbar from "../../components/Navbar";
+import Loader from "../../components/Loader";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  Box,
+  AccordionPanel,
+  Button,
+} from "@chakra-ui/react";
 
 const aceLang = {
   js: "javascript",
@@ -35,22 +45,20 @@ const Code = () => {
 
   useEffect(() => {
     if (exist == "true") {
+      // ! SET LOADING TO TRUE
       var editor = ace.edit("editor");
 
       editor.setTheme("ace/theme/one_dark");
+      editor.container.style.background = "#28282b";
+      document.getElementsByClassName("ace_gutter")[0].style.background =
+        "#28282b";
       editor.session.setMode(`ace/mode/${aceLang[lang]}`);
       editor.setShowPrintMargin(false);
       document.getElementById("editor").style.fontSize = "15px";
       editor.setValue(template[lang]);
     }
 
-    $(function () {
-      $("#accordion").accordion({
-        active: 1,
-      });
-    });
-
-    fetch(`http://localhost:5000/problem/${id}/${lang}`, {
+    fetch(`http://localhost:5000/problem/${lang}/${id}`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -62,7 +70,6 @@ const Code = () => {
           if (exist == "true") {
             document.getElementById("title").innerHTML = data.codeTitle;
             document.getElementById("content").innerHTML = data.codeContent;
-            console.log(data.content);
           }
         }
       });
@@ -74,7 +81,6 @@ const Code = () => {
 
     output.innerHTML = "Compiling Code....";
     code = `${code}`;
-    console.log(code);
 
     fetch("http://localhost:5000/api/compile", {
       method: "POST",
@@ -85,7 +91,6 @@ const Code = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.error) {
           output.innerHTML = data.error;
         } else {
@@ -95,18 +100,82 @@ const Code = () => {
   };
 
   if (exist == "true") {
+    // ! CHANGE THIS IF PROBLEM IS REGARDING LOADING (exist == "loading")
     return (
-      <div className="Code">
-        <div className="container">
-          <Navbar />          
+      <>
+        <Navbar />
+        <div className="Code">
+          <div className="container">
+            <div className="main">
+              <div className="left">
+                <div className="top">
+                  {language[lang]}{" "}
+                  <div className="buttons">
+                    <Button className="btn" onClick={compile}>
+                      Run Tests
+                    </Button>
+                    <Button className="btn">Submit</Button>
+                  </div>
+                </div>
+                <div id="editor"></div>
+              </div>
+              <div className="right">
+                <Accordion defaultIndex={0}>
+                  <AccordionItem
+                    border="none"
+                    bg="#323238"
+                    borderTopRadius="10px"
+                  >
+                    <h2>
+                      <AccordionButton
+                        bg="#28282b"
+                        borderTopRadius="10px"
+                        height="63px"
+                      >
+                        <Box as="span" flex="1" textAlign="left">
+                          Statement
+                        </Box>
 
-          <div className="main">
-            <div className="left">
-              <div className="top">{language[lang]}</div>
-              <div id="editor"></div>
-            </div>
-            <div className="right">
-              <div id="accordion">
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel
+                      pb={4}
+                      height="69vh "
+                      className="prob"
+                      id="prob"
+                    >
+                      <h2 id="title"></h2>
+                      <span id="content"></span>
+                    </AccordionPanel>
+                  </AccordionItem>
+
+                  <AccordionItem
+                    border="none"
+                    bg="#323238"
+                    borderBottomRadius="10px"
+                  >
+                    <h2>
+                      <AccordionButton
+                        bg="#28282b"
+                        borderBottomRadius="10px"
+                        height="63px"
+                      >
+                        <Box as="span" flex="1" textAlign="left">
+                          Console
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel
+                      pb={4}
+                      height="69vh"
+                      className="output"
+                      id="output"
+                    ></AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+                {/*} <div id="accordion">
                 <div className="button-wrapper">
                   <p>Output Console</p>
                   <div className="buttons">
@@ -123,11 +192,12 @@ const Code = () => {
                   <h2 id="title"></h2>
                   <span id="content"></span>
                 </div>
+              </div>{*/}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   } else if (exist == "false") {
     return (
@@ -139,13 +209,7 @@ const Code = () => {
       </div>
     );
   } else if (exist == "loading") {
-    return (
-      <div className="Code">
-        <div className="nf">
-          <h1>Loading...</h1>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 };
 

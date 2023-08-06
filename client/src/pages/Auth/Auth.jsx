@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../../assets/fa/css/all.css";
 import "./Auth.css";
-import validator from "validator";
 import {
   Box,
   Button,
@@ -14,42 +13,32 @@ import {
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = React.useState(false);
+  const [err, setErr] = useState(" ");
   const handleClick = () => setShow(!show);
 
-  const validateAndSubmit = (e) => {
+  const validateAndSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const mid = document.querySelector("#mid").value;
     const pwd = document.querySelector("#pw").value;
-    const err = document.querySelector("#err");
-    err.innerHTML = "&nbsp;";
 
     try {
-      if (validator.isNumeric(mid) && validator.isLength(pwd, { min: 8 })) {
-        // TODO: ADD BACKEND LOGIC HERE
-        fetch("http://localhost:5000/auth/", {
-          method: "POST",
-          cors: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
-        }).then((res) => {
-          res.status === 200
-            ? (window.location.href = "/dashboard")
-            : handleInvalidCredentials();
-        });
-      } else {
-        handleInvalidCredentials();
-      }
+      // TODO: ADD BACKEND LOGIC HERE
+      fetch("http://localhost:5000/auth/", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
+      }).then(async (res) => {
+        res.status === 200
+          ? (window.location.href = "/dashboard")
+          : setErr(await res.json().then((data) => data.message));
+        setIsLoading(false);
+      });
     } catch (error) {
-      console.log(error);
-      handleInvalidCredentials();
+      setErr("Something Went Wrong");
+      setIsLoading(false);
     }
-  };
-
-  const handleInvalidCredentials = () => {
-    const err = document.querySelector("#err");
-    err.innerHTML = "Invalid Credentials";
-    setIsLoading(false);
   };
 
   return (
@@ -57,9 +46,13 @@ const Auth = () => {
       <Box className="left">
         <i className="fa-duotone fa-code"></i>
         <Heading className="heading">Welcome to Scriptopia</Heading>
-        <Input placeholder="Moodle ID" id="mid"/>
+        <Input placeholder="Moodle ID" id="mid" />
         <InputGroup size="md" className="pw">
-          <Input id="pw" type={show ? "text" : "password"} placeholder="Password" />
+          <Input
+            id="pw"
+            type={show ? "text" : "password"}
+            placeholder="Password"
+          />
           <InputRightElement width="4.5rem">
             <Button onClick={handleClick} className="showpw" colorScheme="blue">
               {show ? "Hide" : "Show"}
@@ -76,7 +69,7 @@ const Auth = () => {
           Login
         </Button>
         <p className="creds">A Project By Bigg Chungus</p>
-        <p id="err">&nbsp;</p>
+        <pre>{err}</pre>
       </Box>
       <Box className="right">
         <h1>Did You Know?</h1>

@@ -1,9 +1,13 @@
 import express from "express";
 const router = express.Router();
+import { problemDB } from "../configs/mongo.js";
+import { ObjectId } from "mongodb";
 
-router.get("/:id/:lang", async (req, res) => {
+
+router.get("/:lang/:id", async (req, res) => {
   const id = req.params.id;
   const lang = req.params.lang;
+  console.log(lang);
   if (typeof id !== "string" || id.trim() === "") {
     return res.status(400).json({ error: "Invalid ID" });
   }

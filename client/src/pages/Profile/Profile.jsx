@@ -1,19 +1,90 @@
 import React, { useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import "./Profile.css";
-import badge1 from "../../assets/badges/badge1.png";
-import badge2 from "../../assets/badges/badge2.png";
-import badge3 from "../../assets/badges/badge3.png";
-import { Skeleton, SkeletonText, SkeletonCircle } from "@chakra-ui/react";
+
+import {
+  Skeleton,
+  SkeletonText,
+  SkeletonCircle,
+  Spinner,
+  Tooltip,
+} from "@chakra-ui/react";
+import Loader from "../../components/Loader";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = React.useState(true);
-  const badges = {
-    jsexp: badge1,
-    phpexp: badge2,
-    pyexp: badge3,
+  const [progress, setProgress] = React.useState(0);
+  const [level, setLevel] = React.useState({});
+  const [data, setData] = React.useState({});
+
+  useEffect(() => {
+    fetch("http://localhost:5000/profile", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => await res.json())
+      .then((data) => {
+        data.lastOnline = new Date(data.lastOnline).toLocaleString();
+        setLevel(calculateLevelInfo(data.XP));
+        console.log(progress);
+        setData(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        window.location.href = "/auth";
+      });
+  }, []);
+
+  function calculateLevelInfo(xp) {
+    // Define the XP breakpoints for levels
+    const breakpoints = [
+      0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500, 6600, 7800,
+      9100, 10500, 12000, 13600, 15300, 17100, 19000,
+    ];
+
+    // Check if XP is negative or zero (invalid case)
+    if (xp <= 0) {
+      return {
+        level1: 1,
+        currentXP: 0,
+        levelMaxXP: breakpoints[0],
+      };
+    }
+
+    // Find the corresponding level based on the XP
+    let level1;
+    for (level1 = 1; level1 < breakpoints.length; level1++) {
+      if (xp < breakpoints[level1]) {
+        break;
+      }
+    }
+
+    const currentXP = xp - breakpoints[level1 - 1];
+    const levelMaxXP = breakpoints[level1] - breakpoints[level1 - 1];
+
+    const percentage = (currentXP / levelMaxXP) * 100;
+    setProgress(Math.min(percentage, 100));
+
+    return {
+      level1: level1,
+      currentXP: currentXP,
+      levelMaxXP: levelMaxXP,
+    };
+  }
+
+  const lang = {
+    py: "Python",
+    js: "JavaScript",
+    java: "Java",
+    c: "C",
+    cpp: "C++",
   };
 
+  /*
   const data = {
     img: "https://i.pravatar.cc/300",
     name: "Anurag Sawant",
@@ -82,18 +153,10 @@ const Profile = () => {
         grade: 9,
       },
     ],
-  };
-
-  useEffect(() => {
-    const progress = document.getElementById("progress");
-    progress.style.width = `${data.obtainedXP}%`;
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); //! REMOVE TIMEOUT BEFORE PRODUCTION
-  });
+  };*/
 
   if (isLoading) {
+    /*
     return (
       <div className="Profile">
         <Navbar />
@@ -199,10 +262,10 @@ const Profile = () => {
                 </div>
               </div>
               <div className="right">
-                <SkeletonText noOfLines={1}>Last Practice Activity</SkeletonText>
-                <Skeleton>
-                  
-                </Skeleton>
+                <SkeletonText noOfLines={1}>
+                  Last Practice Activity
+                </SkeletonText>
+                <Skeleton></Skeleton>
                 <SkeletonText />
               </div>
             </div>
@@ -217,7 +280,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    );
+    );*/
+    return <Loader />;
   } else {
     return (
       <div className="Profile">
@@ -227,19 +291,30 @@ const Profile = () => {
           <div className="left">
             <div className="info">
               <div className="img-wrapper">
-                <div className="img"></div>
+                <div
+                  className="img"
+                  style={{
+                    background: `url(${data.profilePicture}) no-repeat center center/cover`,
+                  }}
+                ></div>
               </div>
 
               <div className="info-main">
-                <h4>{data.name}</h4>
-                <p>{data.moodleId}</p>
+                <h4>{data.fname + " " + data.lname}</h4>
+                <p>{data.mid}</p>
+                <div className="level-name">Level {level.level1}</div>
                 <div className="level">
                   <div className="bg"></div>
-                  <div className="progress" id="progress"></div>
+                  <div
+                    className="progress"
+                    id="progress"
+                    style={{ width: progress + "%" }}
+                  ></div>
                 </div>
                 <div className="level-info-wrapper">
-                  <div className="level-name">{data.level}</div>
-                  <div className="xp">{`${data.obtainedXP} / ${data.maxXP}`}</div>
+                  <div className="xp">
+                    {level.currentXP} XP / {level.levelMaxXP} XP
+                  </div>
                 </div>
               </div>
             </div>
@@ -250,7 +325,7 @@ const Profile = () => {
               </div>
               <div className="container">
                 <p>Gender</p>
-                <p>{data.gender}</p>
+                <p className="gender">{data.gender}</p>
               </div>
               <div className="container">
                 <p>Branch</p>
@@ -258,7 +333,9 @@ const Profile = () => {
               </div>
               <div className="container">
                 <p>Academic Term</p>
-                <p>{data.academicYear}</p>
+                <p>
+                  {data.AY} - {data.AY + 1}
+                </p>
               </div>
             </div>
             <div className="badge">
@@ -269,10 +346,13 @@ const Profile = () => {
               <div className="badges-wrapper">
                 {data.badges ? (
                   <>
-                    {data.badges.map((badge, index) => {
+                    {data.badgesData.map((badge, index) => {
                       return (
                         <div className="badge-container" key={index}>
-                          <img src={badges[badge.short]} alt="" />
+                          {" "}
+                          <Tooltip label={badge.name} placement="top" hasArrow>
+                            <img src={`/badges/${badge._id}.svg`} alt="" />
+                          </Tooltip>
                         </div>
                       );
                     })}
@@ -305,13 +385,19 @@ const Profile = () => {
                 <h2>Last Practice Activity</h2>
                 <table>
                   <tbody>
-                    {data.activity.map((activity, index) => {
+                    {data.activityData.map((activity, index) => {
                       return (
                         <tr key={index}>
-                          <td>{activity.name}</td>
-                          <td>{activity.lang}</td>
-                          <td className={activity.difficulty}>
-                            {activity.difficulty}
+                          <td>
+                            <Link
+                              to={`/editor/${activity._id}/${activity.language}`}
+                            >
+                              {activity.codeTitle}
+                            </Link>
+                          </td>
+                          <td>{lang[activity.language]}</td>
+                          <td className={activity.difficultyLevel}>
+                            {activity.difficultyLevel}
                           </td>
                         </tr>
                       );
@@ -323,14 +409,13 @@ const Profile = () => {
             <div className="bottom">
               <div className="left"></div>
               <div className="right">
-                <h2>Course Progress</h2>
+                <h2>Enrolled Courses</h2>
                 <table>
                   <tbody>
-                    {data.courses.map((course, index) => {
+                    {data.courseData.map((course, index) => {
                       return (
                         <tr key={index}>
                           <td>{course.name}</td>
-                          <td>{course.grade}/10</td>
                         </tr>
                       );
                     })}

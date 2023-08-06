@@ -12,11 +12,16 @@
 }
 
 * {
-  font-family: 'Raleway', sans-serif
+  font-family: "Raleway", sans-serif;
 }
 
 html {
   background-color: var(--bg);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-color);
 }
 
 /* Chrome, Safari, Edge, Opera */

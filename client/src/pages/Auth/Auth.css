@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: center;
   gap: 80px;
+  color: var(--text-color);
 }
 
 .Auth i:first-child {

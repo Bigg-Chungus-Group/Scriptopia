@@ -16,6 +16,7 @@ body {
   margin: 10px 50px;
 }
 
+
 .Profile .profile-container .left {
   width: 25%;
   min-width: 340px;
@@ -47,8 +48,12 @@ body {
   min-width: 350px;
 }
 
+.Profile .gender::first-letter {
+  text-transform: uppercase;
+}
+
 .Profile .profile-container > .left .info .img {
-  background: url("https://i.pravatar.cc/300") no-repeat center center/cover;
+
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -114,6 +119,10 @@ body {
   padding: 5px 15px;
   height: 200px;
   min-width: 350px;
+}
+
+.Profile .level-name {
+  font-size: 11px;
 }
 
 .Profile .profile-container .left .info2 .container {

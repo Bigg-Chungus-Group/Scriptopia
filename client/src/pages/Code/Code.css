@@ -1,7 +1,8 @@
 .Code .container {
-  height: 100vh;
+  height: fit-content;
   background-color: var(--bg);
   color: var(--text-color);
+  padding: 10px 50px;
 }
 
 .Code a {
@@ -14,20 +15,7 @@
   color: var(--accent-color);
 }
 
-.Code .profile {
-  background: url("https://i.pravatar.cc/300") no-repeat center center/cover;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.Code .profile:hover {
-  opacity: 0.8;
-}
-
 .Code .main {
-  margin-top: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -40,26 +28,29 @@
   height: 85vh;
   width: 50%;
   border-radius: 10px;
-  background-color: #292c35;
-  padding-top: 2px;
+  background-color: var(--primary-bg);
   padding-bottom: 2px;
   box-sizing: border-box;
 }
 
 .Code .main .left .top {
-  padding: 10px 20px;
+  padding: 11px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .Code #editor {
-  height: 80vh;
+  height: 78vh;
   width: 100%;
-  border-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .Code .main .right {
-  height: 87vh;
+  height: 85vh;
   width: 50%;
-  padding-top: 10px;
+  border-radius: 20px;
 }
 
 .Code #accordion {
@@ -68,10 +59,7 @@
 }
 
 .Code .prob {
-  background-color: var(--secondary-bg);
-  height: 84%;
   overflow-y: auto;
-  margin-bottom: 2%;
   box-sizing: border-box;
   padding: 20px;
   border-bottom-left-radius: 10px;
@@ -82,21 +70,14 @@
   color: var(--text-color-light);
 }
 
-.Code .nf {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  color: var(--accent-color);
-}
-
 .Code .output {
-  background-color: #002b36;
-  height: 81%;
+  background-color: var(--secondary-bg);
   overflow-y: auto;
   padding: 10px;
   box-sizing: border-box;
   padding: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .Code .buttons {
@@ -106,7 +87,7 @@
 }
 
 .Code .buttons button {
-  background-color: var(--secondary-bg);
+  background-color: var(--bg);
   border: none;
   outline: none;
   color: var(--text-color-light);
@@ -190,14 +171,6 @@
   .Code #accordion {
     width: 100%;
     height: 56vh;
-  }
-
-  .Code .prob {
-    height: 50%;
-  }
-
-  .Code .output {
-    height: 50%;
   }
 
   .Code .button-wrapper {

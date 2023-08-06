@@ -4,6 +4,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 50px;
+  background-color: var(--bg);
+  color: var(--text-color);
 }
 
 .nav i {
@@ -34,10 +36,40 @@
   padding: 10px 20px;
   width: 400px;
   border-radius: 5px;
+  transition: .2s;
+}
+
+.nav .profile {
+  background-size: cover;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.nav #searchIcon {
+  display: none;
+  font-size: 1rem;
 }
 
 @media (max-width: 960px) {
   .nav input {
     width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 10px 20px;
+  }
+
+  .nav input {
+    display: none;
+  }
+
+  .nav #searchIcon {
+    display: block;
   }
 }
