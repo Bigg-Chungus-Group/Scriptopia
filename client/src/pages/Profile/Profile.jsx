@@ -11,15 +11,17 @@ import {
 } from "@chakra-ui/react";
 import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Profile = () => {
+  !Cookies.get("token") ? (window.location.href = "/auth") : null;
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
   const [level, setLevel] = React.useState({});
   const [data, setData] = React.useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5000/profile", {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/profile`, {
       method: "POST",
       credentials: "include",
       headers: {

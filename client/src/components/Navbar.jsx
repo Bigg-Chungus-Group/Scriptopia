@@ -13,7 +13,10 @@ import {
 
 const Navbar = () => {
   const token = Cookies.get("token");
+  if(!token) window.location.href = "/auth";
   const decoded = jwt_decode(token);
+
+
   const { picture } = decoded;
 
   const showSearch = () => {
@@ -42,7 +45,7 @@ const Navbar = () => {
           <a href="/practice">Practice</a>
         </div>
         <i
-          class="fa-solid fa-magnifying-glass"
+          className="fa-solid fa-magnifying-glass"
           id="searchIcon"
           onClick={showSearch}
         ></i>

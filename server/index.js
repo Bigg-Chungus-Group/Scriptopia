@@ -1,23 +1,35 @@
+// # Import Modules
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import compiler from "./apis/compiler.js";
+import cookieParser from "cookie-parser";
+
+// # Import Handlers
+
 import problemHandler from "./handlers/problemHandler.js";
 import loginHandler from "./handlers/loginHandler.js";
 import profileHandler from "./handlers/profileHandler.js";
-import cookieParser from "cookie-parser";
+import dashboardHandler from "./handlers/dashboardHandler.js";
+import practiceHandler from "./handlers/practiceHandler.js";
+
+// # Import Middlewares and APIs
+
+import compiler from "./apis/compiler.js";
+
+// # CONFIGURATIONS, MIDDLEWARES, INITIALIZATIONS
+
 const app = express();
+dotenv.config();
 const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true, //access-control-allow-credentials:true
+  origin: process.env.FRONTEND_ADDRESS,
+  credentials: true,
   optionSuccessStatus: 200,
 };
 
-// # MIDDLEWARES
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
-dotenv.config();
 
 // # APIS
 app.use("apis/compile", compiler);
@@ -26,5 +38,7 @@ app.use("apis/compile", compiler);
 app.use("/problem/", problemHandler);
 app.use("/auth", loginHandler);
 app.use("/profile", profileHandler);
+app.use("/dashboard", dashboardHandler);
+app.use("/practice", practiceHandler);
 
 app.listen(5000);

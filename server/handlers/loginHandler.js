@@ -29,6 +29,12 @@ const newDoc = {
 
 router.post("/", (req, res) => {
   const { mid, password } = req.body;
+
+  
+
+
+
+  /*
   db.query(
     "SELECT * FROM users WHERE moodle_id = ?",
     [mid],
@@ -79,7 +85,7 @@ router.post("/", (req, res) => {
         }
       }
     }
-  );
+  );*/
 });
 
 export default router;

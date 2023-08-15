@@ -15,6 +15,8 @@ import {
   Button,
 } from "@chakra-ui/react";
 
+import Cookies from "js-cookie";
+
 const aceLang = {
   js: "javascript",
   java: "java",
@@ -40,10 +42,12 @@ const template = {
 };
 
 const Code = () => {
+  !Cookies.get("token") ? (window.location.href = "/auth") : null;
   const [exist, setExist] = React.useState("loading");
   const { id, lang } = useParams();
 
   useEffect(() => {
+    
     if (exist == "true") {
       // ! SET LOADING TO TRUE
       var editor = ace.edit("editor");
@@ -58,7 +62,7 @@ const Code = () => {
       editor.setValue(template[lang]);
     }
 
-    fetch(`http://localhost:5000/problem/${lang}/${id}`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/problem/${lang}/${id}`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -82,7 +86,7 @@ const Code = () => {
     output.innerHTML = "Compiling Code....";
     code = `${code}`;
 
-    fetch("http://localhost:5000/api/compile", {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/api/compile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

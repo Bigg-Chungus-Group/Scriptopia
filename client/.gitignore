@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 .eslintrc.cjs
 trash
+.env
 

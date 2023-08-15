@@ -5,6 +5,8 @@ import Code from "./pages/Code/Code.jsx";
 import "./config.css"
 import Profile from "./pages/Profile/Profile.jsx";
 import Fzf from "./pages/404/Fzf.jsx";
+import Home from "./pages/Home/Home.jsx";
+import Practice from "./pages/Practice/Practice.jsx";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="/editor/:lang/:id" element={<Code />} />
           <Route path="*" element={<Fzf/>} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/practice" element={<Practice/>}/>
         </Routes>
       </Router>
     </>

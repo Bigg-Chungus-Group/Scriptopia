@@ -9,6 +9,7 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
+import Cookies from "js-cookie";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +25,14 @@ const Auth = () => {
 
     try {
       // TODO: ADD BACKEND LOGIC HERE
-      fetch("http://localhost:5000/auth/", {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/auth/`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
       }).then(async (res) => {
         res.status === 200
-          ? (window.location.href = "/dashboard")
+          ? (window.location.href = "/")
           : setErr(await res.json().then((data) => data.message));
         setIsLoading(false);
       });

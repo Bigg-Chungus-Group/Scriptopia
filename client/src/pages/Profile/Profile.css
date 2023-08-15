@@ -16,7 +16,6 @@ body {
   margin: 10px 50px;
 }
 
-
 .Profile .profile-container .left {
   width: 25%;
   min-width: 340px;
@@ -53,7 +52,6 @@ body {
 }
 
 .Profile .profile-container > .left .info .img {
-
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -312,18 +310,6 @@ body {
   padding: 8px;
   font-size: 15px;
   color: #c22171;
-}
-
-.Easy {
-  color: #00ff00;
-}
-
-.Medium {
-  color: #ffff00;
-}
-
-.Hard {
-  color: #ff0000;
 }
 
 .Profile .right .bottom .right {

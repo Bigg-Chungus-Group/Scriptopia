@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 
 :root {
-  --bg: #1a1a1d;
-  --primary-bg: #323238;
+  --bg: #1A1A1D;
+  --primary-bg: #28282B;
   --secondary-bg: #273239;
   --ternary-bg: #28282b;
-  --text-color: aliceblue;
+  --text-color: #BABABA;
   --text-color-light: #a8b8ba;
   --accent-color: #068fff;
   --primary-shade: #292c35;
@@ -34,4 +34,16 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.Easy {
+  color: #00ff00;
+}
+
+.Medium {
+  color: #ffff00;
+}
+
+.Hard {
+  color: #ff0000;
 }

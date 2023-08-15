@@ -1,16 +1,14 @@
 import express from "express";
 const router = express.Router();
-import jwt from "jsonwebtoken";
+import {verifyToken} from "./../apis/jwt.js"
 import { badgeDB, userDB, courseDB, problemDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 
-router.post("/", async (req, res) => {
-  const token = req.cookies["token"];
-  if (!token) return res.status(401).send();
+router.post("/", verifyToken,  async (req, res) => {
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const verified = req.user
     const result = await userDB.findOne({ mid: verified.mid });
     if (!result) return res.status(401).send();
 
@@ -38,8 +36,8 @@ router.post("/", async (req, res) => {
 
     res.status(200).send(data);
   } catch (err) {
-    logger.error("PRF 200 - Error getting profile data: " + err.stack);
-    res.status(400).send("Invalid Token");
+    logger.error({ code: "PRF001", message: err.stack });;
+    res.status(401).send("Invalid Token");
   }
 });
 

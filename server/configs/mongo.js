@@ -11,11 +11,8 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-
-let conn;
-
 try {
-  conn = await client.connect();
+  await client.connect();
   logger.info("MDB 100 - Connected to MongoDB");
 } catch (err) {
   logger.error("MDB 200 - Error connecting to MongoDB" + err.stack);
@@ -26,3 +23,4 @@ export const problemDB = db.collection("problems");
 export const userDB = db.collection("users");
 export const badgeDB = db.collection("badges");
 export const courseDB = db.collection("courses");
+export const assignDB = db.collection("assignments");
