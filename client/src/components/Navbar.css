@@ -3,15 +3,28 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 50px;
-  background-color: var(--bg);
-  color: var(--text-color);
+  padding: 12px 60px;
+  background-color: #fdfdff;
+  color: #59616f;
+}
+
+.nav .image {
+  width: 30px;
+  cursor: pointer;
 }
 
 .nav i {
   font-size: 1.5rem;
   cursor: pointer;
   margin-right: 20px;
+  color: var(--accent-color);
+}
+
+.nav .links a {
+  transition: 0.2s;
+}
+
+.nav .links a:hover {
   color: var(--accent-color);
 }
 
@@ -28,15 +41,15 @@
 }
 
 .nav input {
-  background-color: var(--primary-bg);
+  background-color: #f4f6ff;
   border: none;
   outline: none;
-  color: var(--text-color-light);
+  color: #59616f;
   font-size: 1rem;
   padding: 10px 20px;
   width: 400px;
   border-radius: 5px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .nav .profile {
@@ -47,6 +60,17 @@
   border-radius: 50%;
   cursor: pointer;
   margin-right: 20px;
+}
+
+.nav .rightmost {
+  display: flex;
+  align-items: center;
+}
+
+.nav .rightmost i {
+  font-size: 20px;
+  margin-right: 30px;
+  cursor: pointer;
 }
 
 .nav #searchIcon {

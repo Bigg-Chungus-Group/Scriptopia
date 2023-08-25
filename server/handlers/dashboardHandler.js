@@ -1,29 +1,15 @@
 import express from "express";
 const Router = express.Router();
-import { assignDB, problemDB, userDB } from "../configs/mongo.js";
+import { assignDB, houseDB, problemDB, userDB } from "../configs/mongo.js";
 import { verifyToken } from "../apis/jwt.js";
 import logger from "../configs/logger.js";
+import { ObjectId } from "mongodb";
 
 const getAssign = async (uid) => {
   try {
     return assignDB.find({ assignedStudents: { $in: [uid] } });
   } catch (err) {
-    logger.error({ code: "DH001", message: err.stack });
-    return { error: "Something went Wrong" };
-  }
-};
-
-const getProblems = async (excludedUIDs) => {
-  try {
-    const problems = problemDB.aggregate([
-      { $match: { _id: { $nin: excludedUIDs } } },
-      { $sample: { size: 10 } },
-      { $project: { codeTitle: 1, difficultyLevel: 1, language: 1 } },
-    ]);
-
-    return problems;
-  } catch (err) {
-    logger.error({ code: "DH002", message: err.stack });
+    logger.error("DH001", err.stack);
     return { error: "Something went Wrong" };
   }
 };
@@ -31,15 +17,23 @@ const getProblems = async (excludedUIDs) => {
 Router.post("/", verifyToken, async (req, res) => {
   const { mid } = req.user;
   const user = await userDB.findOne({ mid });
-  const excludedUIDs = user.activity.map((activity) => activity.id);
-
-  const problems = (await (await getProblems(excludedUIDs)).toArray()).splice(
-    0,
-    5
-  );
+  const house = await houseDB.findOne({ _id: new ObjectId(user.house.id) });
   const assignments = (await (await getAssign(mid)).toArray()).splice(0, 5);
+  const sortedActivity = user.activity.sort((a, b) => b.date - a.date);
+  const formattedDateActivity = sortedActivity.map((activity) => {
+    const date = new Date(activity.date);
+    return {
+      ...activity,
+      date: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+    };
+  });
 
-  res.send({ problems, assignments });
+  const userHouse = {
+    house,
+    contribution: user.house.contribution,
+  }
+
+  res.send({ assignments, activity: formattedDateActivity, user, userHouse }); // ! REMOVE UNEEDED COLLECTIONS
 });
 
 export default Router;

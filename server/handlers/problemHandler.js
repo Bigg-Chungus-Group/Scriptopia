@@ -21,7 +21,7 @@ router.get("/:lang/:id", async (req, res) => {
     }
     res.json(statement);
   } catch (error) {
-    logger.error({ code: "PRH001", message: error.stack });
+    logger.error("PRH001:", error.message);
     res.status(500).json({ error: "Server error" });
   }
 });

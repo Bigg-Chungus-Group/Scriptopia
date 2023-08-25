@@ -24,3 +24,4 @@ export const userDB = db.collection("users");
 export const badgeDB = db.collection("badges");
 export const courseDB = db.collection("courses");
 export const assignDB = db.collection("assignments");
+export const houseDB = db.collection("houses");

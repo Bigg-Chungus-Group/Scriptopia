@@ -8,7 +8,7 @@ export const theme = extendTheme({
     brand: {
       50: "#daf6ff",
       100: "#addeff",
-      200: "#7cc6ff", 
+      200: "#7cc6ff",
       300: "#4aafff",
       400: "#1a98ff",
       500: "#007ee6",
@@ -21,9 +21,7 @@ export const theme = extendTheme({
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
-  </React.StrictMode>
+  <ChakraProvider theme={theme}>
+    <App />
+  </ChakraProvider>
 );

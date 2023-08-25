@@ -13,7 +13,7 @@ const getProblems = async (excludedUIDs) => {
 
     return problems;
   } catch (err) {
-    logger.error({ code: "PH001", message: err.stack });
+    logger.error("PH001: ", err.stack);
     return { error: "Something went Wrong" };
   }
 };

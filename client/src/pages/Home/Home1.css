@@ -1,0 +1,81 @@
+.Home {
+  display: flex;
+  padding: 20px 50px;
+  background-color: var(--bg);
+  color: var(--text-color-light);
+}
+
+.Home .left .assign,
+.Home .left .practice {
+  background-color: var(--primary-bg);
+  width: 60vw;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 20px 0;
+}
+
+.Home .left .assign {
+  height: 30vh;
+}
+
+.Home .left .practice {
+  height: 46vh;
+}
+
+.Home .left .title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.Home .right {
+  background-color: var(--primary-bg);
+  height: 79vh;
+  width: 40vw;
+  padding: 20px 0;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.Home a {
+  font-size: 13px;
+}
+
+.Home a:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+.Home .assign .top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ffffff30;
+  margin-bottom: 10px;
+}
+
+.Home .vm {
+  margin-right: 20px;
+}
+
+.Home .info-wrapper {
+  display: flex;
+  padding: 20px;
+  align-items: center;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.Home .house .top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ffffff30;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.Home .practice .top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ffffff30;
+  margin-bottom: 10px;
+}

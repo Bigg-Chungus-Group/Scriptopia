@@ -1,81 +1,195 @@
 .Home {
+  background-color: #fdfdff;
+  box-sizing: border-box;
+  padding: 30px 70px;
+  height: 91vh;
+}
+
+.Home .main {
   display: flex;
-  padding: 20px 50px;
-  background-color: var(--bg);
-  color: var(--text-color-light);
+  gap: 20px;
 }
 
-.Home .left .assign,
-.Home .left .practice {
-  background-color: var(--primary-bg);
-  width: 60vw;
+.Home .left {
+  width: 70%;
+}
+
+.Home .left .stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.Home .left .stats .totalXP,
+.Home .left .stats .rank-alltime,
+.Home .left .stats .rank-monthly {
+  width: 300px;
   border-radius: 10px;
-  margin: 20px;
-  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
-.Home .left .assign {
-  height: 30vh;
+.Home .left .stats .totalXP {
+  background-color: #cdc2fe;
 }
 
-.Home .left .practice {
-  height: 46vh;
+.Home .left .stats .rank-alltime {
+  background-color: #aac9ff;
 }
 
-.Home .left .title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 15px;
+.Home .left .stats .rank-monthly {
+  background-color: #93e2b8;
+}
+
+.Home .house {
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  height: 48vh;
+  background-color: #ffffff;
+  height: 75vh;
+}
+
+.Home .house .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.Home .house .info .ranking {
+  display: flex;
+  justify-content: space-around;
+  font-size: 20px;
+  align-items: center;
+  gap: 20px;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Home .house .info .ranking .group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .Home .right {
-  background-color: var(--primary-bg);
-  height: 79vh;
-  width: 40vw;
-  padding: 20px 0;
-  margin: 20px;
+  height: 50vh;
+  width: 30%;
+}
+
+.Home .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 65%;
+}
+
+.Home .title i {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.Home .represent {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-}
-
-.Home a {
-  font-size: 13px;
-}
-
-.Home a:hover {
-  text-decoration: underline;
-  color: var(--accent-color);
-}
-
-.Home .assign .top {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ffffff30;
-  margin-bottom: 10px;
-}
-
-.Home .vm {
-  margin-right: 20px;
-}
-
-.Home .info-wrapper {
-  display: flex;
+  height: 51vh;
   padding: 20px;
-  align-items: center;
-  flex-direction: column;
-  gap: 50px;
 }
 
-.Home .house .top {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ffffff30;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+.Home .represent .canvas {
+  height: 90%;
 }
 
-.Home .practice .top {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ffffff30;
-  margin-bottom: 10px;
+.link_assignments_home {
+    text-decoration: underline;
+    transition: .2s;
+}
+
+.link_assignments_home:hover {
+    color: red;
+}
+
+@media screen and (max-width: 1300px) {
+  .Home .left .stats .totalXP,
+  .Home .left .stats .rank-alltime,
+  .Home .left .stats .rank-monthly {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 1140px) {
+  .Home .house .info h2 {
+    font-size: 20px;
+  }
+
+  .Home .house .info p {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .Home .main {
+    flex-direction: column;
+  }
+
+  .Home {
+    height: max-content;
+  }
+
+  .Home .left,
+  .Home .right {
+    width: 100%;
+  }
+
+  .Home .right {
+    height: fit-content;
+  }
+
+  .Home .house .info h2 {
+    font-size: 30px;
+  }
+
+  .Home .house .info p {
+    font-size: 25px;
+  }
+
+  .Home .left .stats .totalXP,
+  .Home .left .stats .rank-alltime,
+  .Home .left .stats .rank-monthly {
+    width: 100%;
+  }
+
+  .Home .left .stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .Home {
+    padding: 20px;
+  }
+
+  .Home .house .info h2 {
+    font-size: 20px;
+  }
+
+  .Home .house .info p {
+    font-size: 15px;
+  }
+
+  .Home .title {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px
+  }
 }

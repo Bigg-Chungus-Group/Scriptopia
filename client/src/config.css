@@ -11,6 +11,21 @@
   --primary-shade: #292c35;
 }
 
+/*
+
+:root {
+  --bg: rgb(209,237,192);
+  --primary-bg: #252821;
+  --secondary-bg: #ffffff;
+  --ternary-bg: #28282b;
+  --text-color: #252821;
+  --text-color-light: #252821;
+  --accent-color: #252821;
+  --primary-shade: #292c35;
+}
+
+*/
+
 * {
   font-family: "Raleway", sans-serif;
 }

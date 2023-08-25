@@ -1,21 +1,28 @@
-import React, { useState } from "react";
-import "../../assets/fa/css/all.css";
-import "./Auth.css";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Center,
+  Divider,
+  FormLabel,
   Heading,
+  Image,
   Input,
-  InputGroup,
+  Text,
+  Stack,
   InputRightElement,
+  InputGroup,
+  useToast,
 } from "@chakra-ui/react";
-import Cookies from "js-cookie";
+import APSIT from "./../../assets/img/apsit-logo.png";
+import Logo from "./../../assets/img/logo.png";
+import "./Auth.css";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = React.useState(false);
-  const [err, setErr] = useState(" ");
   const handleClick = () => setShow(!show);
+  const toast = useToast();
 
   const validateAndSubmit = async (e) => {
     e.preventDefault();
@@ -31,60 +38,93 @@ const Auth = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
       }).then(async (res) => {
-        res.status === 200
-          ? (window.location.href = "/")
-          : setErr(await res.json().then((data) => data.message));
-        setIsLoading(false);
+        if (res.status === 200) {
+          window.location.href = "/";
+        } else {
+          setIsLoading(false);
+          toast({
+            title: "Invalid Credentials.",
+            description: "Please Check Your Credentials and Try Again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
       });
     } catch (error) {
-      setErr("Something Went Wrong");
       setIsLoading(false);
+      toast({
+        title: "An Error Occured.",
+        description: "Something Went Wrong!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
   return (
     <Box className="Auth">
       <Box className="left">
-        <i className="fa-duotone fa-code"></i>
-        <Heading className="heading">Welcome to Scriptopia</Heading>
-        <Input placeholder="Moodle ID" id="mid" />
-        <InputGroup size="md" className="pw">
-          <Input
-            id="pw"
-            type={show ? "text" : "password"}
-            placeholder="Password"
-          />
-          <InputRightElement width="4.5rem">
-            <Button onClick={handleClick} className="showpw" colorScheme="blue">
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
+        <Box className="left-inner">
+          <Heading>Did You Know?</Heading>
+          <Text>
+            {" "}
+            the term "bug" in computer programming originated from a literal
+            insect? In 1947, while working on the Harvard Mark II computer,
+            computer scientist Grace Hopper encountered a malfunction caused by
+            a moth that was trapped in a relay. The moth was carefully removed
+            and taped to the logbook, along with a note that read "First actual
+            case of bug being found." This incident led to the use of the term
+            "bug" to describe a flaw or error in a computer program. Today, the
+            term "debugging" is commonly used to refer to the process of
+            identifying and fixing software issues.
+          </Text>
+          <Text className="creds">A Project by Bigg Chungus</Text>
+        </Box>
+      </Box>
+      <Box className="right">
+        <Box className="logos">
+          <Image src={APSIT} className="img" draggable="false" />
+          <Image src={Logo} className="img" draggable="false" />
+        </Box>
+        <Box className="title">
+          <Heading>Hey, hello 👋</Heading>
+          <Text>Sign in with your Moodle ID to Continue</Text>
+        </Box>
+        <Box>
+          <FormLabel>Moodle ID</FormLabel>
+          <Input id="mid" />
+        </Box>
+
+        <Box>
+          <FormLabel>Password</FormLabel>
+          <InputGroup size="md">
+            <Input
+              pr="4.5rem"
+              type={show ? "text" : "password"}
+              placeholder=""
+              id="pw"
+            />
+            <InputRightElement
+              width="4.5rem"
+              marginTop="2px"
+              marginRight="3px"
+            >
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </Box>
+
         <Button
-          type="submit"
+          className="btn"
           onClick={validateAndSubmit}
-          className="submit"
-          colorScheme="brand"
           isLoading={isLoading}
         >
           Login
         </Button>
-        <p className="creds">A Project By Bigg Chungus</p>
-        <pre>{err}</pre>
-      </Box>
-      <Box className="right">
-        <h1>Did You Know?</h1>
-        <p>
-          the term "bug" in computer programming originated from a literal
-          insect? In 1947, while working on the Harvard Mark II computer,
-          computer scientist Grace Hopper encountered a malfunction caused by a
-          moth that was trapped in a relay. The moth was carefully removed and
-          taped to the logbook, along with a note that read "First actual case
-          of bug being found." This incident led to the use of the term "bug" to
-          describe a flaw or error in a computer program. Today, the term
-          "debugging" is commonly used to refer to the process of identifying
-          and fixing software issues.
-        </p>
       </Box>
     </Box>
   );

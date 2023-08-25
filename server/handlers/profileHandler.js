@@ -1,14 +1,13 @@
 import express from "express";
 const router = express.Router();
-import {verifyToken} from "./../apis/jwt.js"
+import { verifyToken } from "./../apis/jwt.js";
 import { badgeDB, userDB, courseDB, problemDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 
-router.post("/", verifyToken,  async (req, res) => {
-
+router.post("/", verifyToken, async (req, res) => {
   try {
-    const verified = req.user
+    const verified = req.user;
     const result = await userDB.findOne({ mid: verified.mid });
     if (!result) return res.status(401).send();
 
@@ -36,7 +35,7 @@ router.post("/", verifyToken,  async (req, res) => {
 
     res.status(200).send(data);
   } catch (err) {
-    logger.error({ code: "PRF001", message: err.stack });;
+    logger.error("PRF001: ", err.stack);
     res.status(401).send("Invalid Token");
   }
 });
