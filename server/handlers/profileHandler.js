@@ -8,7 +8,6 @@ import logger from "../configs/logger.js";
 router.post("/", verifyToken, async (req, res) => {
   try {
     const verified = req.user;
-    logger.error(verified.mid);
     const result = await userDB.findOne({ mid: verified.mid });
     if (!result) return res.status(401).send();
 

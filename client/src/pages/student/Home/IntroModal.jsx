@@ -88,6 +88,16 @@ const IntroModal = () => {
         });
         return;
       }
+
+      if (cgpa > 10 || cgpa < 0) {
+        toast({
+          title: "Please enter a valid CGPA",
+          status: "error",
+          isClosable: true,
+        });
+        return;
+      }
+
       onClose();
       document.getElementById("IntroModal").style.display = "none";
       sendData();
@@ -129,7 +139,7 @@ const IntroModal = () => {
       .then((data) => {
         if (data.success) {
           toast({
-            title: "Profile Created Successfully",
+            title: "Profile Updated Successfully",
             status: "success",
             isClosable: true,
           });
@@ -139,8 +149,8 @@ const IntroModal = () => {
             status: "error",
             isClosable: true,
           });
-          setPage(1)
-          onOpen()
+          setPage(1);
+          onOpen();
         }
       })
       .catch((err) => {
@@ -312,7 +322,7 @@ const IntroModal = () => {
                 <Alert status="warning">
                   <AlertIcon />
                   Note that you must fill certifications and Technical details
-                  correctly as they will be verified by the admin.
+                  correctly as they will be verified by the admin. Your house allotment will be based on this data. 
                 </Alert>
                 <Textarea
                   placeholder="Write a Few Things About Yourself. (Please do not mention anything that could identify you. Ex. Name, Moodle ID)"
