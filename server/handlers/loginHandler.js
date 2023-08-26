@@ -41,7 +41,7 @@ router.post(
 
         res
           .status(200)
-          .cookie("token", token, { expires: expirationDate })
+          .cookie("token", token, { expires: expirationDate, domain: process.env.COOKIE_DOMAIN  })
           .send({ role: "A" });
       } catch (err) {
         logger.error("LH01: ", err.message);
@@ -62,7 +62,7 @@ router.post(
 
       res
         .status(200)
-        .cookie("token", token, { expires: expirationDate })
+        .cookie("token", token, { expires: expirationDate, domain: process.env.COOKIE_DOMAIN })
         .send({ role: "F" });
     } else if (findUser.role == "S") {
       try {
@@ -88,7 +88,7 @@ router.post(
 
         res
           .status(200)
-          .cookie("token", token, { expires: expirationDate })
+          .cookie("token", token, { expires: expirationDate, domain: process.env.COOKIE_DOMAIN  })
           .send({ role: "S" });
       } catch (err) {
         logger.error("LH01: ", err.message);
