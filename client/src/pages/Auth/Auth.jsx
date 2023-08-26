@@ -35,6 +35,7 @@ const Auth = () => {
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/auth/`, {
         method: "POST",
         credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
       }).then(async (res) => {
