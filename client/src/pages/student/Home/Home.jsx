@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
-  Button,
   CircularProgress,
   CircularProgressLabel,
   Center,
@@ -32,13 +31,16 @@ import {
   BreadcrumbSeparator,
   PopoverArrow,
   PopoverBody,
+  useDisclosure,
 } from "@chakra-ui/react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { Link } from "react-router-dom";
 import Loader from "../../components/Loader";
+
+import IntroModal from "./IntroModal";
 
 const Home = () => {
   !Cookies.get("token") ? (window.location.href = "/auth") : null;
@@ -47,6 +49,7 @@ const Home = () => {
   const [assignments, setAssignments] = useState([]);
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [firstTime, setFirstTime] = useState(false);
 
   const jwt = Cookies.get("token");
   const decoded = jwtDecode(jwt);
@@ -65,6 +68,7 @@ const Home = () => {
         setHouse(data.userHouse);
         setAssignments(data.assignments);
         setProblems(data.problems);
+        data.user.firstTime ? setFirstTime(true) : setFirstTime(false);
 
         const dateCounts = countDates(data.activity);
         const reversedDates = Object.keys(dateCounts).slice(0, 7).reverse();
@@ -278,6 +282,8 @@ const Home = () => {
             </Box>
           </Box>
         </Box>
+
+        {firstTime ? <IntroModal /> : null}
       </>
     );
   } else {

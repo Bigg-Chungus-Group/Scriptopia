@@ -39,12 +39,21 @@ const Auth = () => {
         body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
       }).then(async (res) => {
         if (res.status === 200) {
-          window.location.href = "/";
+          const response = await res.json();
+          console.log(response);
+          if (response.role === "A") {
+            window.location.href = "/admin";
+          } else if (response.role === "F") {
+            window.location.href = "/faculty";
+          } else if (response.role === "S") {
+            window.location.href = "/";
+          }
         } else {
+          const response = await res.json();
           setIsLoading(false);
           toast({
-            title: "Invalid Credentials.",
-            description: "Please Check Your Credentials and Try Again.",
+            title: response.title,
+            description: response.message,
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -106,11 +115,7 @@ const Auth = () => {
               placeholder=""
               id="pw"
             />
-            <InputRightElement
-              width="4.5rem"
-              marginTop="2px"
-              marginRight="3px"
-            >
+            <InputRightElement width="4.5rem" marginTop="2px" marginRight="3px">
               <Button h="1.75rem" size="sm" onClick={handleClick}>
                 {show ? "Hide" : "Show"}
               </Button>

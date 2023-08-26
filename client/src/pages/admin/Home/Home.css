@@ -1,0 +1,86 @@
+.adminHome {
+  background-color: #f7f6fa;
+  height: 91vh;
+  padding: 20px 70px;
+}
+
+.adminHome .main {
+  display: flex;
+  gap: 20px;
+}
+
+.adminHome .main .top {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.adminHome .main .top .housePoints,
+.adminHome .main .top .certificationStatus {
+  display: flex;
+  padding: 20px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
+  height: 35vh;
+  width: 30vw;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px 0px rgba(185, 100, 245, 0.1);
+}
+
+.adminHome .main .top .housePoints {
+  width: 20vw;
+}
+
+.adminHome .main .top .certificationStatus {
+  padding-bottom: 0;
+}
+
+.adminHome #housePointsWrapper,
+.adminHome #certificationStatusWrapper {
+  margin: 0;
+  height: 10vw;
+  width: inherit;
+  align-self: center;
+}
+
+.adminHome #housePointsWrapper canvas,
+.adminHome #certificationStatusWrapper canvas {
+  margin: 0;
+  padding: 0;
+  width: inherit;
+}
+
+.adminHome #certificationStatusWrapper {
+  width: 27vw;
+  height: 11vw;
+}
+
+.adminHome .certificationStatus .heading {
+  margin-bottom: 20px;
+  display: flex;
+  width: inherit;
+}
+
+.adminHome .certificationStatus .heading .text {
+  width: 50%;
+}
+
+.adminHome .certificationStatus .heading .select {
+  width: 40%;
+}
+
+.adminHome .certificationStatus .heading h2,
+.adminHome .housePoints .heading h2 {
+  font-size: 20px;
+}
+
+.adminHome .certificationStatus .heading p,
+.adminHome .housePoints .heading p {
+  font-size: 10px;
+}
+
+.adminHome .housePoints .heading {
+  margin-bottom: 20px;
+}

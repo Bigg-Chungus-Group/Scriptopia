@@ -1,7 +1,7 @@
 import React from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import Logo from "../assets/img/logo-icon.png";
+import Logo from "../../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 import {
@@ -55,11 +55,16 @@ const Navbar = () => {
     <div className="nav">
       <div className="left-link">
         <div className="image">
-          <img src={Logo} onClick={() => {window.location.href = "/"}}/>
+          <img
+            src={Logo}
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          />
         </div>
         <div className="links">
           <a href="/courses">Courses</a>
-          <a href="/practice">Practice</a>
+          <a href="/practice">Practice</a> {/* ! CHNAGE THIS TO ADMIN LINKS*/}
         </div>
         <i
           className="fa-solid fa-magnifying-glass"
@@ -88,11 +93,11 @@ const Navbar = () => {
           </MenuButton>
         </Box>
         <MenuList bg="#323238" border="1px solid #068fff55">
-          <Link to="/settings">
+          <Link to="/admin/settings">
             {" "}
             <MenuItem bg="#323238">Settings</MenuItem>
           </Link>
-          <Link to="/profile">
+          <Link to="/admin/profile">
             <MenuItem bg="#323238">Profile</MenuItem>
           </Link>
           <MenuDivider />

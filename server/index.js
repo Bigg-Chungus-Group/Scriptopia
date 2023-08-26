@@ -12,6 +12,7 @@ import loginHandler from "./handlers/loginHandler.js";
 import profileHandler from "./handlers/profileHandler.js";
 import dashboardHandler from "./handlers/dashboardHandler.js";
 import practiceHandler from "./handlers/practiceHandler.js";
+import firstTimeHandler from "./handlers/firstTimeHandler.js";
 
 // # Import Middlewares and APIs
 
@@ -40,5 +41,6 @@ app.use("/auth", loginHandler);
 app.use("/profile", profileHandler);
 app.use("/dashboard", dashboardHandler);
 app.use("/practice", practiceHandler);
+app.use("/firstTime", firstTimeHandler);
 
 app.listen(5000);
