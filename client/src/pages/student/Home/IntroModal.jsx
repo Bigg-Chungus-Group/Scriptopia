@@ -26,6 +26,13 @@ import {
   Input,
   useToast,
   Textarea,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
 } from "@chakra-ui/react";
 
 import Intro1 from "../../../assets/img/logo-icon.png";
@@ -37,6 +44,13 @@ const IntroModal = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = React.useState(1);
+
+  const {
+    isOpen: isOpenAlert,
+    onOpen: onOpenAlert,
+    onClose: onCloseAlert,
+  } = useDisclosure();
+  const cancelRef = React.useRef();
 
   const [about, setAbout] = React.useState("");
   const [technical, setTechnical] = React.useState("");
@@ -118,8 +132,12 @@ const IntroModal = () => {
     }
   };
 
+  const closeIntro = () => {
+    return;
+  };
+
   const sendData = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/firstTime`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/dashboard/firstTime`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -138,11 +156,7 @@ const IntroModal = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          toast({
-            title: "Profile Updated Successfully",
-            status: "success",
-            isClosable: true,
-          });
+          onOpenAlert();
         } else {
           toast({
             title: "An Error Occured. Please Try Again After Some Time",
@@ -154,6 +168,7 @@ const IntroModal = () => {
         }
       })
       .catch((err) => {
+        console.log(err);
         toast({
           title: "Error",
           status: "error",
@@ -162,14 +177,28 @@ const IntroModal = () => {
       });
   };
 
+  const logoutAndSave = () => {
+    onCloseAlert();
+    Cookies.remove("token", {
+      path: "/",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN,
+    });
+    Cookies.remove("token", {
+      path: "/",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN2,
+    });
+    window.location.href = "/auth";
+  };
+
   return (
     <Box className="IntroModal" id="IntroModal">
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onclose}
         size="sm"
         scrollBehavior="inside"
+        closeOnEsc={false}
       >
         <ModalOverlay
           bg="none"
@@ -322,7 +351,8 @@ const IntroModal = () => {
                 <Alert status="warning">
                   <AlertIcon />
                   Note that you must fill certifications and Technical details
-                  correctly as they will be verified by the admin. Your house allotment will be based on this data. 
+                  correctly as they will be verified by the admin. Your house
+                  allotment will be based on this data.
                 </Alert>
                 <Textarea
                   placeholder="Write a Few Things About Yourself. (Please do not mention anything that could identify you. Ex. Name, Moodle ID)"
@@ -380,6 +410,33 @@ const IntroModal = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <AlertDialog
+        isOpen={isOpenAlert}
+        leastDestructiveRef={cancelRef}
+        onClose={onCloseAlert}
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Thankyou
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              You will be logged out of the Portal Now. You can Login once the
+              admin verifies your details and you have been alloted a House.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button colorScheme="green" onClick={logoutAndSave} ml={3}>
+                Okay
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 };

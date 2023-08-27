@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 
 :root {
-  --bg: #1A1A1D;
+  --bg: #f7f6fa;
   --primary-bg: #28282B;
   --secondary-bg: #273239;
   --ternary-bg: #28282b;
-  --text-color: #BABABA;
-  --text-color-light: #a8b8ba;
+  --text-color: black;
+  --text-color-light: black;
   --accent-color: #068fff;
   --primary-shade: #292c35;
 }

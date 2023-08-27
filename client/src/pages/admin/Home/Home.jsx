@@ -10,11 +10,16 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import Navbar from "../../components/admin/Navbar";
+import Navbar from "../../../components/admin/Navbar";
 import "./Home.css";
 import Chart from "chart.js/auto";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 
 const Home = () => {
+  if (jwtDecode(Cookies.get("token")).role !== "A")
+    window.location.href = "/auth";
+
   useEffect(() => {
     const housePoints = document.getElementById("housePoints");
 

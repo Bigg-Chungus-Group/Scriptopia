@@ -14,6 +14,8 @@ import dashboardHandler from "./handlers/dashboardHandler.js";
 import practiceHandler from "./handlers/practiceHandler.js";
 import firstTimeHandler from "./handlers/firstTimeHandler.js";
 
+import mainAdmin from "./handlers/admin/main.js";
+
 // # Import Middlewares and APIs
 
 import compiler from "./apis/compiler.js";
@@ -42,5 +44,7 @@ app.use("/profile", profileHandler);
 app.use("/dashboard", dashboardHandler);
 app.use("/practice", practiceHandler);
 app.use("/firstTime", firstTimeHandler);
+
+app.use("/admin", mainAdmin);
 
 app.listen(5000);

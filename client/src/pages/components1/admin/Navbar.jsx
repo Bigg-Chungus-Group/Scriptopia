@@ -52,19 +52,19 @@ const Navbar = () => {
   };
 
   return (
-    <div className="nav">
+    <div className="navAdmin">
       <div className="left-link">
         <div className="image">
           <img
             src={Logo}
             onClick={() => {
-              window.location.href = "/";
+              window.location.href = "/admin";
             }}
           />
         </div>
         <div className="links">
-          <a href="/courses">Courses</a>
-          <a href="/practice">Practice</a> {/* ! CHNAGE THIS TO ADMIN LINKS*/}
+          <a href="/admin/students">Students</a>
+          <a href="/admin/faculty">Faculty</a> {/* ! CHNAGE THIS TO ADMIN LINKS*/}
         </div>
         <i
           className="fa-solid fa-magnifying-glass"

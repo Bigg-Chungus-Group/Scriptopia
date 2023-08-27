@@ -7,43 +7,34 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  StatHelpText,
-  StatArrow,
-  StatGroup,
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   CircularProgress,
-  CircularProgressLabel,
   Center,
-  Divider,
   Popover,
   PopoverTrigger,
   Portal,
   PopoverContent,
-  PopoverHeader,
-  PopoverFooter,
-  PopoverCloseButton,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
   PopoverArrow,
   PopoverBody,
-  useDisclosure,
 } from "@chakra-ui/react";
-import Navbar from "../../components/student/Navbar";
+import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { Link } from "react-router-dom";
-import Loader from "../../components/Loader";
+import Loader from "../../../components/Loader";
 
 import IntroModal from "./IntroModal";
 
 const Home = () => {
-  !Cookies.get("token") ? (window.location.href = "/auth") : null;
+  if (jwtDecode(Cookies.get("token")).role !== "S")
+    window.location.href = "/auth";
+
   const [user, setUser] = useState();
   const [house, setHouse] = useState();
   const [assignments, setAssignments] = useState([]);

@@ -11,7 +11,7 @@ import {
   Text,
   Tr,
 } from "@chakra-ui/react";
-import Navbar from "../../components/student/Navbar";
+import Navbar from "../../../components/student/Navbar";
 
 const Practice = () => {
   const [data, setData] = React.useState([]);

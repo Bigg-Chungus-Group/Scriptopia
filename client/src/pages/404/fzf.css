@@ -6,7 +6,7 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  color: aliceblue;
+  color: var(--text-color);
   gap: 20px;
   font-family: "Raleway", sans-serif;
 }
@@ -15,7 +15,7 @@
   margin: 0;
   font-size: 7rem;
   font-weight: bold;
-  color: rgba(240, 248, 255, 0.547);
+  color: var(--text-color);
   text-align: center;
 }
 

@@ -3,8 +3,8 @@ import "./Code.css";
 import "jquery";
 import "jquery-ui/dist/jquery-ui";
 import { useParams } from "react-router";
-import Navbar from "../../components/student/Navbar"
-import Loader from "../../components/Loader";
+import Navbar from "../../../components/student/Navbar"
+import Loader from "../../../components/Loader";
 import {
   Accordion,
   AccordionButton,

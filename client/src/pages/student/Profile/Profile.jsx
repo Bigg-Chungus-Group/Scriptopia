@@ -22,12 +22,15 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
-import Navbar from "../../components/student/Navbar";
+import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
-import Loader from "../../components/Loader";
+import Loader from "../../../components/Loader";
+import jwtDecode from "jwt-decode";
 
 const Profile = () => {
-  !Cookies.get("token") ? (window.location.href = "/auth") : null;
+  if (jwtDecode(Cookies.get("token")).role !== "S")
+    window.location.href = "/auth";
+
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
   const [level, setLevel] = React.useState({});
