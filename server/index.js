@@ -34,7 +34,7 @@ const corsOptions = {
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8888", "https://scriptopia.chungus.tech");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173", "https://scriptopia.chungus.tech");
 
   // Request methods you wish to allow
   res.setHeader(
