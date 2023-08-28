@@ -28,7 +28,10 @@ const corsOptions = {
   origin: process.env.FRONTEND_ADDRESS,
   credentials: true,
   optionSuccessStatus: 200,
+  methods: "GET, POST, PUT, DELETE",
 };
+
+console.log(process.env.FRONTEND_ADDRESS);
 
 app.use(cookieParser());
 app.use(cors(corsOptions));

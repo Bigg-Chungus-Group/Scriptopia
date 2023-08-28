@@ -88,7 +88,7 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
       return res.status(200).json({ message: "Data inserted successfully" });
     }
   } catch (error) {
-    logger.error("ASH001: ", err.stack);
+    logger.error("ASH001: ", error);
     return res.status(500).json({ message: "Error in inserting data" });
   }
 });
