@@ -28,8 +28,8 @@ dotenv.config();
 const corsOptions = {
   origin: process.env.FRONTEND_ADDRESS,
   credentials: true,
-  optionSuccessStatus: 200,
   methods: "GET, POST, PUT, DELETE",
+  headers: ["Content-Type"],
 };
 
 console.log(process.env.FRONTEND_ADDRESS);
