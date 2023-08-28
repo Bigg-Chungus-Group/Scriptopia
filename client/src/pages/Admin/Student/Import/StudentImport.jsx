@@ -45,7 +45,6 @@ const StudentImport = () => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/import`, {
       method: "POST",
       credentials: "include",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
