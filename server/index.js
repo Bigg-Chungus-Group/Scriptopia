@@ -19,6 +19,7 @@ import mainAdmin from "./handlers/admin/main.js";
 // # Import Middlewares and APIs
 
 import compiler from "./apis/compiler.js";
+import logger from "./configs/logger.js";
 
 // # CONFIGURATIONS, MIDDLEWARES, INITIALIZATIONS
 
@@ -32,6 +33,7 @@ const corsOptions = {
 };
 
 console.log(process.env.FRONTEND_ADDRESS);
+logger.info(process.env.FRONTEND_ADDRESS)
 
 app.use(cookieParser());
 app.use(cors(corsOptions));
