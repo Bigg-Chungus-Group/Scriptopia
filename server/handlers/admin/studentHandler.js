@@ -30,10 +30,10 @@ router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Data fetched successfully", students });
+      .send({ message: "Data fetched successfully", students });
   } catch (error) {
     logger.error("ASH001: ", error);
-    return res.status(500).json({ message: "Error in fetching data" });
+    return res.status(500).send({ message: "Error in fetching data" });
   }
 });
 
@@ -85,11 +85,11 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
     }
     const result = await userDB.insertMany(insertData);
     if (result) {
-      return res.status(200).json({ message: "Data inserted successfully" });
+      return res.status(200).send({ message: "Data inserted successfully" });
     }
   } catch (error) {
     logger.error("ASH001: ", error);
-    return res.status(500).json({ message: "Error in inserting data" });
+    return res.status(500).send({ message: "Error in inserting data" });
   }
 });
 
