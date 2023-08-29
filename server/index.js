@@ -26,16 +26,18 @@ import logger from "./configs/logger.js";
 const app = express();
 dotenv.config();
 
-const corsOptions = {
-  origin: process.env.FRONTEND_ADDRESS,
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: process.env.FRONTEND_ADDRESS,
+//   //methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true,
+//   //allowHeaders: "Content-Type"
+// };
 
 console.log(process.env.FRONTEND_ADDRESS);
 logger.info(process.env.FRONTEND_ADDRESS);
 
 app.use(cookieParser());
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 // # APIS
