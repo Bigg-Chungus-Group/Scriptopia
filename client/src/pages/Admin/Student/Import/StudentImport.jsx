@@ -51,6 +51,7 @@ const StudentImport = () => {
       },
       body: JSON.stringify({ tableData }),
     }).then((res) => {
+      console.log(res)
       setAdding(false);
       if (res.status === 200) {
         toast({

@@ -87,7 +87,6 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
     if (result) {
       return res
         .status(200)
-        .header("Access-Control-Allow-Origin", "*")
         .send({ message: "Data inserted successfully" });
     }
   } catch (error) {
