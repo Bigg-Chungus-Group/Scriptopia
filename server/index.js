@@ -28,20 +28,11 @@ dotenv.config();
 
 const corsOptions = {
   origin: process.env.FRONTEND_ADDRESS,
-  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
-  allowHeaders: "Content-Type"
 };
 
 console.log(process.env.FRONTEND_ADDRESS);
 logger.info(process.env.FRONTEND_ADDRESS);
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_ADDRESS);
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 app.use(cookieParser());
 app.use(cors(corsOptions));
