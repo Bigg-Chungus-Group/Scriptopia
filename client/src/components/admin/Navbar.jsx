@@ -47,7 +47,8 @@ const Navbar = () => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    Cookies.remove("token", { path: '/', domain: import.meta.env.VITE_COOKIE_DOMAIN });
+    Cookies.remove("token", { path: '/', domain: import.meta.env.VITE_COOKIE_DOMAIN2 });
     window.location.href = "/auth";
   };
 
