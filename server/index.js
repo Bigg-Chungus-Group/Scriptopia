@@ -61,4 +61,7 @@ app.use("/firstTime", firstTimeHandler);
 
 app.use("/admin", mainAdmin);
 
+// FOR CRON JOBS
+app.get("/cron", (req, res) => {res.send("Hello Cron!")});
+
 app.listen(5000);
