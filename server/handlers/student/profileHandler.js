@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
-import { verifyToken } from "./../apis/jwt.js";
-import { badgeDB, userDB, courseDB, problemDB } from "../configs/mongo.js";
+import { verifyToken } from "../../apis/jwt.js";
+import { badgeDB, userDB, courseDB, problemDB } from "../../configs/mongo.js";
 import { ObjectId } from "mongodb";
-import logger from "../configs/logger.js";
+import logger from "../../configs/logger.js";
 
 router.post("/", verifyToken, async (req, res) => {
   try {

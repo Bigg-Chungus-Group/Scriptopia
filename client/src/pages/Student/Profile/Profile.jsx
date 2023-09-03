@@ -7,9 +7,6 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  Editable,
-  EditableInput,
-  EditablePreview,
   Button,
   Table,
   Thead,
@@ -18,8 +15,6 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
-  TableContainer,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import Navbar from "../../../components/student/Navbar";
@@ -38,7 +33,7 @@ const Profile = () => {
   const houseRef = useRef();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/profile`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/profile`, {
       method: "POST",
       credentials: "include",
       headers: {

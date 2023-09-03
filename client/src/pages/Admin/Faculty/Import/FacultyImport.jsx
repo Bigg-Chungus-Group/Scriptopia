@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./StudentImport.css";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import {
@@ -30,9 +29,10 @@ import Navbar from "../../../../components/admin/Navbar";
 import Papa from "papaparse";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
-import StudentAdd from "./StudentAdd";
+import "./FacultyImport.css";
+import FacultyAdd from "./FacultyAdd"; "./FacultyAdd"
 
-const StudentImport = () => {
+const FacultyImport = () => {
   useAuthCheck("A");
 
   const [tableData, setTableData] = useState([]);
@@ -55,7 +55,7 @@ const StudentImport = () => {
 
   const startImport = () => {
     setAdding(true);
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/import`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/import`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -68,8 +68,8 @@ const StudentImport = () => {
       setAdding(false);
       if (res.status === 200) {
         toast({
-          title: "Students Imported",
-          description: "Students have been successfully imported",
+          title: "Faculty Imported",
+          description: "Staff has been successfully imported",
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -77,7 +77,7 @@ const StudentImport = () => {
       } else {
         toast({
           title: "Error",
-          description: "Error in importing students",
+          description: "Error in importing faculty",
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -90,14 +90,14 @@ const StudentImport = () => {
     <>
       <Navbar />
       <Breadcrumb
-        title="Add Students"
+        title="Add Faculty"
         links={[
           { href: "/admin", name: "Admin" },
-          { href: "/admin/students", name: "Students" },
+          { href: "/admin/faculty", name: "Faculty" },
           { href: "#", name: "Add" },
         ]}
       />
-      <Box className="StudentImport">
+      <Box className="FacultyImport">
         <Box className="main">
           <Box className="btn">
             <Button colorScheme="blue" onClick={() => {setAddIndividual(true)}}>Add Individual</Button>
@@ -131,7 +131,7 @@ const StudentImport = () => {
                   zIndex="sticky"
                   backgroundColor="#F7F6FA"
                 >
-                  <Th>Student ID</Th>
+                  <Th>Moodle ID</Th>
                   <Th>First Name</Th>
                   <Th>Last Name</Th>
                   <Th>Gender</Th>
@@ -161,9 +161,9 @@ const StudentImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <StudentAdd setModal={handleModal} /> : <></>}
+      {addIndividual ? <FacultyAdd setModal={handleModal} /> : <></>}
     </>
   );
 };
 
-export default StudentImport;
+export default FacultyImport;

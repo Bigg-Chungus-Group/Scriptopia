@@ -24,29 +24,22 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
-import Cookies from "js-cookie";
-import jwtDecode from "jwt-decode";
 import { Link } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 import IntroModal from "./IntroModal";
 
 const Home = () => {
-  if (jwtDecode(Cookies.get("token")).role !== "S")
-    window.location.href = "/auth";
-
+  const decoded = useAuthCheck("S");
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
   const [house, setHouse] = useState();
-  const [assignments, setAssignments] = useState([]);
-  const [problems, setProblems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [firstTime, setFirstTime] = useState(false);
-
-  const jwt = Cookies.get("token");
-  const decoded = jwtDecode(jwt);
+  const [activity, setActivity] = useState();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/dashboard`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/dashboard`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -57,59 +50,61 @@ const Home = () => {
       .then((data) => {
         setUser(data.user);
         setHouse(data.userHouse);
-        setAssignments(data.assignments);
-        setProblems(data.problems);
+        setActivity(data.activity);
         data.user.firstTime ? setFirstTime(true) : setFirstTime(false);
+        setLoading(false);
+      });
+  }, []);
 
-        const dateCounts = countDates(data.activity);
-        const reversedDates = Object.keys(dateCounts).slice(0, 7).reverse();
-        const reversedCounts = Object.values(dateCounts).slice(0, 7).reverse();
+  useEffect(() => {
+    if (!loading) {
+      const dateCounts = countDates(activity);
+      const reversedDates = Object.keys(dateCounts).slice(0, 7).reverse();
+      const reversedCounts = Object.values(dateCounts).slice(0, 7).reverse();
 
-        const ctx = document.getElementById("activityChart").getContext("2d");
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: reversedDates, // Get labels from dateCounts object
-            datasets: [
-              {
-                label: "Activity",
-                data: reversedCounts, // Use values from dateCounts object
-                tension: 0.4,
-                borderColor: "#3e95cd",
-                fill: false,
-              },
-            ],
+      const ctx = document.getElementById("activityChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: reversedDates, // Get labels from dateCounts object
+          datasets: [
+            {
+              label: "Activity",
+              data: reversedCounts, // Use values from dateCounts object
+              tension: 0.4,
+              borderColor: "#3e95cd",
+              fill: false,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
           },
-          options: {
-            maintainAspectRatio: false,
-            responsive: true,
-            plugins: {
-              legend: {
+
+          scales: {
+            x: {
+              grid: {
                 display: false,
               },
             },
-
-            scales: {
-              x: {
-                grid: {
-                  display: false,
-                },
+            y: {
+              grid: {
+                display: false,
               },
-              y: {
-                grid: {
-                  display: false,
-                },
-                ticks: {
-                  stepSize: 1, // Set the step size to 1 to show whole numbers
-                },
+              ticks: {
+                stepSize: 1, // Set the step size to 1 to show whole numbers
               },
             },
           },
-        });
+        },
       });
-
-    setLoading(false);
-  }, []);
+    }
+  }, [loading]);
 
   const language = {
     js: "JavaScript",

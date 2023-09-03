@@ -137,7 +137,7 @@ const IntroModal = () => {
   };
 
   const sendData = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/dashboard/firstTime`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/dashboard/firstTime`, {
       method: "POST",
       credentials: "include",
       headers: {

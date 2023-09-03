@@ -1,6 +1,5 @@
 import React from "react";
 import "./fzf.css";
-import fzfpic from "../../assets/img/404.svg";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 

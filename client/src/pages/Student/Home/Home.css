@@ -1,5 +1,5 @@
 .Home {
-  background-color: #fdfdff;
+  background-color: var(--bg);;
   box-sizing: border-box;
   padding: 30px 70px;
   height: 91vh;

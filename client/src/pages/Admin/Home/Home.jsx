@@ -15,10 +15,10 @@ import "./Home.css";
 import Chart from "chart.js/auto";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Home = () => {
-  if (jwtDecode(Cookies.get("token")).role !== "A")
-    window.location.href = "/auth";
+  const decoded = useAuthCheck("A")
 
   useEffect(() => {
     const housePoints = document.getElementById("housePoints");

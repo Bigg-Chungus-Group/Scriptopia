@@ -12,8 +12,10 @@ router.post(
   body("password").not().isEmpty().trim(),
   async (req, res) => {
     const { mid, password } = req.body;
-
+    console.log(mid);
+    console.log(password);
     const findUser = await userDB.findOne({ mid });
+    console.log(findUser)
     if (!findUser) {
       res.status(401).json({
         title: "Invalid Credentials",

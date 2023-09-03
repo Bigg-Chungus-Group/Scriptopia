@@ -178,6 +178,14 @@ const Auth = () => {
     }
   };
 
+  const detectEnter = (e) => {
+    console.log(e.key);
+    if (e.key === "Enter") {
+      console.log("Enter detected");
+      validateAndSubmit(e);
+    }
+  };
+
   return (
     <Box className="Auth">
       <Box className="left">
@@ -211,6 +219,7 @@ const Auth = () => {
               type={show ? "text" : "password"}
               placeholder=""
               id="pw"
+              onKeyUp={(e) => detectEnter(e)}
             />
             <InputRightElement width="4.5rem" marginTop="2px" marginRight="3px">
               <Button h="1.75rem" size="sm" onClick={handleClick}>

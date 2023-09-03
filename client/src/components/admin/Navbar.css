@@ -78,6 +78,17 @@
   font-size: 1rem;
 }
 
+.alert-navAdmin-notification {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.navAdmin .notificationBody {
+  display: flex;
+  justify-content: space-between;
+}
+
 @media (max-width: 960px) {
   .navAdmin input {
     width: 300px;

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/img/logo-icon.png"
+import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 import {
@@ -23,6 +23,7 @@ import {
   Button,
   Alert,
   AlertIcon,
+  AlertDialogBody,
 } from "@chakra-ui/react";
 
 const Navbar = () => {
@@ -31,6 +32,7 @@ const Navbar = () => {
   const token = Cookies.get("token");
   if (!token) window.location.href = "/auth";
   const decoded = jwt_decode(token);
+  const [notifications, setNotifications] = React.useState([]);
 
   const { picture } = decoded;
 
@@ -46,9 +48,34 @@ const Navbar = () => {
     }
   };
 
+  useEffect(() => {
+    try {
+      fetch(
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
+        {
+          method: "GET",
+        }
+      ).then((res) => {
+        if (res.status === 200) {
+          res.json().then((data) => {
+            setNotifications(data.notifications);
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const logout = () => {
-    Cookies.remove("token", { path: '/', domain: import.meta.env.VITE_COOKIE_DOMAIN });
-    Cookies.remove("token", { path: '/', domain: import.meta.env.VITE_COOKIE_DOMAIN2 });
+    Cookies.remove("token", {
+      path: "/",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN,
+    });
+    Cookies.remove("token", {
+      path: "/",
+      domain: import.meta.env.VITE_COOKIE_DOMAIN2,
+    });
     window.location.href = "/auth";
   };
 
@@ -56,7 +83,12 @@ const Navbar = () => {
     <div className="nav">
       <div className="left-link">
         <div className="image">
-          <img src={Logo} onClick={() => {window.location.href = "/"}}/>
+          <img
+            src={Logo}
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          />
         </div>
         <div className="links">
           <a href="/courses">Courses</a>
@@ -88,19 +120,17 @@ const Navbar = () => {
             ></div>
           </MenuButton>
         </Box>
-        <MenuList bg="#323238" border="1px solid #068fff55">
+        <MenuList>
           <Link to="/settings">
             {" "}
-            <MenuItem bg="#323238">Settings</MenuItem>
+            <MenuItem>Settings</MenuItem>
           </Link>
           <Link to="/profile">
-            <MenuItem bg="#323238">Profile</MenuItem>
+            <MenuItem>Profile</MenuItem>
           </Link>
           <MenuDivider />
-          <MenuItem bg="#323238">Change Theme</MenuItem>
-          <MenuItem bg="#323238" onClick={logout}>
-            Logout
-          </MenuItem>
+          <MenuItem>Change Theme</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>
 
@@ -116,18 +146,24 @@ const Navbar = () => {
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
-            <Alert status="info" marginBottom="5px">
-              <AlertIcon />
-              You have a new assignment in Python
-            </Alert>{" "}
-            <Alert status="info" marginBottom="5px">
-              <AlertIcon />
-              IP Lab Assignment is Due Today
-            </Alert>{" "}
-            <Alert status="success" marginBottom="5px">
-              <AlertIcon />
-              Join the Hackathon scheduled on 30th August!
-            </Alert>
+            {notifications.length === 0 ? (
+              <Alert status="info">
+                <AlertIcon />
+                No Notifications
+              </Alert>
+            ) : (
+              notifications.map((notification) => (
+                <Alert
+                  status="info"
+                  key={notification._id}
+                  marginBottom="5px"
+                >
+                  <AlertIcon />
+
+                  <AlertDialogBody width="100%">{notification.body}</AlertDialogBody>
+                </Alert>
+              ))
+            )}
           </DrawerBody>
 
           <DrawerFooter>

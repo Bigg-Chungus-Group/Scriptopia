@@ -1,17 +1,21 @@
-import { useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
-import Cookies from 'js-cookie';
+import { useEffect } from "react";
+import jwtDecode from "jwt-decode";
+import Cookies from "js-cookie";
 
 export function useAuthCheck(requiredRole) {
-  useEffect(() => {
-    try {
-      const cookie = Cookies.get('token');
+  try {
+    const cookie = Cookies.get("token");
+    if (cookie) {
       const decoded = jwtDecode(cookie);
       if (decoded.role !== requiredRole) {
-        throw new Error('Invalid token');
+        throw new Error("Invalid token");
       }
-    } catch (err) {
-      window.location.href = '/auth';
+      return decoded;
+    } else {
+      throw new Error("Invalid Token");
     }
-  }, [requiredRole]);
+  } catch (err) {
+    console.log("Illegal Access")
+    window.location.href = "/auth";
+  }
 }

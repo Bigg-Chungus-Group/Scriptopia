@@ -1,24 +1,21 @@
 // # Import Modules
 
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
 // # Import Handlers
 
-import problemHandler from "./handlers/problemHandler.js";
 import loginHandler from "./handlers/loginHandler.js";
-import profileHandler from "./handlers/profileHandler.js";
-import dashboardHandler from "./handlers/dashboardHandler.js";
-import practiceHandler from "./handlers/practiceHandler.js";
 import firstTimeHandler from "./handlers/firstTimeHandler.js";
 
 import mainAdmin from "./handlers/admin/main.js";
+import mainStudent from "./handlers/student/main.js";
+import mainFaculty from "./handlers/faculty/main.js";
 
 // # Import Middlewares and APIs
 
-import compiler from "./apis/compiler.js";
+//import compiler from "./apis/compiler.js";
 import logger from "./configs/logger.js";
 
 // # CONFIGURATIONS, MIDDLEWARES, INITIALIZATIONS
@@ -49,17 +46,16 @@ app.use(cookieParser());
 app.use(express.json());
 
 // # APIS
-app.use("apis/compile", compiler);
+//app.use("apis/compile", compiler);
 
 // # HANDLERS
-app.use("/problem/", problemHandler);
 app.use("/auth", loginHandler);
-app.use("/profile", profileHandler);
-app.use("/dashboard", dashboardHandler);
-app.use("/practice", practiceHandler);
 app.use("/firstTime", firstTimeHandler);
 
 app.use("/admin", mainAdmin);
+app.use("/student", mainStudent)
+app.use("/faculty", mainFaculty)
+
 
 // FOR CRON JOBS
 app.get("/cron", (req, res) => {res.send("Hello Cron!")});
