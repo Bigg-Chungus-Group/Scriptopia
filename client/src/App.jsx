@@ -11,7 +11,16 @@ import Fzf from "./pages/404/Fzf.jsx";
 import Admin from "./Admin.jsx";
 import Student from "./Student.jsx";
 
+// Listeners
+import onLogin from "./events/onLogin.jsx";
+import { useEffect } from "react";
+
 function App() {
+
+  useEffect(() => {
+    onLogin();
+  }, []);
+
   return (
     <>
       <ChakraProvider theme={theme}>

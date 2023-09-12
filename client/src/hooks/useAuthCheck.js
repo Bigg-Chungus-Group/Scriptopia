@@ -16,6 +16,6 @@ export function useAuthCheck(requiredRole) {
     }
   } catch (err) {
     console.log("Illegal Access")
-    window.location.href = "/auth";
+    window.location.href = "/auth?err=exp";
   }
 }

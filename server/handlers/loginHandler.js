@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userDB } from "../configs/mongo.js";
 import { body } from "express-validator";
+import { io } from "../index.js";
 
 router.post(
   "/",
@@ -15,7 +16,7 @@ router.post(
     console.log(mid);
     console.log(password);
     const findUser = await userDB.findOne({ mid });
-    console.log(findUser)
+    console.log(findUser);
     if (!findUser) {
       res.status(401).json({
         title: "Invalid Credentials",
@@ -41,7 +42,7 @@ router.post(
             fname: findUser.fname,
             lname: findUser.lname,
             picture: findUser.profilePicture,
-            role: "A"
+            role: "A",
           },
           process.env.JWT_SECRET
         );
@@ -74,7 +75,7 @@ router.post(
             fname: findUser.fname,
             lname: findUser.lname,
             picture: findUser.profilePicture,
-            role: "F"
+            role: "F",
           },
           process.env.JWT_SECRET
         );
@@ -115,7 +116,7 @@ router.post(
               ay: findUser.AY,
               branch: findUser.branch,
               picture: findUser.profilePicture,
-              role: "S"
+              role: "S",
             },
             process.env.JWT_SECRET
           );
@@ -123,6 +124,12 @@ router.post(
 
         const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
         const expirationDate = new Date(Date.now() + expirationTime);
+        const id = findUser._id.toString();
+        io.to(id).emit("newLogin");
+
+        io.on("connection", (socket) => {
+          socket.join(id);
+        });
 
         res
           .status(200)
@@ -168,7 +175,7 @@ router.post(
               ay: user.AY,
               branch: user.branch,
               picture: user.profilePicture,
-              role: user.role
+              role: user.role,
             },
             process.env.JWT_SECRET
           );

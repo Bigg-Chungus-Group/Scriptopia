@@ -18,6 +18,7 @@ import APSIT from "./../../assets/img/apsit-logo.png";
 import Logo from "./../../assets/img/logo.png";
 import "./Auth.css";
 import CreatePW from "./CreatePW";
+import { color } from "framer-motion";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,8 @@ const Auth = () => {
   const [open, setOpen] = useState(false);
   const [mid, setMid] = useState("");
   const [fact, setFact] = useState("");
+
+  const [err, setErr] = useState("");
 
   const programming_facts = [
     "The first computer bug was a real bug – a moth found trapped in a Harvard Mark II computer in 1947.",
@@ -118,6 +121,14 @@ const Auth = () => {
     setFact(
       programming_facts[Math.floor(Math.random() * programming_facts.length)]
     );
+
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get("err");
+    if (err === "newlcn") {
+      setErr("You have logged in from a new location.")
+    } else if (err === "exp") {
+      setErr("Your session has expired.")
+    }
   }, []);
 
   const validateAndSubmit = async (e) => {
@@ -236,6 +247,7 @@ const Auth = () => {
         >
           Login
         </Button>
+        <p style={{"color": "red"}}>{err}</p>
       </Box>
       <CreatePW isFirstTime={open} mid={mid} />
     </Box>
