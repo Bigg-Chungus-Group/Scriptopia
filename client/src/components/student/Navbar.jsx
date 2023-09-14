@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
+import io from "socket.io-client";
 import {
   Menu,
   MenuButton,
@@ -35,6 +36,55 @@ const Navbar = () => {
   const [notifications, setNotifications] = React.useState([]);
 
   const { picture } = decoded;
+
+  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS);
+  /*
+  useEffect(() => {
+    socket.on("onNewNotification", (notification) => {
+      console.log("NOTI");
+      setNotifications((prev) => [...prev, notification]);
+    });
+
+    socket.on("onDeleteNotification", (notification) => {
+      setNotifications((prev) =>
+        prev.filter((noti) => noti._id !== notification._id)
+      );
+    });
+
+    socket.on("onUpdateNotifications", (newNotification) => {
+      setNotifications((prev) =>
+        prev.map((noti) => {
+          if (noti._id === newNotification._id) {
+            return newNotification;
+          } else {
+            return noti;
+          }
+        })
+      );
+    })  
+  }, [])*/
+
+  useEffect(() => {
+    socket.on("onNotification", () => {
+      console.log("Notification Change Detected");
+      try {
+        fetch(
+          `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
+          {
+            method: "GET",
+          }
+        ).then((res) => {
+          if (res.status === 200) {
+            res.json().then((data) => {
+              setNotifications(data.notifications);
+            });
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, []);
 
   const showSearch = () => {
     document.querySelector("input").style.display = "block";
@@ -91,8 +141,8 @@ const Navbar = () => {
           />
         </div>
         <div className="links">
-          <a href="/courses">Courses</a>
-          <a href="/practice">Practice</a>
+          <a href="/certificates">Certificates</a>
+          <a href="/houses">Houses</a>
         </div>
         <i
           className="fa-solid fa-magnifying-glass"
@@ -153,14 +203,12 @@ const Navbar = () => {
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert
-                  status="info"
-                  key={notification._id}
-                  marginBottom="5px"
-                >
+                <Alert status="info" key={notification._id} marginBottom="5px">
                   <AlertIcon />
 
-                  <AlertDialogBody width="100%">{notification.body}</AlertDialogBody>
+                  <AlertDialogBody width="100%">
+                    {notification.body}
+                  </AlertDialogBody>
                 </Alert>
               ))
             )}

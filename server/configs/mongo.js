@@ -27,3 +27,4 @@ export const assignDB = db.collection("assignments");
 export const houseDB = db.collection("houses");
 export const enrollmentDB = db.collection("enrollments");
 export const notificationDB = db.collection("notifications");
+export const certificationsDB = db.collection("certifications");

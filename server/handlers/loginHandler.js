@@ -127,9 +127,11 @@ router.post(
         const id = findUser._id.toString();
         io.to(id).emit("newLogin");
 
-        io.on("connection", (socket) => {
-          socket.join(id);
-        });
+        setTimeout(() => {
+          io.on("connection", (socket) => {
+            socket.join(id);
+          });
+        }, 700)
 
         res
           .status(200)

@@ -19,6 +19,7 @@ import Logo from "./../../assets/img/logo.png";
 import "./Auth.css";
 import CreatePW from "./CreatePW";
 import { color } from "framer-motion";
+import Cookie from "js-cookie";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +31,40 @@ const Auth = () => {
   const [fact, setFact] = useState("");
 
   const [err, setErr] = useState("");
+  const [attempts, setAttempts] = useState(0);
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if (Cookie.get("blocked")) {
+      setDisabled(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (attempts === 5) {
+      history.replaceState({}, "/auth", "/auth?err=max");
+      setErr("Too Many Attempts");
+      setDisabled(true);
+      var now = new Date();
+      var expirationTime = new Date(now.getTime() +  5000); // 2 minutes in milliseconds2 * 60 *
+      document.cookie =
+        "blocked=true; expires=" + expirationTime.toUTCString() + "; path=/";
+
+      
+
+      toast({
+        title: "Too many attempts",
+        description: "Please try again after some time.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        setDisabled(false);
+        history.replaceState({}, "/auth?err=max", "/auth");
+      }, 5000);
+    }
+  }, [attempts]);
 
   const programming_facts = [
     "The first computer bug was a real bug – a moth found trapped in a Harvard Mark II computer in 1947.",
@@ -125,10 +160,10 @@ const Auth = () => {
     const params = new URLSearchParams(window.location.search);
     const err = params.get("err");
     if (err === "newlcn") {
-      setErr("You have logged in from a new location.")
+      setErr("You have logged in from a new location.");
     } else if (err === "exp") {
-      setErr("Your session has expired.")
-    }
+      setErr("Your session has expired.");
+    } else if (err === "max") setErr("Too Many Attempts");
   }, []);
 
   const validateAndSubmit = async (e) => {
@@ -139,7 +174,6 @@ const Auth = () => {
     setMid(mid);
 
     try {
-      // TODO: ADD BACKEND LOGIC HERE
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/auth/`, {
         method: "POST",
         credentials: "include",
@@ -150,6 +184,7 @@ const Auth = () => {
         setIsLoading(false);
         if (res.status === 200) {
           const response = await res.json();
+
           if (response.role === "A") {
             window.location.href = "/admin";
           } else if (response.role === "F") {
@@ -168,6 +203,7 @@ const Auth = () => {
         } else {
           const response = await res.json();
           setIsLoading(false);
+          setAttempts(attempts + 1);
           toast({
             title: response.title,
             description: response.message,
@@ -190,10 +226,10 @@ const Auth = () => {
   };
 
   const detectEnter = (e) => {
-    console.log(e.key);
     if (e.key === "Enter") {
-      console.log("Enter detected");
-      validateAndSubmit(e);
+      if (!disabled) {
+        validateAndSubmit(e);
+      }
     }
   };
 
@@ -202,9 +238,7 @@ const Auth = () => {
       <Box className="left">
         <Box className="left-inner">
           <Heading>Did You Know?</Heading>
-          <Text>
-            {fact}
-          </Text>
+          <Text>{fact}</Text>
           <Text className="creds">A Project by Bigg Chungus</Text>
         </Box>
       </Box>
@@ -244,10 +278,11 @@ const Auth = () => {
           className="btn"
           onClick={validateAndSubmit}
           isLoading={isLoading}
+          isDisabled={disabled}
         >
           Login
         </Button>
-        <p style={{"color": "red"}}>{err}</p>
+        <p style={{ color: "red" }}>{err}</p>
       </Box>
       <CreatePW isFirstTime={open} mid={mid} />
     </Box>

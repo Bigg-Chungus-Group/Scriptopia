@@ -14,9 +14,7 @@ const logout = () => {
 };
 
 const onLogin = () => {
-  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS, {
-    transports: ["websocket"],
-  });
+  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS, {});
 
   socket.on("newLogin", () => {
     logout();
