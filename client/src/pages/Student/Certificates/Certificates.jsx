@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Navbar from "../../../components/student/Navbar/";
+import Navbar from "../../../components/Student/Navbar/";
 import {
   Box,
   Table,
