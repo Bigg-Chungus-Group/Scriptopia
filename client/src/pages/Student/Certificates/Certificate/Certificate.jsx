@@ -28,7 +28,7 @@ import {
   Alert,
 } from "@chakra-ui/react";
 import "./Certificate.css";
-import Navbar from "../../../../components/Student/Navbar";
+import Navbar from "../../../../components/student/Navbar";
 import Loader from "../../../../components/Loader";
 
 const Certificate = () => {
