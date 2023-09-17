@@ -1,0 +1,48 @@
+.StudentCertificates {
+  background-color: #f7f6fa;
+  box-sizing: border-box;
+  padding: 30px 70px;
+  height: 91vh;
+}
+
+.StudentCertificates .table {
+  overflow-y: auto;
+}
+
+.upload-main-StudentCertificates {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upload-main-StudentCertificates .flex {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+input[type="file"] {
+  display: none;
+}
+
+.upload-main-StudentCertificates .flex .upload-btn {
+  background-color: rgb(67, 188, 91);
+  border: 1px solid #d9d9d9;
+  color: aliceblue;
+  font-weight: bold;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 200px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.red-required {
+    color: red;
+}

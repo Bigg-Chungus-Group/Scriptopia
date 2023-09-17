@@ -1,0 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
+
+.CreatePW {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  font-family: "Poppins", sans-serif;
+}
+
+.CreatePW h2,
+.CreatePW input {
+  font-family: "Poppins", sans-serif;
+}
