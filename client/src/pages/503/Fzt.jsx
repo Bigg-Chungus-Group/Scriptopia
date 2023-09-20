@@ -1,5 +1,5 @@
 import React from "react";
-import "./fzt.css";
+import "./Fzt.css";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
