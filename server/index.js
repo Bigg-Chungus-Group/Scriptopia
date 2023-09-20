@@ -79,13 +79,7 @@ app.get("/cron", (req, res) => {
 const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_ADDRESS,
     methods: ["GET", "POST"],
   },
 });
-
-setTimeout(() => {
-  console.log("====================================");
-  console.log("maintainanceMode: ", getMaintenanceMode());
-  console.log("====================================");
-}, 100);
