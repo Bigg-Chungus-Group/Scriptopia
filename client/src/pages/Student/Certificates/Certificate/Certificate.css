@@ -1,6 +1,5 @@
 .StudentCertificate {
   height: 85vh;
-  background-color: var(--bg);
   box-sizing: border-box;
   padding: 30px 70px;
   display: flex;

@@ -23,6 +23,7 @@ import {
   useToast,
   DrawerContent,
   DrawerHeader,
+  Avatar,
   DrawerBody,
   DrawerFooter,
   DrawerCloseButton,
@@ -240,7 +241,9 @@ const Navbar = () => {
         </div>
         <div className="links">
           <a href="/admin/students">Students</a>
-          <a href="/admin/faculty">Faculty</a>{" "}
+          <a href="/admin/faculty">Faculty</a>
+          <a href="/admin/houses">Houses</a>
+          <a href="/admin/events">Events</a>
         </div>
         <i
           className="fa-solid fa-magnifying-glass"
@@ -260,27 +263,19 @@ const Navbar = () => {
             onClick={onOpen}
           ></i>{" "}
           <MenuButton>
-            <div
-              className="profile"
-              style={{
-                background: `url(${picture}) no-repeat center center/cover`,
-              }}
-            ></div>
+            <Avatar src={picture} size="sm" />{" "}
           </MenuButton>
         </Box>
-        <MenuList bg="#323238" border="1px solid #068fff55">
+        <MenuList>
           <Link to="/admin/settings">
-            {" "}
-            <MenuItem bg="#323238">Settings</MenuItem>
+            <MenuItem>Settings</MenuItem>
           </Link>
           <Link to="/admin/profile">
-            <MenuItem bg="#323238">Profile</MenuItem>
+            <MenuItem>Profile</MenuItem>
           </Link>
           <MenuDivider />
-          <MenuItem bg="#323238">Change Theme</MenuItem>
-          <MenuItem bg="#323238" onClick={logout}>
-            Logout
-          </MenuItem>
+          <MenuItem>Change Theme</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>
 

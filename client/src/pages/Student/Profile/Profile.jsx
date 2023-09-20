@@ -21,10 +21,11 @@ import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Loader from "../../../components/Loader";
 import jwtDecode from "jwt-decode";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Profile = () => {
-  if (jwtDecode(Cookies.get("token")).role !== "S")
-    window.location.href = "/auth";
+  const decoded = useAuthCheck("S")
+
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);

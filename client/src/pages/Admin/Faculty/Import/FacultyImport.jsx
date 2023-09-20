@@ -115,6 +115,12 @@ const FacultyImport = () => {
               be present in the .CSV file.
             </AlertDescription>
           </Alert>
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>The following permission will be auto assigned for import: View Student Profile, View Faculty Information</AlertTitle>
+            <AlertDescription>
+            </AlertDescription>
+          </Alert>
           <input
             id="file-upload"
             type="file"

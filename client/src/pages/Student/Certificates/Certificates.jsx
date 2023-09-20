@@ -30,8 +30,10 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import "./Certificates.css";
 import Loader from "../../../components/Loader";
 import { Link } from "react-router-dom";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
+  const deocded = useAuthCheck("S")
   const [certificates, setCertificates] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();

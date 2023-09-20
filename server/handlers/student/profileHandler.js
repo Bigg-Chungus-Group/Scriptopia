@@ -4,6 +4,7 @@ import { verifyToken } from "../../apis/jwt.js";
 import { badgeDB, userDB, courseDB, problemDB } from "../../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../../configs/logger.js";
+import bcrypt from "bcrypt";
 
 router.post("/", verifyToken, async (req, res) => {
   try {
@@ -36,6 +37,38 @@ router.post("/", verifyToken, async (req, res) => {
     res.status(200).send(data);
   } catch (err) {
     logger.error("PRF001: ", err.stack);
+    res.status(401).send("Invalid Token");
+  }
+});
+
+router.post("/updatePW", verifyToken, async (req, res) => {
+  const { oldPass, newPass } = req.body;
+  try {
+    const verified = req.user;
+    console.log(verified.mid);
+    const result = await userDB.findOne({ mid: verified.mid });
+    if (!result) {
+      console.log("no result");
+      return res.status(401).send();
+    }
+
+    const oldMatch = await bcrypt.compare(oldPass, result.password);
+    if (!oldMatch) {
+      console.log("old not match");
+      return res.status(401).send();
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPass, salt);
+
+    await userDB.updateOne(
+      { mid: verified.mid },
+      { $set: { password: hashedPassword } }
+    );
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    logger.error("PRF002: ", err.stack);
     res.status(401).send("Invalid Token");
   }
 });

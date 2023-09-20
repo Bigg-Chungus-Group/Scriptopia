@@ -1,14 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 
 :root {
-  --bg: #f7f6fa;
-  --primary-bg: #28282B;
+  --container: #ffffff;
+  --darker: #F6F6F6;
+  --accent1: #cdc2fe;
+  --accent2: #aac9ff;
+  --accent3: #93e2b8;
+  --accent1-solid: #b964f5;
+  --accent2-solid: #068fff;
+  --accent3-solid: #00ff00;
+  --text: #000000;
+
+  --box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+
+  /*
+  --primary-bg: #28282b;
   --secondary-bg: #273239;
   --ternary-bg: #28282b;
   --text-color: black;
   --text-color-light: black;
   --accent-color: #068fff;
-  --primary-shade: #292c35;
+  --primary-shade: #292c35;*/
 }
 
 /*
@@ -28,15 +40,6 @@
 
 * {
   font-family: "Raleway", sans-serif;
-}
-
-html {
-  background-color: var(--bg);
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--text-color);
 }
 
 /* Chrome, Safari, Edge, Opera */

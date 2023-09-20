@@ -1,21 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
+
 .nf {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  color: var(--accent-color);
-  background-color: #f7f6fa;
+  position: relative;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .nf .spinner {
   animation: fadeInAnimation 0.5s;
 }
 
-@keyframes fadeInAnimation {
-  from {
-    opacity: 0;
+.nf svg {
+  font-family: "Russo One", sans-serif;
+  width: 100%;
+  height: 100%;
+  animation: grow .5s forwards 4.7s; 
+}
+.nf svg text {
+  text-transform: uppercase;
+  font-family: "Russo One", sans-serif;
+  stroke-width: 2;
+  stroke: #365fa0;
+  animation: stroke 5s forwards;
+  font-size: 200px;
+}
+
+@keyframes stroke {
+  0% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: rgba(54, 95, 160, 1);
+    stroke-dashoffset: 25%;
+    stroke-dasharray: 0 50%;
+    stroke-width: 2;
   }
-  to {
-    opacity: 1;
+  70% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: rgba(54, 95, 160, 1);
+  }
+  80% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: rgba(54, 95, 160, 1);
+    stroke-width: 3;
+  }
+  100% {
+    fill: rgba(72, 138, 204, 1);
+    stroke: rgba(54, 95, 160, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+}
+
+@keyframes grow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
   }
 }
