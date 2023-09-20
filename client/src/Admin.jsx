@@ -6,6 +6,9 @@ import AdminStudents from "./pages/Admin/Student/Students.jsx";
 import AdminStudentsImport from "./pages/Admin/Student/Import/StudentImport.jsx";
 import AdminFacultyImport from "./pages/Admin/Faculty/Import/FacultyImport.jsx";
 import AdminFaculty from "./pages/Admin/Faculty/Faculty.jsx";
+import AdminSettings from "./pages/Admin/Settings/Settings.jsx";
+import AdminLogs from "./pages/Admin/Logs/Logs.jsx";
+import AdminEvents from "./pages/Admin/Events/Events.jsx";
 
 const Admin = () => {
   return (
@@ -16,7 +19,10 @@ const Admin = () => {
       <Route path="/admin/students/add" element={<AdminStudentsImport />} />
       <Route path="/admin/faculty/add" element={<AdminFacultyImport />} />
       <Route path="/admin/faculty" element={<AdminFaculty />} />
-
+      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin/logs" element={<AdminLogs />} />
+      <Route path="/admin/events" element={<AdminEvents />} />
+      
       <Route
         path="*"
         element={<div> Not Found or You do not have permission.</div>}

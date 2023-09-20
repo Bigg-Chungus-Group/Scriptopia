@@ -6,6 +6,7 @@ import {
   Heading,
   Box,
   Link as ChakraLink,
+  Button,
 } from "@chakra-ui/react";
 import "./Breadcrumb.css";
 import { Link } from "react-router-dom";
@@ -28,7 +29,7 @@ const Breadcrumb = ({ title, links, relatedLinks }) => {
       <Box className="right">
         {relatedLinks?.map((link, index) => (
           <ChakraLink as={Link} to={link.href} key={index}>
-            {link.name}
+            <Button colorScheme="green">{link.name}</Button>
           </ChakraLink>
         ))}
       </Box>

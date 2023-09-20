@@ -30,8 +30,10 @@ import {
 import "./Certificate.css";
 import Navbar from "../../../../components/Student/Navbar";
 import Loader from "../../../../components/Loader";
+import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
 const Certificate = () => {
+  const deocded = useAuthCheck("S")
   const [certificate, setCertificate] = useState({});
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();

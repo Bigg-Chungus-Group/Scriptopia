@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 60px;
-  background-color: var(--bg);
   color: #59616f;
 }
 
@@ -17,7 +16,7 @@
   font-size: 1.5rem;
   cursor: pointer;
   margin-right: 20px;
-  color: var(--accent-color);
+  color: var(--accent2-solid);
 }
 
 .nav .links a {
@@ -25,7 +24,7 @@
 }
 
 .nav .links a:hover {
-  color: var(--accent-color);
+  color: var(--accent2-solid);
 }
 
 .left-link {
@@ -41,7 +40,6 @@
 }
 
 .nav input {
-  background-color: #f4f6ff;
   border: none;
   outline: none;
   color: #59616f;

@@ -162,7 +162,7 @@ const Auth = () => {
     if (err === "newlcn") {
       setErr("You have logged in from a new location.");
     } else if (err === "exp") {
-      setErr("Your session has expired.");
+      setErr("");
     } else if (err === "max") setErr("Too Many Attempts");
   }, []);
 

@@ -43,6 +43,7 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
       const role = "F";
       const firstTime = true;
       const defaultPW = true;
+      const perms = ['VSP', 'VFI']
 
       insertData.push({
         mid,
@@ -56,6 +57,7 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
         branch: "IT",
         firstTime,
         defaultPW,
+        perms
       });
     }
     const result = await userDB.insertMany(insertData);
@@ -69,7 +71,7 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
 });
 
 router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
-  const { fname, lname, moodleid: mid, email, gender } = req.body;
+  const { fname, lname, moodleid: mid, email, gender, perms } = req.body;
 
   const password = bcrypt.hash(process.env.DEFAULT_FACULTY_PASSWORD, 10);
   const firstTime = true;
@@ -90,6 +92,7 @@ router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
     branch,
     firstTime,
     defaultPW,
+    perms
   };
 
   try {
@@ -98,6 +101,17 @@ router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
   } catch {
     logger.error("ASH003: ", error);
     return res.status(500).send({ message: "Error in inserting data" });
+  }
+});
+
+router.post("/delete", verifyToken, verifyAdminPrivilges, async (req, res) => {
+  const { mid } = req.body;
+  try {
+    await userDB.deleteOne({ mid });
+    return res.status(200).send({ success: true });
+  } catch (error) {
+    logger.error("ASH004: ", error);
+    return res.status(500).send({ success: false });
   }
 });
 

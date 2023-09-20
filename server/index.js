@@ -14,6 +14,7 @@ import firstTimeHandler from "./handlers/firstTimeHandler.js";
 import mainAdmin from "./handlers/admin/main.js";
 import mainStudent from "./handlers/student/main.js";
 import mainFaculty from "./handlers/faculty/main.js";
+import { getMaintenanceMode } from "./handlers/admin/profileHandler.js";
 
 // # Import Middlewares and APIs
 
@@ -29,11 +30,10 @@ const corsOptions = {
   origin: process.env.FRONTEND_ADDRESS,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
-  allowHeaders: "Content-Type"
+  allowHeaders: "Content-Type",
 };
 
-app.use(cors(corsOptions))
-
+app.use(cors(corsOptions));
 
 /*
 app.use(function (req, res, next) {
@@ -55,6 +55,15 @@ app.use(express.json());
 //app.use("apis/compile", compiler);
 
 // # HANDLERS
+
+app.get("/", (req, res) => {
+  if(getMaintenanceMode()) {
+    res.status(503).send("Under Maintainance");
+  } else {
+    res.status(200).send("Hello World!");
+  }
+});
+
 app.use("/auth", loginHandler);
 app.use("/firstTime", firstTimeHandler);
 
@@ -67,12 +76,16 @@ app.get("/cron", (req, res) => {
   res.send("Hello Cron!");
 });
 
-
-
-const server = app.listen(5000)
+const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
+
+setTimeout(() => {
+  console.log("====================================");
+  console.log("maintainanceMode: ", getMaintenanceMode());
+  console.log("====================================");
+}, 100);

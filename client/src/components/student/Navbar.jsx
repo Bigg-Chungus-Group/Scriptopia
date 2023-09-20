@@ -25,19 +25,29 @@ import {
   Alert,
   AlertIcon,
   AlertDialogBody,
+  InputAddon,
+  Avatar,
 } from "@chakra-ui/react";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   const token = Cookies.get("token");
-  if (!token) window.location.href = "/auth";
-  const decoded = jwt_decode(token);
   const [notifications, setNotifications] = React.useState([]);
-
-  const { picture } = decoded;
-
+  const [picture, setPicture] = React.useState(null);
   const socket = io(import.meta.env.VITE_BACKEND_ADDRESS);
+
+  useEffect(() => {
+    let dec;
+    try {
+      dec = jwt_decode(token);
+      const p = dec.picture;
+      setPicture(p);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   /*
   useEffect(() => {
     socket.on("onNewNotification", (notification) => {
@@ -73,9 +83,9 @@ const Navbar = () => {
           {
             method: "GET",
           }
-        ).then((res) => {
+        ).then(async (res) => {
           if (res.status === 200) {
-            res.json().then((data) => {
+            await res.json().then((data) => {
               setNotifications(data.notifications);
             });
           }
@@ -105,9 +115,9 @@ const Navbar = () => {
         {
           method: "GET",
         }
-      ).then((res) => {
+      ).then(async (res) => {
         if (res.status === 200) {
-          res.json().then((data) => {
+          await res.json().then((data) => {
             setNotifications(data.notifications);
           });
         }
@@ -118,6 +128,7 @@ const Navbar = () => {
   }, []);
 
   const logout = () => {
+    localStorage.removeItem("chakra-ui-color-mode");
     Cookies.remove("token", {
       path: "/",
       domain: import.meta.env.VITE_COOKIE_DOMAIN,
@@ -151,7 +162,12 @@ const Navbar = () => {
         ></i>
       </div>
 
-      <input type="text" placeholder="Search Here" onBlur={checkWidth} />
+      <Input
+        type="text"
+        placeholder="Search Here"
+        onBlur={checkWidth}
+        variant="filled"
+      />
 
       <Menu>
         <Box className="rightmost">
@@ -161,26 +177,27 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
-          <MenuButton>
-            <div
-              className="profile"
-              style={{
-                background: `url(${picture}) no-repeat center center/cover`,
-              }}
-            ></div>
-          </MenuButton>
+          {picture ? (
+            <MenuButton>
+              <Avatar src={picture} size="sm" />{" "}
+            </MenuButton>
+          ) : (
+            <Link to="/auth"> Sign In </Link>
+          )}
         </Box>
-        <MenuList>
+        <MenuList className="menu">
           <Link to="/settings">
             {" "}
-            <MenuItem>Settings</MenuItem>
+            <MenuItem className="menuitem">Settings</MenuItem>
           </Link>
           <Link to="/profile">
-            <MenuItem>Profile</MenuItem>
+            <MenuItem className="menuitem">Profile</MenuItem>
           </Link>
           <MenuDivider />
-          <MenuItem>Change Theme</MenuItem>
-          <MenuItem onClick={logout}>Logout</MenuItem>
+          <MenuItem className="menuitem">Change Theme</MenuItem>
+          <MenuItem className="menuitem" onClick={logout}>
+            Logout
+          </MenuItem>
         </MenuList>
       </Menu>
 
@@ -191,13 +208,13 @@ const Navbar = () => {
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent className="drawer-studentNav">
           <DrawerCloseButton />
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
             {notifications.length === 0 ? (
-              <Alert status="info">
+              <Alert>
                 <AlertIcon />
                 No Notifications
               </Alert>
