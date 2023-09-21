@@ -9,7 +9,7 @@ router.post("", async (req, res) => {
 
   const problem = await problemDB.findOne({
     _id: new ObjectId(probId),
-    language: lang,
+    language: lang.toString(),
   });
 
   if (!problem) {

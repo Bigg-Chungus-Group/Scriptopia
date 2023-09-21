@@ -12,7 +12,6 @@ import {
 } from "../../configs/mongo.js";
 import fs from "fs";
 import jszip from "jszip";
-import e from "express";
 
 router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
   //generate backup of all databases.

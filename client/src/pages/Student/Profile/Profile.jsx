@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Profile.css";
 import {
   Box,
@@ -16,16 +16,13 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import Cookies from "js-cookie";
 import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Loader from "../../../components/Loader";
-import jwtDecode from "jwt-decode";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Profile = () => {
-  const decoded = useAuthCheck("S")
-
+  const decoded = useAuthCheck("S");
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
@@ -61,7 +58,7 @@ const Profile = () => {
 
   const renderChart = () => {
     const houseContribution = houseRef.current.getContext("2d");
-    new Chart(houseContribution, {
+    const hcChart = new Chart(houseContribution, {
       type: "doughnut",
       data: {
         labels: ["Red", "Blue"],
@@ -74,6 +71,12 @@ const Profile = () => {
         ],
       },
     });
+
+    return () => {
+      if (hcChart) {
+        hcChart.destroy();
+      }
+    };
   };
 
   function calculateLevelInfo(xp) {

@@ -33,7 +33,6 @@ input[type="file"] {
   color: aliceblue;
   font-weight: bold;
   box-sizing: border-box;
-  border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
   font-size: 14px;

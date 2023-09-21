@@ -1,13 +1,7 @@
 import {
   Box,
-  Heading,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Text,
   Select,
-  BreadcrumbSeparator,
-  Divider,
   Table,
   Thead,
   Tr,
@@ -19,8 +13,6 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../../components/admin/Navbar";
 import "./Home.css";
 import Chart from "chart.js/auto";
-import Cookies from "js-cookie";
-import jwtDecode from "jwt-decode";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Home = () => {
@@ -62,13 +54,16 @@ const Home = () => {
   }
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/dashboard`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const data = fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/dashboard`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setHouses(data.houses);
@@ -93,7 +88,7 @@ const Home = () => {
       let house4 = calculateTotalPoints(houses[3]);
       house4 = house4.totalInternal + house4.totalExternal + house4.totalEvents;
 
-      new Chart(housePoints, {
+      const housePointChart = new Chart(housePoints, {
         type: "bar",
         data: {
           labels: [
@@ -142,6 +137,12 @@ const Home = () => {
           },
         },
       });
+
+      return () => {
+        if (housePointChart) {
+          housePointChart.destroy();
+        }
+      };
     }
   }, [houses]);
 
@@ -186,7 +187,7 @@ const Home = () => {
         }
       }
 
-      new Chart(cert, {
+      const certChart = new Chart(cert, {
         type: "bar",
         data: {
           labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
@@ -223,13 +224,19 @@ const Home = () => {
           },
         },
       });
+
+      return () => {
+        if (certChart) {
+          certChart.destroy();
+        }
+      };
     }
   }, [certifications]);
 
   useEffect(() => {
     const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    currentYear.toString();
+    let currentYear = currentDate.getFullYear();
+    currentYear = currentYear.toString();
 
     let selectedHouseChart;
 
@@ -372,48 +379,6 @@ const Home = () => {
       }
     };
   }, [loading, selectedHouse]);
-
-  /* 
-
-  useEffect(() => {
-    const certificationStatus = document.getElementById("certificationStatus");
-
-    new Chart(certificationStatus, {
-      type: "bar",
-      data: {
-        labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
-        datasets: [
-          {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: "#AAC9FF",
-            borderWidth: 1,
-            borderRadius: 5,
-          },
-        ],
-      },
-      options: {
-        indexAxis: "y",
-        scales: {
-          x: {
-            display: false, // Hide x-axis gridlines
-          },
-          y: {
-            display: true,
-            beginAtZero: true,
-            grid: {
-              display: false, // Hide y-axis gridlines
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: false, // Hide the legend
-          },
-        },
-      },
-    });
-  }, []);*/
 
   if (!loading) {
     return (

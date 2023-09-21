@@ -15,7 +15,7 @@ router.post(
     const { mid, password } = req.body;
     console.log(mid);
     console.log(password);
-    const findUser = await userDB.findOne({ mid });
+    const findUser = await userDB.findOne({ mid: mid.toString() });
     console.log(findUser);
     if (!findUser) {
       res.status(401).json({
@@ -157,10 +157,10 @@ router.post(
     console.log(mid);
     try {
       if (password === password2) {
-        const user = await userDB.findOne({ mid });
+        const user = await userDB.findOne({ mid: mid.toString() });
         if (user) {
           await userDB.updateOne(
-            { mid },
+            { mid: mid.toString()},
             {
               $set: {
                 password: await bcrypt.hash(password, 10),

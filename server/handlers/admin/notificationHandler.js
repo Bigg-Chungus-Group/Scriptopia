@@ -10,7 +10,7 @@ router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
   try {
     const { notificationBody, notificationExpiry } = req.body;
     await notificationDB.insertOne({
-      body: notificationBody,
+      body: notificationBody.toString(),
       expiry: new Date(notificationExpiry),
     });
 

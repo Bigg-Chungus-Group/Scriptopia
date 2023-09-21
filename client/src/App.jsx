@@ -1,7 +1,5 @@
 /* IMPORTS */
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Button, ChakraProvider, useColorMode } from "@chakra-ui/react";
-import theme from "./theme.js";
 import "./assets/normalize.css";
 import "./assets/fa/css/all.css";
 
@@ -14,11 +12,6 @@ import "./config.css";
 // Listeners
 import onLogin from "./events/onLogin.jsx";
 import { useEffect, useState } from "react";
-import { Provider } from "react-redux";
-import store from "./redux/store.js";
-import { connect } from "react-redux";
-import { enableDarkMode, disableDarkMode } from "./redux/actions";
-import Cookies from "js-cookie";
 import Fzt from "./pages/503/Fzt.jsx";
 
 function App() {

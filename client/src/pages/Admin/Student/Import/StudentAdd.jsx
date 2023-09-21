@@ -14,7 +14,6 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Image,
   Input,
   useToast,
   Select,

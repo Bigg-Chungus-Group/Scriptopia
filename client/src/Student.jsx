@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 import React from "react";
 
 import StudentProfile from "./pages/Student/Profile/Profile.jsx";

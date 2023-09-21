@@ -12,8 +12,9 @@ import { ObjectId } from "mongodb";
 // Define the storage engine for multer
 const storage = multer.memoryStorage(); // Store the file in memory
 
+
 // Initialize multer with the defined storage
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: 8000000 });
 
 router.post("/", verifyToken, async (req, res) => {
   const { mid } = req.user;
@@ -49,15 +50,15 @@ router.post(
 
     if (certificateURL) {
       await certificationsDB.insertOne({
-        mid,
-        certificateName: cName,
-        issuingOrg,
-        issueMonth,
-        issueYear,
-        certificateType,
-        certificateLevel,
+        mid: mid.toString(),
+        certificateName: cName.toString(),
+        issuingOrg: issuingOrg.toString(),
+        issueMonth: issueMonth.toString(),
+        issueYear: parseInt(issueYear),
+        certificateType: certificateType.toString(),
+        certificateLevel: certificateLevel.toString(),
         uploadType: "url",
-        certificateURL,
+        certificateURL: certificateURL.toString(),
         status: "pending",
       });
       return res.status(200).send("Certificate uploaded");
@@ -78,15 +79,15 @@ router.post(
 
     await certificationsDB.insertOne({
       _id,
-      mid,
-      certificateName: cName,
-      issuingOrg,
-      issueMonth,
-      issueYear,
-      certificateType,
-      certificateLevel,
+      mid: mid.toString(),
+      certificateName: cName.toString(),
+      issuingOrg: issuingOrg.toString(),
+      issueMonth: issueMonth.toString(),
+      issueYear: parseInt(issueYear),
+      certificateType: certificateType.toString(),
+      certificateLevel: certificateLevel.toString(),
       uploadType: "file",
-      certificateURL: certificateName,
+      certificateURL: certificateName.toString(),
       status: "pending",
       ext: originalFileName.split(".")[1],
     });

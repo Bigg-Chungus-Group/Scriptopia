@@ -6,17 +6,17 @@ import { enrollmentDB, userDB } from "../configs/mongo.js";
 Router.post("/", verifyToken, async (req, res) => {
   const { mid, about, technical, projects, certifications, cgpa } = req.body;
 
-  const user = await userDB.findOne({ mid: mid });
+  const user = await userDB.findOne({ mid: mid.toString() });
   if (user) {
     try {
-      await userDB.updateOne({ mid: mid }, { $set: { firstTime: false } });
+      await userDB.updateOne({ mid: mid.toString() }, { $set: { firstTime: false } });
       await enrollmentDB.insertOne({
-        mid,
-        about,
-        technical,
-        projects,
-        certifications,
-        cgpa,
+        mid: mid.toString(),
+        about: about.toString(),
+        technical: technical.toString(),
+        projects: projects.toString(),
+        certifications: certifications.toString(),
+        cgpa: parseFloat(cgpa),
       });
       res.status(200).send({ success: true });
     } catch {

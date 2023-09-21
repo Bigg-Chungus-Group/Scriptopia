@@ -25,7 +25,6 @@ import {
   Alert,
   AlertIcon,
   AlertDialogBody,
-  InputAddon,
   Avatar,
 } from "@chakra-ui/react";
 
@@ -75,10 +74,10 @@ const Navbar = () => {
   }, [])*/
 
   useEffect(() => {
-    socket.on("onNotification", () => {
+    socket.on("onNotification", async () => {
       console.log("Notification Change Detected");
       try {
-        fetch(
+        await fetch(
           `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
           {
             method: "GET",
@@ -108,9 +107,9 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     try {
-      fetch(
+      await fetch(
         `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
         {
           method: "GET",

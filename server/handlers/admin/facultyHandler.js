@@ -34,30 +34,30 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
   let insertData = [];
 
   try {
-    for (let i = 0; i < tableData.length; i++) {
-      const mid = tableData[i][0];
-      const fname = tableData[i][1];
-      const lname = tableData[i][2];
-      const gender = tableData[i][3];
-      const email = tableData[i][4];
+    for (const row of tableData) {
+      const mid = row[0];
+      const fname = row[1];
+      const lname = row[2];
+      const gender = row[3];
+      const email = row[4];
       const role = "F";
       const firstTime = true;
       const defaultPW = true;
-      const perms = ['VSP', 'VFI']
+      const perms = ["VSP", "VFI"];
 
       insertData.push({
-        mid,
-        password,
-        role,
-        fname,
-        lname,
+        mid: mid.toString(),
+        password: password.toString(),
+        role: role.toString(),
+        fname: fname.toString(),
+        lname: lname.toString(),
         profilePicture: "",
-        email,
-        gender,
+        email: email.toString(),
+        gender: gender.toString(),
         branch: "IT",
         firstTime,
         defaultPW,
-        perms
+        perms: perms,
       });
     }
     const result = await userDB.insertMany(insertData);
@@ -79,20 +79,20 @@ router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
   const branch = "IT";
 
   const userSchema = {
-    mid,
-    password,
-    fname,
-    lname,
+    mid: mid.toString(),
+    password: password.toString(),
+    fname: fname.toString(),
+    lname: lname.toString(),
     profilePicture: "",
-    email,
-    gender,
+    email: email.toString(),
+    gender: gender.toString(),
     role: "F",
     XP: 0,
     lastOnline: new Date(),
     branch,
     firstTime,
     defaultPW,
-    perms
+    perms: perms,
   };
 
   try {
@@ -107,7 +107,7 @@ router.post("/add", verifyToken, verifyAdminPrivilges, async (req, res) => {
 router.post("/delete", verifyToken, verifyAdminPrivilges, async (req, res) => {
   const { mid } = req.body;
   try {
-    await userDB.deleteOne({ mid });
+    await userDB.deleteOne({ mid: mid.toString() });
     return res.status(200).send({ success: true });
   } catch (error) {
     logger.error("ASH004: ", error);
