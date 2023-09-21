@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import Cookies from "js-cookie";
-import jwtDecode from "jwt-decode";
 import {
   Box,
   Button,
-  Heading,
-  Input,
   Table,
   Tbody,
   Td,
@@ -14,13 +10,6 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Thead,
   Tr,
   useToast,
@@ -146,7 +135,7 @@ const FacultyImport = () => {
               </Thead>
               <Tbody>
                 {tableData.map((row, index) => (
-                  <Tr key={index}>
+                  <Tr key={row.mid}>
                     {row.map((cell, index) => (
                       <Td key={index}>{cell}</Td>
                     ))}

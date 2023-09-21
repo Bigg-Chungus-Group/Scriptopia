@@ -20,17 +20,13 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
-import { Link } from "react-router-dom";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
-import IntroModal from "./IntroModal";
 const Home = () => {
   const decoded = useAuthCheck("S");
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
   const [houses, setHouses] = useState();
-  const [firstTime, setFirstTime] = useState(false);
-  const [activity, setActivity] = useState();
   const [userHouse, setUserHouse] = useState();
   const [certifications, setCertifications] = useState();
   const [selectedMonth, setSelectedMonth] = useState("all");
@@ -83,13 +79,11 @@ const Home = () => {
       .then((data) => {
         setUser(data.user);
         setHouses(data.allHouses);
-        setActivity(data.activity);
         setUserHouse(data.userHouse);
         console.log("====================================");
         console.log(data.userHouse);
         console.log("====================================");
         setCertifications(data.certifications);
-        data.user.firstTime ? setFirstTime(true) : setFirstTime(false);
         setLoading(false);
       });
   }, []);
@@ -341,36 +335,6 @@ const Home = () => {
     currentYear = currentYear.toString();
 
     if (!loading) {
-      function calculateTotalPoints(data) {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear(); // Get the current year
-
-        let totalInternalPoints = 0;
-        let totalExternalPoints = 0;
-        let totalEventsPoints = 0;
-
-        if (data && data.points && data.points[currentYear.toString()]) {
-          const monthlyPoints = data.points[currentYear.toString()];
-          for (const month in monthlyPoints) {
-            if (monthlyPoints.hasOwnProperty(month)) {
-              // Separate internal, external, and events points
-              const { internal, external, events } = monthlyPoints[month];
-
-              // Add them to their respective totals
-              totalInternalPoints += internal;
-              totalExternalPoints += external;
-              totalEventsPoints += events;
-            }
-          }
-        }
-
-        return {
-          totalInternal: totalInternalPoints,
-          totalExternal: totalExternalPoints,
-          totalEvents: totalEventsPoints,
-        };
-      }
-
       const sepPoints = calculateTotalPoints(user.house);
       const totalPoints =
         sepPoints.totalInternal +
@@ -418,6 +382,12 @@ const Home = () => {
           },
         },
       });
+
+      return () => {
+        if (cont) {
+          cont.destroy();
+        }
+      };
     }
 
     return () => {
@@ -426,84 +396,6 @@ const Home = () => {
       }
     };
   }, [loading, userHouse, user]);
-
-  /*
-  useEffect(() => {
-    if (!loading) {
-      const dateCounts = countDates(activity);
-      const reversedDates = Object.keys(dateCounts).slice(0, 7).reverse();
-      const reversedCounts = Object.values(dateCounts).slice(0, 7).reverse();
-
-      const ctx = document.getElementById("activityChart").getContext("2d");
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: reversedDates, // Get labels from dateCounts object
-          datasets: [
-            {
-              label: "Activity",
-              data: reversedCounts, // Use values from dateCounts object
-              tension: 0.4,
-              borderColor: "#3e95cd",
-              fill: false,
-            },
-          ],
-        },
-        options: {
-          maintainAspectRatio: false,
-          responsive: true,
-          plugins: {
-            legend: {
-              display: false,
-            },
-          },
-
-          scales: {
-            x: {
-              grid: {
-                display: false,
-              },
-            },
-            y: {
-              grid: {
-                display: false,
-              },
-              ticks: {
-                stepSize: 1, // Set the step size to 1 to show whole numbers
-              },
-            },
-          },
-        },
-      });
-    }
-  }, [loading]);*/
-
-  const countDates = (activity) => {
-    const dateCounts = {};
-
-    activity.forEach((item) => {
-      const { date } = item;
-      if (dateCounts[date]) {
-        dateCounts[date] += 1;
-      } else {
-        dateCounts[date] = 1;
-      }
-    });
-
-    return dateCounts;
-  };
-
-  function getFormattedDate() {
-    const now = new Date();
-    const options = { year: "numeric", month: "long" };
-
-    const day = now.getDate();
-    const suffix = getDaySuffix(day);
-
-    const formattedDate = now.toLocaleDateString(undefined, options);
-
-    return `${day}${suffix} ${formattedDate}`;
-  }
 
   function getDaySuffix(day) {
     if (day >= 11 && day <= 13) {

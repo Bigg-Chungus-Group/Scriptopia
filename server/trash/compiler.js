@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import { problemDB } from "../configs/mongo.js";
 
 router.post("", async (req, res) => {
-  const { code, lang, input, probId } = req.body;
+  const { code, lang, probId } = req.body;
 
   const problem = await problemDB.findOne({
     _id: new ObjectId(probId),

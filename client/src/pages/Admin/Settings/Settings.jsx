@@ -22,11 +22,9 @@ import {
   Alert,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/admin/Navbar";
-import Cookies from "js-cookie";
 import Loader from "../../../components/Loader";
 
 const Settings = () => {
-  const darkCookie = Cookies.get("dark") === "true" ? true : false;
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -91,7 +89,6 @@ const Settings = () => {
               duration: 3000,
               isClosable: true,
             });
-            return;
           } else {
             return await res.json();
           }
@@ -332,7 +329,11 @@ const Settings = () => {
                   >
                     Check Server Logs
                   </Button>
-                  <Button colorScheme="blue" onClick={generateBackup} isLoading={backupIsLoading}>
+                  <Button
+                    colorScheme="blue"
+                    onClick={generateBackup}
+                    isLoading={backupIsLoading}
+                  >
                     Generate Backup
                   </Button>
                   <Divider />

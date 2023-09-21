@@ -4,7 +4,6 @@ import { verifyAdminPrivilges } from "./verifyAdmin.js";
 import { houseDB, userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
-import { Int32, ObjectId } from "mongodb";
 import { body } from "express-validator";
 const router = express.Router();
 

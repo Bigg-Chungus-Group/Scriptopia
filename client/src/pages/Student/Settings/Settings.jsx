@@ -16,7 +16,6 @@ import {
   Input,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
-import Cookies from "js-cookie";
 import Loader from "../../../components/Loader";
 
 const Settings = () => {
@@ -84,7 +83,6 @@ const Settings = () => {
               duration: 3000,
               isClosable: true,
             });
-            return;
           } else {
             return await res.json();
           }

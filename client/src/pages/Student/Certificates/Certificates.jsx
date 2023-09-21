@@ -32,7 +32,7 @@ import { Link } from "react-router-dom";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
-  const deocded = useAuthCheck("S")
+  useAuthCheck("S");
   const [certificates, setCertificates] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -190,7 +190,7 @@ const Certificates = () => {
               <Tbody>
                 {certificates.map((certificate, index) => (
                   /* ! CHANGE TARGET*/
-                  <Tr key={index}>
+                  <Tr key={certificate._id}>
                     <Td>{index + 1}</Td>
                     <Td>{certificate.certificateName}</Td>
                     <Td>{certificate.issuingOrg}</Td>
