@@ -16,7 +16,7 @@ import Chart from "chart.js/auto";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Home = () => {
-  const decoded = useAuthCheck("A");
+  useAuthCheck("A");
 
   const [houses, setHouses] = useState([]);
   const [certifications, setCertifications] = useState([]);
@@ -54,16 +54,13 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const data = fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/dashboard`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/dashboard`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setHouses(data.houses);
@@ -441,7 +438,7 @@ const Home = () => {
                   >
                     {houses.map((house, index) => {
                       return (
-                        <option key={index} value={index}>
+                        <option key={house._id} value={index}>
                           {house.name}
                         </option>
                       );

@@ -32,7 +32,7 @@ import Loader from "../../../../components/Loader";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
 const Certificate = () => {
-  const deocded = useAuthCheck("S")
+  useAuthCheck("S");
   const [certificate, setCertificate] = useState({});
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,7 +52,6 @@ const Certificate = () => {
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
-  //const { isOpen: onD, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
   const year = new Date().getFullYear();
@@ -105,7 +104,7 @@ const Certificate = () => {
     setLoader3(true);
     if (certificate.uploadType === "url") {
       setLoader3(false);
-      window.location.href =  certificate.certificateURL;
+      window.location.href = certificate.certificateURL;
       return;
     }
 

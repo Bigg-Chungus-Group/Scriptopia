@@ -32,20 +32,11 @@ router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
   const certifications = await certificationsDB.find({}).toArray();
   const certificationsJSON = JSON.stringify(certifications);
 
-  const userBackup = fs.writeFileSync("backups/userBackup.json", usersJSON);
-  const notificationBackup = fs.writeFileSync(
-    "backups/notificationBackup.json",
-    notificationsJSON
-  );
-  const houseBackup = fs.writeFileSync("backups/houseBackup.json", housesJSON);
-  const enrollmentBackup = fs.writeFileSync(
-    "backups/enrollmentBackup.json",
-    enrollmentsJSON
-  );
-  const certificationBackup = fs.writeFileSync(
-    "backups/certificationBackup.json",
-    certificationsJSON
-  );
+  fs.writeFileSync("backups/userBackup.json", usersJSON);
+  fs.writeFileSync("backups/notificationBackup.json", notificationsJSON);
+  fs.writeFileSync("backups/houseBackup.json", housesJSON);
+  fs.writeFileSync("backups/enrollmentBackup.json", enrollmentsJSON);
+  fs.writeFileSync("backups/certificationBackup.json", certificationsJSON);
 
   const zip = new jszip();
   zip.file("backups/userBackup.json", usersJSON);
@@ -61,8 +52,6 @@ router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
   res.set("Content-Disposition", "attachment; filename=backup.zip");
   res.set("Content-Length", content.length);
   res.send(content);
-
-  // res.status(200).json({ success: true });
 });
 
 router.get("/", (req, res) => {

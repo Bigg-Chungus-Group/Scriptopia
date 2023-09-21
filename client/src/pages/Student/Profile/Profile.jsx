@@ -22,11 +22,9 @@ import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Profile = () => {
-  const decoded = useAuthCheck("S");
+  useAuthCheck("S");
 
   const [isLoading, setIsLoading] = React.useState(true);
-  const [progress, setProgress] = React.useState(0);
-  const [level, setLevel] = React.useState({});
   const [data, setData] = React.useState({});
   const houseRef = useRef();
 
@@ -41,7 +39,6 @@ const Profile = () => {
       .then(async (res) => await res.json())
       .then((data) => {
         data.lastOnline = new Date(data.lastOnline).toLocaleString();
-        setLevel(calculateLevelInfo(data.XP));
         setData(data);
         setIsLoading(false);
       })
@@ -107,7 +104,6 @@ const Profile = () => {
     const levelMaxXP = breakpoints[level1] - breakpoints[level1 - 1];
 
     const percentage = (currentXP / levelMaxXP) * 100;
-    setProgress(Math.min(percentage, 100));
 
     return {
       level1: level1,
@@ -115,14 +111,6 @@ const Profile = () => {
       levelMaxXP: levelMaxXP,
     };
   }
-
-  const lang = {
-    py: "Python",
-    js: "JavaScript",
-    java: "Java",
-    c: "C",
-    cpp: "C++",
-  };
 
   if (isLoading) return <Loader />;
   else

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./StudentImport.css";
-import Cookies from "js-cookie";
-import jwtDecode from "jwt-decode";
 import {
   Box,
   Button,

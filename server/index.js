@@ -18,9 +18,6 @@ import { getMaintenanceMode } from "./handlers/admin/profileHandler.js";
 
 // # Import Middlewares and APIs
 
-//import compiler from "./apis/compiler.js";
-import logger from "./configs/logger.js";
-
 // # CONFIGURATIONS, MIDDLEWARES, INITIALIZATIONS
 
 const app = express();
@@ -36,24 +33,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.disable("x-powered-by")
 
-/*
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_ADDRESS);
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
-});*/
 
 app.use(cookieParser());
-//app.use(cors(corsOptions));
 app.use(express.json());
 
 // # APIS
-//app.use("apis/compile", compiler);
 
 // # HANDLERS
 

@@ -38,19 +38,22 @@ import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Students = () => {
-  const decoded = useAuthCheck("A");
+  useAuthCheck("A");
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState([]);
   const [houses, setHouses] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedYear, setSelectedYear] = useState("all");
-  const [selectedBranch, setSelectedBranch] = useState("all");
   const [selectedHouse, setSelectedHouse] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenBulk, onOpen: onOpenBulk, onClose: onCloseBulk } = useDisclosure();
+  const {
+    isOpen: isOpenBulk,
+    onOpen: onOpenBulk,
+    onClose: onCloseBulk,
+  } = useDisclosure();
   const cancelRef = React.useRef();
 
   const [fname, setFname] = React.useState("");
@@ -116,7 +119,7 @@ const Students = () => {
         )
     );
     setFilteredStudents(filtered);
-  }, [searchQuery, students, selectedYear, selectedBranch, selectedHouse]);
+  }, [searchQuery, students, selectedYear, selectedHouse]);
 
   const openEdit = (mid) => {
     onEditOpen();
@@ -247,7 +250,7 @@ const Students = () => {
   }, [filteredStudents]);
 
   const handleBulkDelete = () => {
-    onCloseBulk()
+    onCloseBulk();
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/bulkdelete`, {
       method: "POST",
       credentials: "include",
@@ -465,7 +468,8 @@ const Students = () => {
               </AlertDialogHeader>
 
               <AlertDialogBody>
-                Are you sure? You can't undo this action afterwards. All Selected Students will be Deleted
+                Are you sure? You can't undo this action afterwards. All
+                Selected Students will be Deleted
               </AlertDialogBody>
 
               <AlertDialogFooter>

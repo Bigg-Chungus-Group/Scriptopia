@@ -1,4 +1,4 @@
-import mongo, { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 import logger from "./logger.js";
 dotenv.config();

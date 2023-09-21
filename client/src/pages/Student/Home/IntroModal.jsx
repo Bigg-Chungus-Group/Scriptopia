@@ -128,10 +128,6 @@ const IntroModal = () => {
     }
   };
 
-  const closeIntro = () => {
-    return;
-  };
-
   const sendData = () => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/dashboard/firstTime`, {
       method: "POST",

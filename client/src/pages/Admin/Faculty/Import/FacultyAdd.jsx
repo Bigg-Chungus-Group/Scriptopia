@@ -41,7 +41,6 @@ const FacultyAdd = ({ setModal }) => {
   const [lname, setLname] = React.useState("");
   const [moodleid, setMoodleid] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [house, setHouse] = React.useState("");
 
   const [VSP, setVSP] = React.useState(false); // View Student Profile
   const [VFI, setVFI] = React.useState(false); // View Faculty Information

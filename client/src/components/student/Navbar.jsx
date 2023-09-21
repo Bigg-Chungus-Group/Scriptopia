@@ -47,31 +47,6 @@ const Navbar = () => {
     }
   }, []);
 
-  /*
-  useEffect(() => {
-    socket.on("onNewNotification", (notification) => {
-      console.log("NOTI");
-      setNotifications((prev) => [...prev, notification]);
-    });
-
-    socket.on("onDeleteNotification", (notification) => {
-      setNotifications((prev) =>
-        prev.filter((noti) => noti._id !== notification._id)
-      );
-    });
-
-    socket.on("onUpdateNotifications", (newNotification) => {
-      setNotifications((prev) =>
-        prev.map((noti) => {
-          if (noti._id === newNotification._id) {
-            return newNotification;
-          } else {
-            return noti;
-          }
-        })
-      );
-    })  
-  }, [])*/
 
   useEffect(() => {
     socket.on("onNotification", async () => {

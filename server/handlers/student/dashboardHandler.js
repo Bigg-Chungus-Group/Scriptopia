@@ -1,9 +1,7 @@
 import express from "express";
 const Router = express.Router();
 import {
-  assignDB,
   houseDB,
-  problemDB,
   userDB,
   enrollmentDB,
   certificationsDB,
