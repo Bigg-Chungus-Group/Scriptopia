@@ -30,7 +30,7 @@ import Papa from "papaparse";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 import "./FacultyImport.css";
-import FacultyAdd from "./FacultyAdd"; "./FacultyAdd"
+import FacultyAdd from "./FacultyAdd";
 
 const FacultyImport = () => {
   useAuthCheck("A");

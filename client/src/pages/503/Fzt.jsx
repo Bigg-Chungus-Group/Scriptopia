@@ -1,7 +1,5 @@
 import React from "react";
 import "./Fzt.css";
-import { Button } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 
 const fzf = () => {
   return (

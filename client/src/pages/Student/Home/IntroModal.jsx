@@ -7,12 +7,9 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Text,
   Image,
   Heading,
@@ -32,7 +29,6 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
 } from "@chakra-ui/react";
 
 import Intro1 from "../../../assets/img/logo-icon.png";

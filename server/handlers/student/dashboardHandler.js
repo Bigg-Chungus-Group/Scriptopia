@@ -16,7 +16,7 @@ Router.post("/", verifyToken, async (req, res) => {
   try {
     const { mid } = req.body;
     const allHouses = await houseDB.find({}).toArray();
-    const user = await userDB.findOne({ mid });
+    const user = await userDB.findOne({ mid: mid.toString() });
     const userHouse = await houseDB.findOne({
       _id: new ObjectId(user.house.id),
     });
@@ -32,20 +32,20 @@ Router.post("/", verifyToken, async (req, res) => {
 Router.post("/firstTime", verifyToken, async (req, res) => {
   const { mid, about, technical, projects, certifications, cgpa } = req.body;
 
-  const user = await userDB.findOne({ mid: mid });
+  const user = await userDB.findOne({ mid: mid.toString() });
   if (user) {
     try {
       await userDB.updateOne(
-        { mid: mid },
+        { mid: mid.toString() },
         { $set: { firstTime: false, approved: false } }
       );
       await enrollmentDB.insertOne({
-        mid,
-        about,
-        technical,
-        projects,
-        certifications,
-        cgpa,
+        mid: mid.toString(),
+        about: about.toString(),
+        technical: technical.toString(),
+        projects: projects.toString(),
+        certifications: certifications.toString(),
+        cgpa: parseFloat(cgpa),
       });
       res.status(200).send({ success: true });
     } catch {

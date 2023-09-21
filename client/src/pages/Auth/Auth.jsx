@@ -2,14 +2,11 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Center,
-  Divider,
   FormLabel,
   Heading,
   Image,
   Input,
   Text,
-  Stack,
   InputRightElement,
   InputGroup,
   useToast,
@@ -18,7 +15,6 @@ import APSIT from "./../../assets/img/apsit-logo.png";
 import Logo from "./../../assets/img/logo.png";
 import "./Auth.css";
 import CreatePW from "./CreatePW";
-import { color } from "framer-motion";
 import Cookie from "js-cookie";
 
 const Auth = () => {
@@ -45,8 +41,8 @@ const Auth = () => {
       history.replaceState({}, "/auth", "/auth?err=max");
       setErr("Too Many Attempts");
       setDisabled(true);
-      var now = new Date();
-      var expirationTime = new Date(now.getTime() +  5000); // 2 minutes in milliseconds2 * 60 *
+      const now = new Date();
+      const expirationTime = new Date(now.getTime() +  5000); // 2 minutes in milliseconds2 * 60 *
       document.cookie =
         "blocked=true; expires=" + expirationTime.toUTCString() + "; path=/";
 

@@ -49,20 +49,15 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
   let insertData = [];
 
   try {
-    for (let i = 0; i < tableData.length; i++) {
-      if (
-        tableData[i][0] == "" ||
-        tableData[i][1] == "" ||
-        tableData[i][2] == "" ||
-        tableData[i][3] == ""
-      )
+    for (const row of tableData) {
+      if (row[0] == "" || row[1] == "" || row[2] == "" || row[3] == "")
         continue;
 
-      const mid = tableData[i][0];
-      const fname = tableData[i][1];
-      const lname = tableData[i][2];
-      const gender = tableData[i][3];
-      const email = tableData[i][4];
+      const mid = row[0];
+      const fname = row[1];
+      const lname = row[2];
+      const gender = row[3];
+      const email = row[4];
       const dse = mid.slice(2, 3) == 1 ? false : true;
       const branch = "IT";
       const role = "S";
@@ -71,17 +66,17 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
       const defaultPW = true;
 
       insertData.push({
-        mid,
-        password,
-        role,
-        fname,
-        lname,
+        mid: mid.toString(),
+        password: password.toString(),
+        role: role.toString(),
+        fname: fname.toString(),
+        lname: lname.toString(),
         profilePicture: "",
-        email,
-        gender,
+        email: email.toString(),
+        gender: gender.toString(),
         AY: parseInt(20 + mid.slice(0, 2)),
-        dse,
-        branch,
+        dse: dse,
+        branch: branch.toString(),
         house: {
           id: "64eb6fe4826e49f72ada177f",
           contribution: 0,
@@ -132,19 +127,19 @@ router.post(
     const houseContr = 0;
 
     const userSchema = {
-      mid,
-      password,
-      fname,
-      lname,
+      mid: mid.toString(),
+      password: password.toString(),
+      fname: fname.toString(),
+      lname: lname.toString(),
       profilePicture: "",
-      email,
-      gender,
+      email: email.toString(),
+      gender: gender.toString(),
       role: "S",
       XP: 0,
       lastOnline: new Date(),
       AY: parseInt(ay),
       dse,
-      branch,
+      branch: branch.toString(),
       rank: {
         alltime: 0,
         monthly: 0,
@@ -185,17 +180,17 @@ router.post(
 
     try {
       await userDB.updateOne(
-        { mid },
+        { mid: mid.toString() },
         {
           $set: {
-            fname: fName,
-            lname: lName,
-            email,
+            fname: fName.toString(),
+            lname: lName.toString(),
+            email: email.toString(),
             house: {
-              id: house,
+              id: house.toString(),
               contribution: 0,
             },
-            gender,
+            gender: gender.toString(),
           },
         }
       );
@@ -218,7 +213,7 @@ router.post(
     console.log(mid);
 
     try {
-      await userDB.deleteOne({ mid });
+      await userDB.deleteOne({ mid: mid.toString() });
       return res.status(200).send({ success: true });
     } catch (error) {
       logger.error("ASH005: ", error);
@@ -233,8 +228,14 @@ router.post(
   verifyAdminPrivilges,
   async (req, res) => {
     const { mids } = req.body;
+    const midArr = [];
+
+    mids.forEach((mid) => {
+      mid.toString();
+    });
+
     try {
-      await userDB.deleteMany({ mid: { $in: mids } });
+      await userDB.deleteMany({ mid: { $in: midArr } });
       return res.status(200).send({ success: true });
     } catch (error) {
       logger.error("ASH006: ", error);

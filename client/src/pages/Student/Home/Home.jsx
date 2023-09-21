@@ -4,29 +4,12 @@ import {
   Box,
   Heading,
   Text,
-  Stat,
-  StatLabel,
   Tabs,
   Td,
   TabList,
   TabPanels,
   Tab,
   TabPanel,
-  StatNumber,
-  Card,
-  CardHeader,
-  CardBody,
-  CircularProgress,
-  Center,
-  Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  PopoverArrow,
-  PopoverBody,
   Flex,
   Select,
   Table,
@@ -52,6 +35,36 @@ const Home = () => {
   const [certifications, setCertifications] = useState();
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [hp, setHp] = useState(0);
+
+  function calculateTotalPoints(data) {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear(); // Get the current year
+
+    let totalInternalPoints = 0;
+    let totalExternalPoints = 0;
+    let totalEventsPoints = 0;
+
+    if (data && data.points && data.points[currentYear.toString()]) {
+      const monthlyPoints = data.points[currentYear.toString()];
+      for (const month in monthlyPoints) {
+        if (monthlyPoints.hasOwnProperty(month)) {
+          // Separate internal, external, and events points
+          const { internal, external, events } = monthlyPoints[month];
+
+          // Add them to their respective totals
+          totalInternalPoints += internal;
+          totalExternalPoints += external;
+          totalEventsPoints += events;
+        }
+      }
+    }
+
+    return {
+      totalInternal: totalInternalPoints,
+      totalExternal: totalExternalPoints,
+      totalEvents: totalEventsPoints,
+    };
+  }
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -84,40 +97,10 @@ const Home = () => {
   useEffect(() => {
     let hcl;
     const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    currentYear.toString();
+    let currentYear = currentDate.getFullYear();
+    currentYear = currentYear.toString();
 
     if (!loading) {
-      function calculateTotalPoints(data) {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear(); // Get the current year
-
-        let totalInternalPoints = 0;
-        let totalExternalPoints = 0;
-        let totalEventsPoints = 0;
-
-        if (data && data.points && data.points[currentYear.toString()]) {
-          const monthlyPoints = data.points[currentYear.toString()];
-          for (const month in monthlyPoints) {
-            if (monthlyPoints.hasOwnProperty(month)) {
-              // Separate internal, external, and events points
-              const { internal, external, events } = monthlyPoints[month];
-
-              // Add them to their respective totals
-              totalInternalPoints += internal;
-              totalExternalPoints += external;
-              totalEventsPoints += events;
-            }
-          }
-        }
-
-        return {
-          totalInternal: totalInternalPoints,
-          totalExternal: totalExternalPoints,
-          totalEvents: totalEventsPoints,
-        };
-      }
-
       let house1, house2, house3, house4;
       if (selectedMonth === "all") {
         house1 = calculateTotalPoints(houses[0]);
@@ -135,8 +118,8 @@ const Home = () => {
           house4.totalInternal + house4.totalExternal + house4.totalEvents;
       } else {
         const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        currentYear.toString();
+        let currentYear = currentDate.getFullYear();
+        currentYear = currentYear.toString();
 
         house1 = houses[0].points[2023][selectedMonth];
         house2 = houses[1].points[2023][selectedMonth];
@@ -220,8 +203,8 @@ const Home = () => {
 
   useEffect(() => {
     const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    currentYear.toString();
+    let currentYear = currentDate.getFullYear();
+    currentYear = currentYear.toString();
 
     let myHouseChart;
     let myHouse;
@@ -354,8 +337,8 @@ const Home = () => {
   useEffect(() => {
     let cont;
     const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    currentYear.toString();
+    let currentYear = currentDate.getFullYear();
+    currentYear = currentYear.toString();
 
     if (!loading) {
       function calculateTotalPoints(data) {
@@ -401,7 +384,7 @@ const Home = () => {
         sephousePoints.totalEvents;
 
       cont = document.getElementById("contribution");
-      new Chart(cont, {
+      const contrChart = new Chart(cont, {
         type: "doughnut",
         data: {
           labels: [
@@ -439,7 +422,7 @@ const Home = () => {
 
     return () => {
       if (cont) {
-        cont.destroy();
+        contrChart.destroy();
       }
     };
   }, [loading, userHouse, user]);
@@ -540,36 +523,6 @@ const Home = () => {
 
   useEffect(() => {
     if (!loading) {
-      function calculateTotalPoints() {
-        const data = user.house;
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear(); // Get the current year
-
-        let totalInternalPoints = 0;
-        let totalExternalPoints = 0;
-        let totalEventsPoints = 0;
-
-        if (data && data.points && data.points[currentYear.toString()]) {
-          const monthlyPoints = data.points[currentYear.toString()];
-          for (const month in monthlyPoints) {
-            if (monthlyPoints.hasOwnProperty(month)) {
-              // Separate internal, external, and events points
-              const { internal, external, events } = monthlyPoints[month];
-
-              // Add them to their respective totals
-              totalInternalPoints += internal;
-              totalExternalPoints += external;
-              totalEventsPoints += events;
-            }
-          }
-        }
-
-        return {
-          totalInternal: totalInternalPoints,
-          totalExternal: totalExternalPoints,
-          totalEvents: totalEventsPoints,
-        };
-      }
       setHp(calculateTotalPoints());
     }
   }, [loading]);

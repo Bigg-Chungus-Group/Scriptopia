@@ -20,7 +20,6 @@ import Cookies from "js-cookie";
 import Loader from "../../../components/Loader";
 
 const Settings = () => {
-  const darkCookie = Cookies.get("dark") === "true" ? true : false;
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();

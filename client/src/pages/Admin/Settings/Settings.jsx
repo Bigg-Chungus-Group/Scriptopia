@@ -10,7 +10,6 @@ import {
   Switch,
   useToast,
   Tabs,
-  AlertIcon,
   TabList,
   TabPanels,
   Tab,

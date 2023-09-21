@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 import React from "react";
 
 import AdminHome from "./pages/Admin/Home/Home.jsx";
@@ -22,7 +22,7 @@ const Admin = () => {
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/logs" element={<AdminLogs />} />
       <Route path="/admin/events" element={<AdminEvents />} />
-      
+
       <Route
         path="*"
         element={<div> Not Found or You do not have permission.</div>}
