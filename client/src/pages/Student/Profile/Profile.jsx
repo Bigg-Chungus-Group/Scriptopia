@@ -76,42 +76,6 @@ const Profile = () => {
     };
   };
 
-  function calculateLevelInfo(xp) {
-    // Define the XP breakpoints for levels
-    const breakpoints = [
-      0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500, 6600, 7800,
-      9100, 10500, 12000, 13600, 15300, 17100, 19000,
-    ];
-
-    // Check if XP is negative or zero (invalid case)
-    if (xp <= 0) {
-      return {
-        level1: 1,
-        currentXP: 0,
-        levelMaxXP: breakpoints[0],
-      };
-    }
-
-    // Find the corresponding level based on the XP
-    let level1;
-    for (level1 = 1; level1 < breakpoints.length; level1++) {
-      if (xp < breakpoints[level1]) {
-        break;
-      }
-    }
-
-    const currentXP = xp - breakpoints[level1 - 1];
-    const levelMaxXP = breakpoints[level1] - breakpoints[level1 - 1];
-
-    const percentage = (currentXP / levelMaxXP) * 100;
-
-    return {
-      level1: level1,
-      currentXP: currentXP,
-      levelMaxXP: levelMaxXP,
-    };
-  }
-
   if (isLoading) return <Loader />;
   else
     return (

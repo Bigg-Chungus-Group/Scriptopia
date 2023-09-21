@@ -384,8 +384,8 @@ const Home = () => {
       });
 
       return () => {
-        if (cont) {
-          cont.destroy();
+        if (contrChart) {
+          contrChart.destroy();
         }
       };
     }
@@ -396,22 +396,6 @@ const Home = () => {
       }
     };
   }, [loading, userHouse, user]);
-
-  function getDaySuffix(day) {
-    if (day >= 11 && day <= 13) {
-      return "th";
-    }
-    switch (day % 10) {
-      case 1:
-        return "st";
-      case 2:
-        return "nd";
-      case 3:
-        return "rd";
-      default:
-        return "th";
-    }
-  }
 
   useEffect(() => {
     if (!loading) {
