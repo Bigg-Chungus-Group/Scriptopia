@@ -87,6 +87,7 @@ const Navbar = () => {
         `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
         {
           method: "GET",
+          credentials: "include"
         }
       ).then((res) => {
         if (res.status === 200) {
@@ -97,6 +98,12 @@ const Navbar = () => {
       });
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Error Fetching Notifications",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   }, [update]);
 
@@ -140,6 +147,15 @@ const Navbar = () => {
             isClosable: true,
           });
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error Adding Notification",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
   };
 

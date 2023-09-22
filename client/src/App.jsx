@@ -29,7 +29,6 @@ function App() {
     fetch(import.meta.env.VITE_BACKEND_ADDRESS, {
       method: "GET",
     }).then((res) => {
-      console.log(res.status);
       if (res.status === 503) {
         setMaintainanceMode(true);
       }

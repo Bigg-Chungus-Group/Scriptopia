@@ -22,8 +22,10 @@ import Navbar from "../../../components/admin/Navbar";
 import "./Logs.css";
 import jsPDF from "jspdf";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Logs = () => {
+  useAuthCheck("A")
   const [logs, setLogs] = useState("");
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,7 +39,7 @@ const Logs = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then(async (res) => await res.json())
       .then((data) => {
         const logLines = data.data.split("\n").map((line, index) => {
           const [time, message] = line.split("] ");
@@ -52,6 +54,13 @@ const Logs = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching logs.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
         setLogs([<div key="error">Error fetching logs! {err}</div>]);
       });
   }, []);

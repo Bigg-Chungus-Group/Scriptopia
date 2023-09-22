@@ -55,12 +55,24 @@ const Certificates = () => {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(async (res) => {
-      setLoading(false);
-      if (res.status === 200) {
-        const data = await res.json();
-        setCertificates(data);
-      } else {
+    })
+      .then(async (res) => {
+        setLoading(false);
+        if (res.status === 200) {
+          const data = await res.json();
+          setCertificates(data);
+        } else {
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -68,8 +80,7 @@ const Certificates = () => {
           duration: 5000,
           isClosable: true,
         });
-      }
-    });
+      });
   }, []);
 
   const year = new Date().getFullYear();
@@ -106,9 +117,6 @@ const Certificates = () => {
         certificateType &&
         certificateLevel
       ) {
-        console.log(certificateUrl);
-        console.log(file);
-
         formData.append("certificateName", certificateName);
         formData.append("issuingOrg", issuingOrg);
         formData.append("issueMonth", issueMonth);
@@ -125,19 +133,31 @@ const Certificates = () => {
             credentials: "include",
             body: formData, // Use the FormData object as the body
           }
-        ).then(async (res) => {
-          if (res.status === 200) {
-            window.location.reload();
-            onClose();
-          } else if (uploadedCertificate && certificateUrl) {
-            toast({
-              title: "Error",
-              description: "Please fill either URL or upload certificate",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          } else {
+        )
+          .then(async (res) => {
+            if (res.status === 200) {
+              window.location.reload();
+              onClose();
+            } else if (uploadedCertificate && certificateUrl) {
+              toast({
+                title: "Error",
+                description: "Please fill either URL or upload certificate",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            } else {
+              toast({
+                title: "Error",
+                description: "Something went wrong",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
             toast({
               title: "Error",
               description: "Something went wrong",
@@ -145,8 +165,7 @@ const Certificates = () => {
               duration: 5000,
               isClosable: true,
             });
-          }
-        });
+          });
       }
     } else {
       toast({

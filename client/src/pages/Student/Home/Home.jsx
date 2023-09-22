@@ -12,6 +12,7 @@ import {
   TabPanel,
   Flex,
   Select,
+  useToast,
   Table,
   Thead,
   Tr,
@@ -31,6 +32,8 @@ const Home = () => {
   const [certifications, setCertifications] = useState();
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [hp, setHp] = useState(0);
+
+  const toast = useToast();
 
   function calculateTotalPoints(data) {
     const currentDate = new Date();
@@ -80,11 +83,18 @@ const Home = () => {
         setUser(data.user);
         setHouses(data.allHouses);
         setUserHouse(data.userHouse);
-        console.log("====================================");
-        console.log(data.userHouse);
-        console.log("====================================");
         setCertifications(data.certifications);
         setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching dashboard data",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
   }, []);
 

@@ -8,11 +8,16 @@ import {
   Tag,
   TagLabel,
   Link,
+  useToast,
   Text,
 } from "@chakra-ui/react";
 import "./Events.css";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Events = () => {
+  useAuthCheck("A")
+  const toast = useToast();
+
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -29,6 +34,13 @@ const Events = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching events",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
   }, []);
 

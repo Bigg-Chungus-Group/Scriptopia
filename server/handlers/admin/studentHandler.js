@@ -1,13 +1,11 @@
 import express from "express";
-import { verifyToken } from "../../apis/jwt.js";
-import { verifyAdminPrivilges } from "./verifyAdmin.js";
 import { houseDB, userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { body } from "express-validator";
 const router = express.Router();
 
-router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const result = await userDB.find({ role: "S" }).toArray();
 
@@ -37,12 +35,17 @@ router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
       .status(200)
       .send({ message: "Data fetched successfully", students, houses });
   } catch (error) {
-    logger.error("ASH001: ", error);
+    logger.error({
+      code: "ADM-STH-100",
+      message: "Failed to fetch students",
+      err: error.message,
+      mid: req.user.mid,
+    });
     return res.status(500).send({ message: "Error in fetching data" });
   }
 });
 
-router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
+router.post("/import", async (req, res) => {
   const { tableData } = req.body;
   const password = await bcrypt.hash(process.env.DEFAULT_STUDENT_PASSWORD, 10);
   let insertData = [];
@@ -98,15 +101,18 @@ router.post("/import", verifyToken, verifyAdminPrivilges, async (req, res) => {
       return res.status(200).send({ message: "Data inserted successfully" });
     }
   } catch (error) {
-    logger.error("ASH001: ", error);
+    logger.error({
+      code: "ADM-STH-101",
+      message: "Failed to import students",
+      err: error.message,
+      mid: req.user.mid,
+    });
     return res.status(500).send({ message: "Error in inserting data" });
   }
 });
 
 router.post(
   "/add",
-  verifyToken,
-  verifyAdminPrivilges,
   body("fname").notEmpty().trim().escape(),
   body("lname").notEmpty().trim().escape(),
   body("mid").notEmpty().trim().escape(),
@@ -159,7 +165,12 @@ router.post(
       await userDB.insertOne(userSchema);
       return res.status(200).send({ message: "Data inserted successfully" });
     } catch {
-      logger.error("ASH003: ", error);
+      logger.error({
+        code: "ADM-STH-102",
+        message: "Failed to add student",
+        err: error.message,
+        mid: req.user.mid,
+      });
       return res.status(500).send({ message: "Error in inserting data" });
     }
   }
@@ -167,8 +178,6 @@ router.post(
 
 router.post(
   "/update",
-  verifyToken,
-  verifyAdminPrivilges,
   body("fname").notEmpty().trim().escape(),
   body("lname").notEmpty().trim().escape(),
   body("mid").notEmpty().trim().escape(),
@@ -196,7 +205,12 @@ router.post(
 
       return res.status(200).send({ success: true });
     } catch (error) {
-      logger.error("ASH004: ", error);
+      logger.error({
+        code: "ADM-STH-103",
+        message: "Failed to update student",
+        err: error.message,
+        mid: req.user.mid,
+      });
       return res.status(500).send({ error: "Error in updating data" });
     }
   }
@@ -204,43 +218,44 @@ router.post(
 
 router.post(
   "/delete",
-  verifyToken,
-  verifyAdminPrivilges,
   body("mid").notEmpty().withMessage("Moodle ID is required"),
   async (req, res) => {
     const { mid } = req.body;
-    console.log(mid);
-
     try {
       await userDB.deleteOne({ mid: mid.toString() });
       return res.status(200).send({ success: true });
     } catch (error) {
-      logger.error("ASH005: ", error);
+      logger.error({
+        code: "ADM-STH-104",
+        message: "Failed to delete student",
+        err: error.message,
+        mid: req.user.mid,
+      });
       return res.status(500).send({ error: "Error in deleting data" });
     }
   }
 );
 
-router.post(
-  "/bulkdelete",
-  verifyToken,
-  verifyAdminPrivilges,
-  async (req, res) => {
-    const { mids } = req.body;
-    const midArr = [];
+router.post("/bulkdelete", async (req, res) => {
+  const { mids } = req.body;
+  const midArr = [];
 
-    mids.forEach((mid) => {
-      mid.toString();
+  mids.forEach((mid) => {
+    mid.toString();
+  });
+
+  try {
+    await userDB.deleteMany({ mid: { $in: midArr } });
+    return res.status(200).send({ success: true });
+  } catch (error) {
+    logger.error({
+      code: "ADM-STH-105",
+      message: "Failed to bulk delete students",
+      err: error.message,
+      mid: req.user.mid,
     });
-
-    try {
-      await userDB.deleteMany({ mid: { $in: midArr } });
-      return res.status(200).send({ success: true });
-    } catch (error) {
-      logger.error("ASH006: ", error);
-      return res.status(500).send({ error: "Error in deleting data" });
-    }
+    return res.status(500).send({ error: "Error in deleting data" });
   }
-);
+});
 
 export default router;

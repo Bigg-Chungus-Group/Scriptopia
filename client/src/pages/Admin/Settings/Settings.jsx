@@ -23,8 +23,10 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../../../components/admin/Navbar";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Settings = () => {
+  useAuthCheck("A")
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -118,14 +120,11 @@ const Settings = () => {
   };
 
   const { colorMode, toggleColorMode } = useColorMode();
-  console.log(colorMode);
-
   useEffect(() => {
     setLoading(false);
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/`, {
       method: "GET",
     }).then((res) => {
-      console.log(res.status);
       if (res.status === 503) {
         setMainMo(true);
       }
@@ -146,9 +145,6 @@ const Settings = () => {
   }, [toastDispatched]);
 
   const toggleMaintainaceMode = (mode) => {
-    console.log("====================================");
-    console.log(mode);
-    console.log("====================================");
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/profile/maintainanceMode`,
       {
@@ -163,14 +159,14 @@ const Settings = () => {
       if (res.status === 200) {
         setMainMo(!mainMo);
         toast({
-          title: "Maintainance Mode Disabled!",
+          title: "Maintainance Mode Toggled!",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
       } else {
         toast({
-          title: "Maintainance Mode Enable Failed!",
+          title: "Maintainance Mode Toggle Failed!",
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -223,6 +219,13 @@ const Settings = () => {
       .catch((error) => {
         setBackupIsLoading(false);
         console.error("Error generating backup:", error);
+        toast({
+          title: "Backup Generation Failed!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+
         // Handle the error and show a message to the user, if needed
       });
   };

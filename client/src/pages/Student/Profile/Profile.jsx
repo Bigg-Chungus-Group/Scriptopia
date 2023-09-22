@@ -15,6 +15,7 @@ import {
   Tr,
   Th,
   Td,
+  useToast
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
@@ -23,6 +24,7 @@ import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Profile = () => {
   useAuthCheck("S");
+  const toast = useToast();
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState({});
@@ -44,6 +46,13 @@ const Profile = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, []);
 

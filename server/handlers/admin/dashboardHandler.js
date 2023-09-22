@@ -1,15 +1,13 @@
 import express from "express";
 const router = express.Router();
 import { houseDB, certificationsDB, userDB } from "../../configs/mongo.js";
-import { verifyToken } from "../../apis/jwt.js";
-import { verifyAdminPrivilges } from "./verifyAdmin.js";
+import logger from "../../configs/logger.js";
 
-router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const currentYear = new Date().getFullYear();
 
     const houses = await houseDB.find({}).toArray();
-    console.log(houses);
     const certifications = await certificationsDB
       .find({ submittedYear: currentYear })
       .toArray();
@@ -21,10 +19,15 @@ router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
         name: belongsTo?.fname || "" + " " + belongsTo?.lname || "",
       });
     }
-    
+
     res.json({ houses, certifications: certArr });
   } catch (err) {
-    console.log(err);
+    logger.error({
+      code: "ADM-DSH-101",
+      message: "Failed to fetch dashboard data for " + req.user.mid,
+      err: err.message,
+      mid: req.user.mid,
+    });
     res.status(500).json({ error: err });
   }
 });

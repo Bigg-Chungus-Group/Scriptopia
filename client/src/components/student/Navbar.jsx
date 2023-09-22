@@ -25,6 +25,7 @@ import {
   Alert,
   AlertIcon,
   AlertDialogBody,
+  useToast,
   Avatar,
 } from "@chakra-ui/react";
 
@@ -35,6 +36,7 @@ const Navbar = () => {
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
   const socket = io(import.meta.env.VITE_BACKEND_ADDRESS);
+  const toast = useToast();
 
   useEffect(() => {
     let dec;
@@ -44,13 +46,18 @@ const Navbar = () => {
       setPicture(p);
     } catch (error) {
       console.log(error);
+      useToast({
+        title: "An error occurred.",
+        description: "Please try again later.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   }, []);
 
-
   useEffect(() => {
     socket.on("onNotification", async () => {
-      console.log("Notification Change Detected");
       try {
         await fetch(
           `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
@@ -66,6 +73,13 @@ const Navbar = () => {
         });
       } catch (error) {
         console.log(error);
+        toast({
+          title: "An error occurred.",
+          description: "Please try again later.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
       }
     });
   }, []);
@@ -81,25 +95,6 @@ const Navbar = () => {
       document.querySelector("input").style.display = "none";
     }
   };
-
-  useEffect(async () => {
-    try {
-      await fetch(
-        `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
-        {
-          method: "GET",
-        }
-      ).then(async (res) => {
-        if (res.status === 200) {
-          await res.json().then((data) => {
-            setNotifications(data.notifications);
-          });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
 
   const logout = () => {
     localStorage.removeItem("chakra-ui-color-mode");

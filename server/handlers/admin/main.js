@@ -8,10 +8,11 @@ import logsHandler from "./logsHandler.js";
 import backupsHandler from "./backupsHandler.js";
 import dashboardHandler from "./dashboardHandler.js";
 import eventsHandler from "./eventsHandler.js";
+import { verifyAdminPrivilges } from "./verifyAdmin.js";
 
 router.use("/students", studentHandler);
 router.use("/faculty", facultyHandler);
-router.use("/notifications", notificationHandler)
+router.use("/notifications", notificationHandler);
 router.use("/profile", profileHandler);
 router.use("/logs", logsHandler);
 router.use("/backups", backupsHandler);

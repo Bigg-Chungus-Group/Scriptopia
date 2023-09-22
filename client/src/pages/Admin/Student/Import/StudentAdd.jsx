@@ -76,6 +76,15 @@ const StudentAdd = ({ setModal }) => {
           isClosable: true,
         });
       }
+    }).catch((err) => {
+      console.log(err);
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     });
   };
 

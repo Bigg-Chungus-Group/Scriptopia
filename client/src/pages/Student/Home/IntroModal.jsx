@@ -35,8 +35,10 @@ import Intro1 from "../../../assets/img/logo-icon.png";
 import "./IntroModal.css";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const IntroModal = () => {
+  const decoded = useAuthCheck("S")
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = React.useState(1);
@@ -55,9 +57,6 @@ const IntroModal = () => {
   const [cgpa, setCgpa] = React.useState("");
 
   const [close, setClose] = React.useState(false);
-  const token = Cookies.get("token");
-  const decoded = jwtDecode(token);
-
   useEffect(() => {
     if (!close) {
       onOpen();
