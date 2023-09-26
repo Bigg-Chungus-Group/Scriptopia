@@ -1,4 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from 'react'
+import Navbar from '../../../components/student/Navbar'
+
+const Houses = () => {
+  return (
+    <>
+    <Navbar/>
+    <div>Page Currently Broken :/</div>
+    </>
+  )
+}
+
+export default Houses
+
+/*import React, { useEffect, useState } from "react";
 import "./Houses.css";
 import {
   Box,
@@ -10,19 +24,24 @@ import {
   StatHelpText,
   StatArrow,
   StatGroup,
+  useToast,
   Button,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import { Link } from "react-router-dom";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Houses = () => {
+  useAuthCheck("S");
   const [houses, setHouse] = useState([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/houses`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,7 +53,16 @@ const Houses = () => {
             setHouse(data);
             setLoading(false);
           })
-          .catch((err) => console.log(err))
+          .catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          })
     );
   }, []);
 
@@ -347,7 +375,9 @@ const Houses = () => {
                     </StatHelpText>
                   </Stat>
                 </StatGroup>
-                <Link to={`/houses/${house._id}`}><Button>View House</Button></Link>
+                <Link to={`/houses/${house._id}`}>
+                  <Button>View House</Button>
+                </Link>
                 <Text></Text>
               </Box>
             </Box>
@@ -359,3 +389,4 @@ const Houses = () => {
 };
 
 export default Houses;
+*/

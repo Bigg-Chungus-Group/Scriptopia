@@ -42,11 +42,9 @@ const Auth = () => {
       setErr("Too Many Attempts");
       setDisabled(true);
       const now = new Date();
-      const expirationTime = new Date(now.getTime() +  5000); // 2 minutes in milliseconds2 * 60 *
+      const expirationTime = new Date(now.getTime() + 5000); // 2 minutes in milliseconds2 * 60 *
       document.cookie =
         "blocked=true; expires=" + expirationTime.toUTCString() + "; path=/";
-
-      
 
       toast({
         title: "Too many attempts",
@@ -176,39 +174,51 @@ const Auth = () => {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mid: mid.trim(), password: pwd.trim() }),
-      }).then(async (res) => {
-        setIsLoading(false);
-        if (res.status === 200) {
-          const response = await res.json();
-
-          if (response.role === "A") {
-            window.location.href = "/admin";
-          } else if (response.role === "F") {
-            if (response.firstTime) {
-              setOpen(true);
-            } else {
-              window.location.href = "/faculty";
-            }
-          } else if (response.role === "S") {
-            if (response.firstTime) {
-              setOpen(true);
-            } else {
-              window.location.href = "/";
-            }
-          }
-        } else {
-          const response = await res.json();
+      })
+        .then(async (res) => {
           setIsLoading(false);
-          setAttempts(attempts + 1);
+          if (res.status === 200) {
+            const response = await res.json();
+
+            if (response.role === "A") {
+              window.location.href = "/admin";
+            } else if (response.role === "F") {
+              if (response.firstTime) {
+                setOpen(true);
+              } else {
+                window.location.href = "/faculty";
+              }
+            } else if (response.role === "S") {
+              if (response.firstTime) {
+                setOpen(true);
+              } else {
+                window.location.href = "/";
+              }
+            }
+          } else {
+            const response = await res.json();
+            setIsLoading(false);
+            setAttempts(attempts + 1);
+            toast({
+              title: response.title,
+              description: response.message,
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+        })
+        .catch((err) => {
+          setIsLoading(false);
           toast({
-            title: response.title,
-            description: response.message,
+            title: "An Error Occured.",
+            description: "Something Went Wrong!",
             status: "error",
             duration: 3000,
             isClosable: true,
           });
-        }
-      });
+        });
+        
     } catch (error) {
       setIsLoading(false);
       toast({

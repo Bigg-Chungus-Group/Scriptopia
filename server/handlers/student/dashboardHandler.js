@@ -22,17 +22,21 @@ Router.post("/", verifyToken, async (req, res) => {
 
     res.status(200).send({ allHouses, userHouse, user, certifications });
   } catch (error) {
-    logger.error(error);
+    logger.error({
+      code: "STU-DSH-100",
+      message: "Error fetching dashboard data",
+      err: error.message,
+      mid: req.user.mid,
+    });
     res.status(500).send({ success: false });
   }
 });
 
 Router.post("/firstTime", verifyToken, async (req, res) => {
   const { mid, about, technical, projects, certifications, cgpa } = req.body;
-
-  const user = await userDB.findOne({ mid: mid.toString() });
-  if (user) {
-    try {
+  try {
+    const user = await userDB.findOne({ mid: mid.toString() });
+    if (user) {
       await userDB.updateOne(
         { mid: mid.toString() },
         { $set: { firstTime: false, approved: false } }
@@ -46,10 +50,16 @@ Router.post("/firstTime", verifyToken, async (req, res) => {
         cgpa: parseFloat(cgpa),
       });
       res.status(200).send({ success: true });
-    } catch {
+    } else {
       res.status(500).send({ success: false });
     }
-  } else {
+  } catch (error) {
+    logger.error({
+      code: "STU-DSH-101",
+      message: "Error updating first time data",
+      err: error.message,
+      mid: req.user.mid,
+    });
     res.status(500).send({ success: false });
   }
 });

@@ -91,6 +91,16 @@ const Students = () => {
         setLoading(false);
         setStudents(data.students);
         setHouses(data.houses);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching students",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
   }, [update]);
 

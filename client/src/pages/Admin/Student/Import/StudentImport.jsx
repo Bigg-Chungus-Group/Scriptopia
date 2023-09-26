@@ -25,7 +25,7 @@ const StudentImport = () => {
 
   const [tableData, setTableData] = useState([]);
   const [adding, setAdding] = useState(false);
-  const [addIndividual, setAddIndividual] = useState(false); 
+  const [addIndividual, setAddIndividual] = useState(false);
   const toast = useToast();
 
   const handleFileUpload = (event) => {
@@ -51,18 +51,30 @@ const StudentImport = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ tableData }),
-    }).then((res) => {
-      console.log(res);
-      setAdding(false);
-      if (res.status === 200) {
-        toast({
-          title: "Students Imported",
-          description: "Students have been successfully imported",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
+    })
+      .then((res) => {
+        setAdding(false);
+        if (res.status === 200) {
+          toast({
+            title: "Students Imported",
+            description: "Students have been successfully imported",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "Error in importing students",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setAdding(false);
         toast({
           title: "Error",
           description: "Error in importing students",
@@ -70,8 +82,7 @@ const StudentImport = () => {
           duration: 3000,
           isClosable: true,
         });
-      }
-    });
+      });
   };
 
   return (
@@ -88,7 +99,14 @@ const StudentImport = () => {
       <Box className="StudentImport">
         <Box className="main">
           <Box className="btn">
-            <Button colorScheme="blue" onClick={() => {setAddIndividual(true)}}>Add Individual</Button>
+            <Button
+              colorScheme="blue"
+              onClick={() => {
+                setAddIndividual(true);
+              }}
+            >
+              Add Individual
+            </Button>
             <label htmlFor="file-upload" className="custom-file-upload">
               Upload .CSV
             </label>

@@ -27,8 +27,10 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
+import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
 const FacultyAdd = ({ setModal }) => {
+  useAuthCheck("A")
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isPermOpen,

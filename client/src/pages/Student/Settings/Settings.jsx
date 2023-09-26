@@ -8,17 +8,19 @@ import {
   FormLabel,
   InputGroup,
   Switch,
-  useToast,
   useColorMode,
   Button,
   InputRightElement,
   Text,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Settings = () => {
+  useAuthCheck("S")
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -107,12 +109,20 @@ const Settings = () => {
               isClosable: true,
             });
           }
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Password Change Failed!",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
         });
     }
   };
 
   const { colorMode, toggleColorMode } = useColorMode();
-  console.log(colorMode);
 
   useEffect(() => {
     setLoading(false);

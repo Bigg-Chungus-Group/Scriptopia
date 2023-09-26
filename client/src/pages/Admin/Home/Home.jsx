@@ -6,6 +6,7 @@ import {
   Thead,
   Tr,
   Td,
+  useToast,
   Tbody,
   Flex,
 } from "@chakra-ui/react";
@@ -17,6 +18,7 @@ import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Home = () => {
   useAuthCheck("A");
+  const toast = useToast();
 
   const [houses, setHouses] = useState([]);
   const [certifications, setCertifications] = useState([]);
@@ -67,7 +69,16 @@ const Home = () => {
         setCertifications(data.certifications);
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching data",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -150,8 +161,6 @@ const Home = () => {
       let se = 0;
       let te = 0;
       let be = 0;
-
-      console.log(certifications);
       for (const certification of certifications) {
         const { mid } = certification; // 22204016 /
         const year = `20${mid.slice(0, 2)}`; // 22

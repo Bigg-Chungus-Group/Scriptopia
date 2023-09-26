@@ -36,7 +36,12 @@ router.post("/", verifyToken, async (req, res) => {
 
     res.status(200).send(data);
   } catch (err) {
-    logger.error("PRF001: ", err.stack);
+    logger.error({
+      code: "STU-PRF-100",
+      message: "Error fetching profile data",
+      err: err.message,
+      mid: req.user.mid,
+    });
     res.status(401).send("Invalid Token");
   }
 });
@@ -45,16 +50,13 @@ router.post("/updatePW", verifyToken, async (req, res) => {
   const { oldPass, newPass } = req.body;
   try {
     const verified = req.user;
-    console.log(verified.mid);
     const result = await userDB.findOne({ mid: verified.mid });
     if (!result) {
-      console.log("no result");
       return res.status(401).send();
     }
 
     const oldMatch = await bcrypt.compare(oldPass, result.password);
     if (!oldMatch) {
-      console.log("old not match");
       return res.status(401).send();
     }
 
@@ -68,7 +70,12 @@ router.post("/updatePW", verifyToken, async (req, res) => {
 
     res.status(200).json({ success: true });
   } catch (err) {
-    logger.error("PRF002: ", err.stack);
+    logger.error({
+      code: "STU-PRF-101",
+      message: "Error updating password",
+      err: err.message,
+      mid: req.user.mid,
+    });
     res.status(401).send("Invalid Token");
   }
 });

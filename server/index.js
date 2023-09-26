@@ -15,6 +15,10 @@ import mainAdmin from "./handlers/admin/main.js";
 import mainStudent from "./handlers/student/main.js";
 import mainFaculty from "./handlers/faculty/main.js";
 import { getMaintenanceMode } from "./handlers/admin/profileHandler.js";
+import { verifyToken } from "./apis/jwt.js";
+import { verifyAdminPrivilges } from "./handlers/admin/verifyAdmin.js";
+import { verifyStudentPriviliges } from "./handlers/student/verifyStudent.js";
+import { verifyFacultyPriviliges } from "./handlers/faculty/verifyFaculty.js";
 
 // # Import Middlewares and APIs
 
@@ -31,8 +35,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.disable("x-powered-by")
-
+app.disable("x-powered-by");
 
 app.use(cookieParser());
 app.use(express.json());
@@ -42,7 +45,7 @@ app.use(express.json());
 // # HANDLERS
 
 app.get("/", (req, res) => {
-  if(getMaintenanceMode()) {
+  if (getMaintenanceMode()) {
     res.status(503).send("Under Maintainance");
   } else {
     res.status(200).send("Hello World!");
@@ -52,9 +55,9 @@ app.get("/", (req, res) => {
 app.use("/auth", loginHandler);
 app.use("/firstTime", firstTimeHandler);
 
-app.use("/admin", mainAdmin);
-app.use("/student", mainStudent);
-app.use("/faculty", mainFaculty);
+app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);
+app.use("/student", verifyToken, verifyStudentPriviliges, mainStudent);
+app.use("/faculty", verifyToken, verifyFacultyPriviliges, mainFaculty);
 
 // FOR CRON JOBS
 app.get("/cron", (req, res) => {

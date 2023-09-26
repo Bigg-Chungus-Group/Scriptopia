@@ -9,13 +9,15 @@ const getISTTimestamp = () => {
 };
 
 const logger = winston.createLogger({
+  format: winston.format.json(),
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp({ format: getISTTimestamp }), // Add the timestamp to the log in IST
-        winston.format.colorize(), // Add colors for console output (optional)
-        winston.format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}`;
+        winston.format.printf(({ timestamp, level, message, code, mid }) => {
+          return `[${timestamp}] ${
+            level.charAt(0).toUpperCase() + level.slice(1)
+          }: ${code}: ${message} ${mid ? `by [MID: ${mid}]`: ""}`;
         })
       ),
     }),
@@ -23,8 +25,10 @@ const logger = winston.createLogger({
       filename: "server.log",
       format: winston.format.combine(
         winston.format.timestamp({ format: getISTTimestamp }), // Add the timestamp to the log in IST
-        winston.format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}`;
+        winston.format.printf(({ timestamp, level, code, message, mid }) => {
+          return `[${timestamp}] ${
+            level.charAt(0).toUpperCase() + level.slice(1)
+          }: ${code}: ${message} ${mid ? `by [MID: ${mid}]` : ""}`;
         })
       ),
     }),
@@ -32,6 +36,6 @@ const logger = winston.createLogger({
   level: "debug",
 });
 
-logger.info("S100 - Server started");
+logger.info({ code: "MN-SRV-100", message: "Server started successfully" });
 
 export default logger;

@@ -30,8 +30,11 @@ import {
 import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Faculty = () => {
+  useAuthCheck("A")
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [faculty, setFaculty] = useState([]);
 
@@ -42,7 +45,6 @@ const Faculty = () => {
   const cancelRef = React.useRef();
 
   const [delItem, setDelItem] = useState({});
-  const toast = useToast();
 
   const {
     isOpen: isDeleteOpen,
@@ -67,6 +69,16 @@ const Faculty = () => {
       .then((data) => {
         setLoading(false);
         setFaculty(data.faculty);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "Error fetching faculty",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
   }, [searchQuery]);
 
