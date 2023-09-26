@@ -15,7 +15,7 @@ try {
   await client.connect();
   logger.info({code: "MN-MDB-100", message: "Connected to MongoDB" });
 } catch (err) {
-  logger.error({ code: "MN-MDB-101", message: "Failed to connect to MongoDB" });
+  logger.error({ code: "MN-MDB-101", message: "Failed to connect to MongoDB", err });
 }
 
 const db = client.db("Scriptopia");

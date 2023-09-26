@@ -10,13 +10,14 @@ import Student from "./Student.jsx";
 import "./config.css";
 
 // Listeners
-import onLogin from "./events/onLogin.jsx";
 import { useEffect, useState } from "react";
 import Fzt from "./pages/503/Fzt.jsx";
+import Event from "./pages/Event/Event.jsx";
+import socket from "./events/socketConnection";
 
 function App() {
   useEffect(() => {
-    onLogin();
+    socket();
     if (localStorage.getItem("chakra-ui-color-mode") === "dark") {
       import("./config-dark.css");
     } else {
@@ -50,6 +51,7 @@ function App() {
               <Route path="*" element={<Fzf />} />
               {Admin()}
               {Student()}
+              <Route path="/events/:id" element={<Event />} />
             </>
           )}
         </Routes>

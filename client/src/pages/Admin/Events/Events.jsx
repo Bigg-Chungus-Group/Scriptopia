@@ -5,17 +5,25 @@ import {
   Box,
   Flex,
   Heading,
-  Tag,
-  TagLabel,
-  Link,
   useToast,
   Text,
+  Button,
+  ButtonGroup,
+  Stack,
+  Divider,
+  Card,
+  CardBody,
+  CardFooter,
+  Image,
+  Skeleton,
+  Center,
 } from "@chakra-ui/react";
 import "./Events.css";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { Link } from "react-router-dom";
 
 const Events = () => {
-  useAuthCheck("A")
+  useAuthCheck("A");
   const toast = useToast();
 
   const [events, setEvents] = useState([]);
@@ -46,71 +54,111 @@ const Events = () => {
 
   const date = new Date().toISOString();
 
+  const dateOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+
   return (
     <>
       <Navbar />
       <Box className="AdminEvents">
         <Heading>Events </Heading>
-        {events.map((event) => (
-          <Box className="event" key={event._id}>
-            <Flex gap="30px">
-              <Box className="left" width="75%">
-                <Heading fontSize="25px">
-                  {event.name}{" "}
-                  <Badge
-                    colorScheme={event.expiresAt > date ? "green" : "red"}
-                    ml="5px"
-                    fontSize="13px"
-                  >
-                    {event.expiresAt > date ? "Active" : "Expired"}
-                  </Badge>
-                </Heading>
-                <Text fontSize="14px" overflow="auto" mt="15px" width="90%">
-                  {event.desc}
-                </Text>
-              </Box>
-
-              <Box
-                className="right"
-                display="flex"
-                flexDirection="column"
-                gap="10px"
-                justifyContent="space-between"
-                alignItems="flex-end"
-              >
-                <Flex gap="20px">
-                  <Tag width="fit-content">
-                    <TagLabel width="fit-content">
-                      Started{" "}
-                      {new Date(event.createdAt).toLocaleDateString("en-GB")}
-                    </TagLabel>
-                  </Tag>
-
-                  <Tag>
-                    <TagLabel>
-                      Ends{" "}
-                      {new Date(event.expiresAt).toLocaleDateString("en-GB")}
-                    </TagLabel>
-                  </Tag>
-                </Flex>
-                <Flex gap="20px">
-                  {" "}
-                  <Text justifySelf="flex-end">
-                    {" "}
-                    <i
-                      className="fa-regular fa-users"
-                      style={{ marginRight: "10px" }}
-                    ></i>{" "}
-                    {event.registered.length} Registered
-                  </Text>
-                  <Link justifySelf="flex-end" href={`events/${event._id}`}>
-                    Edit Event
-                  </Link>
-                </Flex>
-              </Box>
+        <Box className="events">
+          <Card
+            w="320px"
+            maxW="sm"
+            maxH="md"
+            overflow="hidden"
+            cursor="pointer"
+          >
+            <Flex
+              justify="center"
+              align="center"
+              height="100%"
+              direction="column"
+            >
+              <Text fontSize="100px" color="lightgray">
+                +
+              </Text>{" "}
+              <Text color="lightgray">Add Event</Text>
             </Flex>
-          </Box>
-        ))}
+          </Card>
+          {events.map((event) => (
+            <Card
+              w="320px"
+              maxW="sm"
+              maxH="md"
+              overflow="hidden"
+              key={event._id}
+            >
+              <CardBody>
+                <Image
+                  fallback={<Skeleton height="150px" />}
+                  alt="Green double couch with wooden legs"
+                  borderRadius="lg"
+                />
+
+                <Stack mt="6" spacing="3">
+                  <Divider />
+                  <Heading size="md">{event.name}</Heading>
+                  <Text>
+                    {new Date(event.eventStarts).toLocaleDateString(
+                      "en-US",
+                      dateOptions
+                    )}
+                  </Text>
+                  <Text>Seminar Hall</Text>
+                  <Text color="blue.600">
+                    {event.mode.charAt(0).toUpperCase() + event.mode.slice(1)}
+                    <Badge
+                      colorScheme={event.expiresAt > date ? "green" : "red"}
+                      ml="15px"
+                      fontSize="13px"
+                    >
+                      {event.expiresAt > date ? "Active" : "Expired"}
+                    </Badge>
+                  </Text>
+                </Stack>
+              </CardBody>
+              <Divider />
+              <CardFooter
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <ButtonGroup spacing="2">
+                  <Link to={`/events/${event._id}`}>
+                    <Button variant="solid" colorScheme="blue">
+                      View Event
+                    </Button>
+                  </Link>
+                  <Link to={`admin/events/${event._id}/edit`}>
+                  <Button variant="ghost" colorScheme="blue">
+                    Edit
+                  </Button>
+                  </Link>
+                </ButtonGroup>
+
+                <Flex
+                  justifySelf="flex-end"
+                  align="center"
+                  justifyContent="flex-end"
+                >
+                  <i
+                    className="fa-regular fa-users"
+                    style={{ marginRight: "10px" }}
+                  ></i>
+                  <Text justifySelf="flex-end">{event.registered.length}</Text>
+                </Flex>
+              </CardFooter>
+            </Card>
+          ))}
+        </Box>
       </Box>
     </>
   );

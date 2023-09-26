@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import cors from "cors";
+import { instrument } from "@socket.io/admin-ui";
 
 // # Import Handlers
 
@@ -19,6 +20,7 @@ import { verifyToken } from "./apis/jwt.js";
 import { verifyAdminPrivilges } from "./handlers/admin/verifyAdmin.js";
 import { verifyStudentPriviliges } from "./handlers/student/verifyStudent.js";
 import { verifyFacultyPriviliges } from "./handlers/faculty/verifyFaculty.js";
+import mainSocket from "./events/mainSocket.js";
 
 // # Import Middlewares and APIs
 
@@ -28,10 +30,8 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_ADDRESS,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS],
   credentials: true,
-  allowHeaders: "Content-Type",
 };
 
 app.use(cors(corsOptions));
@@ -67,7 +67,15 @@ app.get("/cron", (req, res) => {
 const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_ADDRESS,
-    methods: ["GET", "POST"],
+    origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS],
+    credentials: true,
   },
 });
+
+instrument(io, {
+  auth: false,
+  mode: "development",
+  namespaceName: "/socketadmin",
+});
+
+mainSocket();

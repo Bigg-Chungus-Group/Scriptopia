@@ -1,4 +1,3 @@
-import io from "socket.io-client";
 import Cookies from "js-cookie";
 
 const logout = () => {
@@ -13,12 +12,8 @@ const logout = () => {
   window.location.href = "/auth?err=newlcn";
 };
 
-const onLogin = () => {
-  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS, {});
-
-  socket.on("newLogin", () => {
-    logout();
-  });
+const onLogin = (data) => {
+  logout();
 };
 
 export default onLogin;

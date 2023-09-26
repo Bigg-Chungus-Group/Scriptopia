@@ -47,13 +47,17 @@ router.post(
           const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
           const expirationDate = new Date(Date.now() + expirationTime);
 
+          const id = findUser._id.toString();
+          
+          
+
           res
             .status(200)
             .cookie("token", token, {
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "A" });
+            .send({ role: "A", id });
 
           logger.warn({
             code: "MN-LH-200",
@@ -88,13 +92,15 @@ router.post(
         const expirationTime = 4 * 60 * 60 * 1000; // *4 hours in milliseconds
         const expirationDate = new Date(Date.now() + expirationTime);
 
+        const id = findUser._id.toString();
+
         res
           .status(200)
           .cookie("token", token, {
             expires: expirationDate,
             domain: process.env.COOKIE_DOMAIN,
           })
-          .send({ role: "F", firstTime });
+          .send({ role: "F", firstTime, id });
 
         logger.info({
           code: "MN-LH-201",
@@ -135,13 +141,6 @@ router.post(
           const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
           const expirationDate = new Date(Date.now() + expirationTime);
           const id = findUser._id.toString();
-          io.to(id).emit("newLogin");
-
-          setTimeout(() => {
-            io.on("connection", (socket) => {
-              socket.join(id);
-            });
-          }, 700);
 
           res
             .status(200)
@@ -149,7 +148,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "S", firstTime });
+            .send({ role: "S", firstTime, id });
 
           logger.info({
             code: "MN-LH-202",

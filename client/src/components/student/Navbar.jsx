@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import io from "socket.io-client";
+import {io as socket} from "../../events/socketConnection";
+
 import {
   Menu,
   MenuButton,
@@ -35,7 +36,6 @@ const Navbar = () => {
   const token = Cookies.get("token");
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
-  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS);
   const toast = useToast();
 
   useEffect(() => {
