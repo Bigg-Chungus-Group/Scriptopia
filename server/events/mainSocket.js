@@ -7,6 +7,13 @@ const mainSocket = () => {
       io.to(id).emit("logout");
       socket.join(id);
     });
+
+    socket.on("onRefreshedPage", (id) => {
+      console.log("Page Refreshed")
+      socket.join(id)
+      console.log("ROOMS")
+      console.log(socket.rooms)
+    })
   });
 
   io.on("disconnect", (socket) => {

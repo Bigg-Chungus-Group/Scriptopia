@@ -1,0 +1,22 @@
+.StudentHouse {
+    padding: 30px 70px;
+}
+
+.StudentHouse .cover {
+    height: 120px;
+    background-color: #5800a040;
+}
+
+.StudentHouse .details {
+    position: absolute;
+    margin-top: 65px;
+    margin-left: 30px;
+}
+
+.StudentHouse .left {
+    background-color: #5800a040;
+}
+
+.StudentHouse .right {
+    background-color: #9009ff40;
+}

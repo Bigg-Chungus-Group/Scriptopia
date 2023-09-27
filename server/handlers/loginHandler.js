@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userDB } from "../configs/mongo.js";
 import { body } from "express-validator";
-import { io } from "../index.js";
 
 router.post(
   "/",
@@ -47,17 +46,13 @@ router.post(
           const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
           const expirationDate = new Date(Date.now() + expirationTime);
 
-          const id = findUser._id.toString();
-          
-          
-
           res
             .status(200)
             .cookie("token", token, {
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "A", id });
+            .send({ role: "A", mid });
 
           logger.warn({
             code: "MN-LH-200",
@@ -92,15 +87,13 @@ router.post(
         const expirationTime = 4 * 60 * 60 * 1000; // *4 hours in milliseconds
         const expirationDate = new Date(Date.now() + expirationTime);
 
-        const id = findUser._id.toString();
-
         res
           .status(200)
           .cookie("token", token, {
             expires: expirationDate,
             domain: process.env.COOKIE_DOMAIN,
           })
-          .send({ role: "F", firstTime, id });
+          .send({ role: "F", firstTime, mid });
 
         logger.info({
           code: "MN-LH-201",
@@ -140,15 +133,13 @@ router.post(
 
           const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
           const expirationDate = new Date(Date.now() + expirationTime);
-          const id = findUser._id.toString();
-
           res
             .status(200)
             .cookie("token", token, {
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "S", firstTime, id });
+            .send({ role: "S", firstTime, mid });
 
           logger.info({
             code: "MN-LH-202",
@@ -156,7 +147,7 @@ router.post(
             mid: mid,
           });
         } catch (err) {
-          logger.error("LH01: ", err.message);
+          logger.error("LH01: ", err);
           res.status(500).json({ message: "Internal Server Error" });
         }
       }

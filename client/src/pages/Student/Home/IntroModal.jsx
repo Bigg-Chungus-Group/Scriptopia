@@ -33,7 +33,6 @@ import {
 
 import Intro1 from "../../../assets/img/logo-icon.png";
 import "./IntroModal.css";
-import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 

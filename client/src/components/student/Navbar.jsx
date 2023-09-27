@@ -46,7 +46,7 @@ const Navbar = () => {
       setPicture(p);
     } catch (error) {
       console.log(error);
-      useToast({
+      toast({
         title: "An error occurred.",
         description: "Please try again later.",
         status: "error",

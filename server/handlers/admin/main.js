@@ -8,7 +8,6 @@ import logsHandler from "./logsHandler.js";
 import backupsHandler from "./backupsHandler.js";
 import dashboardHandler from "./dashboardHandler.js";
 import eventsHandler from "./eventsHandler.js";
-import { verifyAdminPrivilges } from "./verifyAdmin.js";
 
 router.use("/students", studentHandler);
 router.use("/faculty", facultyHandler);

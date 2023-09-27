@@ -182,7 +182,8 @@ const Auth = () => {
           setIsLoading(false);
           if (res.status === 200) {
             const response = await res.json();
-            io.emit("onLogin", response.id);
+            console.log(response)
+            io.emit("onLogin", response.mid);
 
             if (response.role === "A") {
               navigate("/admin");

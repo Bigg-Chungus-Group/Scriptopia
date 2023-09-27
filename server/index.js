@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import cors from "cors";
 import { instrument } from "@socket.io/admin-ui";
+import bcrypt from "bcrypt"
 
 // # Import Handlers
 
@@ -30,7 +31,7 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS],
+  origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
   credentials: true,
 };
 
@@ -67,13 +68,18 @@ app.get("/cron", (req, res) => {
 const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
-    origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS],
+    origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
     credentials: true,
   },
 });
 
+
 instrument(io, {
-  auth: false,
+  auth: {
+    type: "basic",
+    username: "admin",
+    password: await bcrypt.hash("admin", 10)
+  },
   mode: "development",
   namespaceName: "/socketadmin",
 });

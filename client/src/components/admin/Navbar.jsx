@@ -258,7 +258,7 @@ const Navbar = () => {
         <div className="links">
           <a href="/admin/students">Students</a>
           <a href="/admin/faculty">Faculty</a>
-          <a href="/admin/houses">Houses</a>
+          <a href="/houses">Houses</a>
           <a href="/admin/events">Events</a>
         </div>
         <i

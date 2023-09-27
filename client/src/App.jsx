@@ -13,11 +13,19 @@ import "./config.css";
 import { useEffect, useState } from "react";
 import Fzt from "./pages/503/Fzt.jsx";
 import Event from "./pages/Event/Event.jsx";
-import socket from "./events/socketConnection";
+import socket, { io } from "./events/socketConnection";
+import jwtDecode from "jwt-decode";
+import Cookies from "js-cookie";
 
 function App() {
   useEffect(() => {
     socket();
+    const jwt = Cookies.get("token");
+    if (jwt) {
+      const id = jwtDecode(jwt).mid;
+      io.emit("onRefreshedPage", id);
+    }
+
     if (localStorage.getItem("chakra-ui-color-mode") === "dark") {
       import("./config-dark.css");
     } else {
@@ -43,7 +51,9 @@ function App() {
           {maintainanceMode ? (
             <>
               <Route path="*" element={<Fzt />} />
+              <Route path="/auth" element={<Auth />}/>
               {Admin()}
+              {}
             </>
           ) : (
             <>
