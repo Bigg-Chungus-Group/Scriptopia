@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import io from "socket.io-client";
+import {io as socket} from "../../events/socketConnection";
+
 import {
   Menu,
   MenuButton,
@@ -35,7 +36,6 @@ const Navbar = () => {
   const token = Cookies.get("token");
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
-  const socket = io(import.meta.env.VITE_BACKEND_ADDRESS);
   const toast = useToast();
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Navbar = () => {
       setPicture(p);
     } catch (error) {
       console.log(error);
-      useToast({
+      toast({
         title: "An error occurred.",
         description: "Please try again later.",
         status: "error",
@@ -123,20 +123,9 @@ const Navbar = () => {
         <div className="links">
           <a href="/certificates">Certificates</a>
           <a href="/houses">Houses</a>
+          <a href="/events">Events</a>
         </div>
-        <i
-          className="fa-solid fa-magnifying-glass"
-          id="searchIcon"
-          onClick={showSearch}
-        ></i>
-      </div>
-
-      <Input
-        type="text"
-        placeholder="Search Here"
-        onBlur={checkWidth}
-        variant="filled"
-      />
+</div>
 
       <Menu>
         <Box className="rightmost">

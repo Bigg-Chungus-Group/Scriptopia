@@ -2,8 +2,6 @@
   height: 85vh;
   box-sizing: border-box;
   padding: 30px 70px;
-  display: flex;
-  flex-direction: column;
   gap: 30px;
   justify-content: center;
 }
@@ -50,7 +48,7 @@
 }
 
 .StudentCertificate textarea {
-  background-color: #f7e3c0;
+  background-color: #afafaf3e;
   border-radius: 10px;
   height: 25vh;
   padding: 20px;

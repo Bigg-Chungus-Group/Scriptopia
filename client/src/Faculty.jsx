@@ -1,8 +1,13 @@
-import { Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 import React from "react";
+import FacultyHome from "./pages/Faculty/Home/Home.jsx";
 
-const Student = () => {
-  return <Routes></Routes>;
+const Faculty = () => {
+  return (
+    <>
+      <Route path="/faculty" element={<FacultyHome />} />
+    </>
+  );
 };
 
-export default Student;
+export default Faculty;

@@ -16,6 +16,8 @@ import Logo from "./../../assets/img/logo.png";
 import "./Auth.css";
 import CreatePW from "./CreatePW";
 import Cookie from "js-cookie";
+import { io } from "../../events/socketConnection";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +31,10 @@ const Auth = () => {
   const [err, setErr] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [disabled, setDisabled] = useState(false);
+  const navigate = useNavigate();
+
+  const redirectURL =
+    new URLSearchParams(window.location.search).get("redirect") || "/";
 
   useEffect(() => {
     if (Cookie.get("blocked")) {
@@ -179,20 +185,27 @@ const Auth = () => {
           setIsLoading(false);
           if (res.status === 200) {
             const response = await res.json();
+            console.log(response);
+            io.emit("onLogin", response.mid);
 
-            if (response.role === "A") {
-              window.location.href = "/admin";
-            } else if (response.role === "F") {
-              if (response.firstTime) {
-                setOpen(true);
-              } else {
-                window.location.href = "/faculty";
-              }
-            } else if (response.role === "S") {
-              if (response.firstTime) {
-                setOpen(true);
-              } else {
-                window.location.href = "/";
+            if (redirectURL !== "/") {
+              navigate(redirectURL);
+              return;
+            } else {
+              if (response.role === "A") {
+                navigate("/admin");
+              } else if (response.role === "F") {
+                if (response.firstTime) {
+                  setOpen(true);
+                } else {
+                  navigate("/faculty");
+                }
+              } else if (response.role === "S") {
+                if (response.firstTime) {
+                  setOpen(true);
+                } else {
+                  navigate("/");
+                }
               }
             }
           } else {
@@ -210,6 +223,7 @@ const Auth = () => {
         })
         .catch((err) => {
           setIsLoading(false);
+          console.log(err);
           toast({
             title: "An Error Occured.",
             description: "Something Went Wrong!",
@@ -218,7 +232,6 @@ const Auth = () => {
             isClosable: true,
           });
         });
-        
     } catch (error) {
       setIsLoading(false);
       toast({

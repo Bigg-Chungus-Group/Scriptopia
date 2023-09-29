@@ -2,6 +2,7 @@ import express from "express";
 import { userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
+import { ObjectId } from "mongodb";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -12,8 +13,11 @@ router.post("/", async (req, res) => {
     result.forEach((element) => {
       faculty.push({
         mid: element.mid,
-        name: `${element.fname} ${element.lname}`,
-        branch: element.branch,
+        fname: element.fname,
+        lname: element.lname,
+        email: element.email,
+        gender: element.gender,
+        id: element._id,
       });
     });
 
@@ -80,7 +84,7 @@ router.post("/import", async (req, res) => {
 router.post("/add", async (req, res) => {
   const { fname, lname, moodleid: mid, email, gender, perms } = req.body;
 
-  const password = bcrypt.hash(process.env.DEFAULT_FACULTY_PASSWORD, 10);
+  const password = await bcrypt.hash(process.env.DEFAULT_FACULTY_PASSWORD, 10);
   const firstTime = true;
   const defaultPW = true;
   const branch = "IT";
@@ -126,6 +130,38 @@ router.post("/delete", async (req, res) => {
       code: "ADM-FCH-104",
       message: "Failed to delete faculty",
       err: error.message,
+      mid: req.user.mid,
+    });
+    return res.status(500).send({ success: false });
+  }
+});
+
+router.post("/update", async (req, res) => {
+  const { id, mid, fname, lname, email, gender, perms } = req.body;
+  console.log(perms)
+  console.log(id)
+
+  try {
+    await userDB.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          mid: mid.toString(),
+          fname: fname.toString(),
+          lname: lname.toString(),
+          email: email.toString(),
+          gender: gender.toString(),
+          perms: perms,
+        },
+      }
+    );
+    return res.status(200).send({ success: true });
+  } catch (error) {
+    console.log(error);
+    logger.error({
+      code: "ADM-FCH-105",
+      message: "Failed to update faculty",
+      err: error,
       mid: req.user.mid,
     });
     return res.status(500).send({ success: false });

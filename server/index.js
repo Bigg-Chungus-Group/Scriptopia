@@ -5,11 +5,16 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import cors from "cors";
+import { instrument } from "@socket.io/admin-ui";
+import bcrypt from "bcrypt"
 
 // # Import Handlers
 
 import loginHandler from "./handlers/loginHandler.js";
 import firstTimeHandler from "./handlers/firstTimeHandler.js";
+import houseHandler from "./handlers/houseHandler.js";
+import eventsHandler from "./handlers/eventsHandler.js";
+import certificateHandler from "./handlers/certificateHandler.js";
 
 import mainAdmin from "./handlers/admin/main.js";
 import mainStudent from "./handlers/student/main.js";
@@ -19,6 +24,7 @@ import { verifyToken } from "./apis/jwt.js";
 import { verifyAdminPrivilges } from "./handlers/admin/verifyAdmin.js";
 import { verifyStudentPriviliges } from "./handlers/student/verifyStudent.js";
 import { verifyFacultyPriviliges } from "./handlers/faculty/verifyFaculty.js";
+import mainSocket from "./events/mainSocket.js";
 
 // # Import Middlewares and APIs
 
@@ -28,10 +34,8 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_ADDRESS,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
   credentials: true,
-  allowHeaders: "Content-Type",
 };
 
 app.use(cors(corsOptions));
@@ -54,6 +58,10 @@ app.get("/", (req, res) => {
 
 app.use("/auth", loginHandler);
 app.use("/firstTime", firstTimeHandler);
+app.use("/houses", houseHandler);
+app.use("/events", eventsHandler);
+app.use("/certificates", certificateHandler);
+
 
 app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);
 app.use("/student", verifyToken, verifyStudentPriviliges, mainStudent);
@@ -67,7 +75,20 @@ app.get("/cron", (req, res) => {
 const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_ADDRESS,
-    methods: ["GET", "POST"],
+    origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
+    credentials: true,
   },
 });
+
+
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: "admin",
+    password: await bcrypt.hash("admin", 10)
+  },
+  mode: "development",
+  namespaceName: "/socketadmin",
+});
+
+mainSocket();

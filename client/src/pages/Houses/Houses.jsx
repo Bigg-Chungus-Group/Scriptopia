@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../../../components/student/Navbar'
+import Navbar from '../../components/student/Navbar'
 
 const Houses = () => {
   return (

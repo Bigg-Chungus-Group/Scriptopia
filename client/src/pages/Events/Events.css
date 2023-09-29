@@ -6,6 +6,13 @@
   overflow: auto;
 }
 
+.AdminEvents .events {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .AdminEvents .event {
   display: flex;
   gap: 15px;
@@ -16,4 +23,5 @@
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   height: 200px;
+  width: 25%;
 }
