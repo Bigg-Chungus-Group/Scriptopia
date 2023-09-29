@@ -1,0 +1,4 @@
+app = "Scriptopia"
+
+[build]
+builder = "node-builder"
