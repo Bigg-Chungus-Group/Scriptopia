@@ -33,6 +33,9 @@ const Auth = () => {
   const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
+  const redirectURL =
+    new URLSearchParams(window.location.search).get("redirect") || "/";
+
   useEffect(() => {
     if (Cookie.get("blocked")) {
       setDisabled(true);
@@ -182,22 +185,27 @@ const Auth = () => {
           setIsLoading(false);
           if (res.status === 200) {
             const response = await res.json();
-            console.log(response)
+            console.log(response);
             io.emit("onLogin", response.mid);
 
-            if (response.role === "A") {
-              navigate("/admin");
-            } else if (response.role === "F") {
-              if (response.firstTime) {
-                setOpen(true);
-              } else {
-                navigate("/faculty");
-              }
-            } else if (response.role === "S") {
-              if (response.firstTime) {
-                setOpen(true);
-              } else {
-                navigate("/");
+            if (redirectURL !== "/") {
+              navigate(redirectURL);
+              return;
+            } else {
+              if (response.role === "A") {
+                navigate("/admin");
+              } else if (response.role === "F") {
+                if (response.firstTime) {
+                  setOpen(true);
+                } else {
+                  navigate("/faculty");
+                }
+              } else if (response.role === "S") {
+                if (response.firstTime) {
+                  setOpen(true);
+                } else {
+                  navigate("/");
+                }
               }
             }
           } else {

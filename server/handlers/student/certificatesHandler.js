@@ -1,7 +1,7 @@
 import express from "express";
 import { verifyToken } from "../../apis/jwt.js";
 const router = express.Router();
-import { certificationsDB } from "../../configs/mongo.js";
+import { certificationsDB, userDB } from "../../configs/mongo.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { promises as fs } from "fs";
@@ -74,6 +74,8 @@ router.post(
         return res.status(200).send("Certificate uploaded");
       }
 
+      const user = await userDB.findOne({ mid });
+
       const originalFileName = req.file.originalname;
       const certificateName = `${Date.now()}_${originalFileName}`;
 
@@ -100,6 +102,8 @@ router.post(
         certificateURL: certificateName.toString(),
         status: "pending",
         ext: originalFileName.split(".")[1],
+        house: user.house.id,
+        name: user.fname + " " + user.lname,
       });
       res.status(200).send("Certificate uploaded");
     } catch (error) {
@@ -113,24 +117,6 @@ router.post(
     }
   }
 );
-
-router.post("/get", verifyToken, async (req, res) => {
-  const { id } = req.body;
-  try {
-    const certificate = await certificationsDB.findOne({
-      _id: new ObjectId(id),
-    });
-    res.status(200).send(certificate);
-  } catch (error) {
-    logger.error({
-      code: "STU-CHH-102",
-      message: "Certificate with ID " + id + "not found",
-      mid: req.user.mid,
-      err: error.message,
-    });
-    res.status(400).send("Certificate not found");
-  }
-});
 
 router.post("/download", verifyToken, async (req, res) => {
   const { id } = req.body;
@@ -160,8 +146,8 @@ router.post("/download", verifyToken, async (req, res) => {
 });
 
 router.post("/delete", verifyToken, async (req, res) => {
+  const { id } = req.body;
   try {
-    const { id } = req.body;
     const certificate = await certificationsDB.findOne({
       _id: new ObjectId(id),
     });
@@ -180,11 +166,12 @@ router.post("/delete", verifyToken, async (req, res) => {
 
     res.status(200).json({ msg: "Certificate deleted" });
   } catch (error) {
+    console.log(error);
     logger.error({
       code: "STU-CHH-104",
-      message: "Certificate with ID " + id + "not found",
+      message: "Certificate with ID " + id + " not found",
       mid: req.user.mid,
-      err: error.message,
+      err: error,
     });
     res.status(400).json({ msg: "Certificate not found" });
   }

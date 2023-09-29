@@ -8,7 +8,6 @@ import AdminFacultyImport from "./pages/Admin/Faculty/Import/FacultyImport.jsx";
 import AdminFaculty from "./pages/Admin/Faculty/Faculty.jsx";
 import AdminSettings from "./pages/Admin/Settings/Settings.jsx";
 import AdminLogs from "./pages/Admin/Logs/Logs.jsx";
-import AdminEvents from "./pages/Admin/Events/Events.jsx";
 
 const Admin = () => {
   return (
@@ -21,7 +20,6 @@ const Admin = () => {
       <Route path="/admin/faculty" element={<AdminFaculty />} />
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/logs" element={<AdminLogs />} />
-      <Route path="/admin/events" element={<AdminEvents />} />
 
       <Route
         path="*"

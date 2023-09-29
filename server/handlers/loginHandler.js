@@ -79,6 +79,7 @@ router.post(
               lname: findUser.lname,
               picture: findUser.profilePicture,
               role: "F",
+              perms: findUser.perms,
             },
             process.env.JWT_SECRET
           );

@@ -14,6 +14,16 @@ import {
   useDisclosure,
   Modal,
   ModalOverlay,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
+  useSteps,
   ModalContent,
   ModalHeader,
   ModalFooter,
@@ -25,14 +35,19 @@ import {
   Select,
   useToast,
   Alert,
+  Flex,
 } from "@chakra-ui/react";
 import "./Certificate.css";
-import Navbar from "../../../../components/student/Navbar";
-import Loader from "../../../../components/Loader";
-import { useAuthCheck } from "../../../../hooks/useAuthCheck";
+import Navbar from "../../components/student/Navbar";
+import Loader from "../../components/Loader";
+import { useAuthCheck } from "../../hooks/useAuthCheck";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
+import AdminNavbar from "../../components/admin/Navbar";
+import FacultyNavbar from "../../components/faculty/Navbar";
+import GuestNavbar from "../../components/guest/Navbar";
 
 const Certificate = () => {
-  useAuthCheck("S");
   const [certificate, setCertificate] = useState({});
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,9 +58,21 @@ const Certificate = () => {
   const [certificateType, setCertificateType] = useState();
   const [certificateLevel, setCertificateLevel] = useState();
 
+  const [editPrivilege, setEditPrivilege] = useState(false);
+  const [role, setRole] = useState("");
+  const [mid, setMid] = useState("");
+
   const [loader1, setLoader1] = useState(false);
   const [loader2, setLoader2] = useState(false);
   const [loader3, setLoader3] = useState(false);
+
+  const [colorStatus, setColorStatus] = useState("blue");
+
+  const [steps, setSteps] = useState([
+    { title: "Step I: Upload", description: "Uploaded" },
+    { title: "Step II: Review", description: "Pending" },
+    { title: "Step III: Approval By Faculty", description: "Pending" },
+  ]);
 
   const {
     isOpen: isEditOpen,
@@ -60,9 +87,26 @@ const Certificate = () => {
   const prevPrevPrevYear = year - 3;
 
   useEffect(() => {
+    let jwt;
+    const token = Cookies.get("token");
+    if (token) {
+      jwt = jwtDecode(token);
+      if (jwt?.role) {
+        setRole(jwt.role);
+        if (jwt.role === "S") {
+          console.log(jwt.mid);
+          setMid(jwt.mid);
+        }
+      } else {
+        setRole("G");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const id = window.location.pathname.split("/")[2];
 
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/get`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/certificates/get`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -89,6 +133,12 @@ const Certificate = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (certificate?.mid === mid) {
+      setEditPrivilege(true);
+    }
+  }, [certificate]);
+
   const toast = useToast();
 
   useEffect(() => {
@@ -104,7 +154,7 @@ const Certificate = () => {
     setLoader3(true);
     if (certificate.uploadType === "url") {
       setLoader3(false);
-      window.location.href = certificate.certificateURL;
+      window.open(certificate.certificateURL, "_blank");
       return;
     }
 
@@ -147,6 +197,37 @@ const Certificate = () => {
         });
       });
   };
+
+  const { activeStep, setActiveStep } = useSteps({
+    index: 1,
+    count: steps.length,
+  });
+
+  useEffect(() => {
+    const updatedSteps = [...steps];
+
+    if (certificate.status === "rejected") {
+      updatedSteps[2].description = "Rejected";
+      updatedSteps[1].description = "Reviewed";
+      setActiveStep(2);
+      setColorStatus("red");
+    }
+
+    if (certificate.status === "approved") {
+      updatedSteps[2].description = "Approved";
+      updatedSteps[1].description = "Approved";
+      setActiveStep(2);
+      setColorStatus("green");
+    }
+
+    if (certificate.status === "pending") {
+      updatedSteps[2].title = "Pending";
+      setActiveStep(0);
+      setColorStatus("blue");
+    }
+
+    setSteps(updatedSteps);
+  }, [certificate]);
 
   const handleUpdate = () => {
     setLoader2(true);
@@ -232,10 +313,18 @@ const Certificate = () => {
   if (!loading) {
     return (
       <>
-        <Navbar />
+        {role === "S" ? (
+          <Navbar />
+        ) : role === "A" ? (
+          <AdminNavbar />
+        ) : role === "F" ? (
+          <FacultyNavbar />
+        ) : (
+          <GuestNavbar />
+        )}
         <Box className="StudentCertificate">
-          <Box className="info">
-            <Text>
+          <Box className="info" display="flex" flexDir="column" gap="20px">
+            <Text textAlign="center">
               {certificate?.certificateType?.charAt(0).toUpperCase() +
                 certificate?.certificateType?.slice(1)}{" "}
               Certification -{" "}
@@ -243,66 +332,69 @@ const Certificate = () => {
                 certificate?.certificateLevel.slice(1)}{" "}
               Level
             </Text>
-            <Heading>
+            <Text textAlign="center" mt="-17px">
+              Uploaded By {certificate.name}
+            </Text>
+            <Heading textAlign="center">
               {certificate?.certificateName.charAt(0).toUpperCase() +
                 certificate?.certificateName.slice(1)}{" "}
             </Heading>
-            <Text>
-              Issued On:{" "}
+            <Text textAlign="center">
+              By{" "}
+              {certificate?.issuingOrg?.charAt(0).toUpperCase() +
+                certificate?.issuingOrg?.slice(1)}
+            </Text>
+
+            <Button
+              colorScheme="green"
+              onClick={handleDownload}
+              isLoading={loader3}
+              width="fit-content"
+              alignSelf="center"
+            >
+              Download / View Certificate
+            </Button>
+
+            <Text textAlign="center">
+              Issued On{" "}
               {certificate?.issueMonth.charAt(0).toUpperCase() +
                 certificate?.issueMonth.slice(1)}{" "}
               {certificate.issueYear}
             </Text>
-            <Text>
-              By:{" "}
-              {certificate?.issuingOrg?.charAt(0).toUpperCase() +
-                certificate?.issuingOrg?.slice(1)}
-            </Text>
           </Box>
 
           <Box className="track-wrapper">
-            <Text color="green" fontWeight="500">
-              You Earned {certificate?.XP + "XP" || "0XP"} from this Certificate
-            </Text>
-            <Text color="green" fontWeight="500">
-              Your House Earned {certificate?.houseXP + "XP" || "0XP"} from this
-              Certificate
-            </Text>
-            <Text fontSize="20px">Status</Text>
-            <Box className="track">
-              <Box className="uploaded green">Uploaded</Box>
-              <Box
-                className={`reviewed ${
-                  certificate?.status === "approved" ||
-                  certificate.status === "rejected"
-                    ? "green"
-                    : ""
-                }`}
+            <Flex align="center" justify="center" mt="20px">
+              <Stepper
+                index={activeStep}
+                width="50vw"
+                alignSelf="center"
+                colorScheme={colorStatus}
+                mb="20px"
               >
-                {certificate?.status === "approved" ||
-                certificate.status === "rejected"
-                  ? "Reviewed"
-                  : "Not Reviewed"}
-              </Box>
-              <Box
-                className={`status  ${
-                  certificate?.status === "approved"
-                    ? "green"
-                    : certificate?.status === "rejected"
-                    ? "red"
-                    : ""
-                }`}
-              >
-                {certificate?.status === "approved"
-                  ? "Approved"
-                  : certificate?.status === "rejected"
-                  ? "Rejected"
-                  : "Not Reviewed"}
-              </Box>
-            </Box>
+                {steps.map((step, index) => (
+                  <Step key={index}>
+                    <StepIndicator>
+                      <StepStatus
+                        complete={<StepIcon />}
+                        incomplete={<StepNumber />}
+                        active={<StepNumber />}
+                      />
+                    </StepIndicator>
+
+                    <Box flexShrink="0">
+                      <StepTitle>{step.title}</StepTitle>
+                      <StepDescription>{step.description}</StepDescription>
+                    </Box>
+
+                    <StepSeparator />
+                  </Step>
+                ))}
+              </Stepper>
+            </Flex>
           </Box>
 
-          <Box className="comments">
+          <Box className="comments" mb="20px">
             <Textarea
               readOnly
               resize="none"
@@ -313,19 +405,32 @@ const Certificate = () => {
           </Box>
 
           <Box className="buttons">
-            <Button colorScheme="red" onClick={onOpen}>
-              Delete Certificate
-            </Button>
-            <Button colorScheme="blue" onClick={onEditOpen}>
-              Edit Certificate
-            </Button>
-            <Button
-              colorScheme="green"
-              onClick={handleDownload}
-              isLoading={loader3}
-            >
-              Download / View Certificate
-            </Button>
+            {certificate.status !== "approved" && editPrivilege ? (
+              <Button colorScheme="blue" onClick={onEditOpen}>
+                Edit Certificate
+              </Button>
+            ) : editPrivilege ? (
+              <>
+                <Text color="green" fontWeight="500">
+                  Your House Earned{" "}
+                  {certificate?.houseXP ? certificate?.houseXP + " XP" : "0 XP"}{" "}
+                  from this Certificate
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text color="green" fontWeight="500">
+                  {certificate.name} Earned{" "}
+                  {certificate?.houseXP ? certificate?.houseXP + " XP" : "0 XP"}{" "}
+                  from this Certificate
+                </Text>
+              </>
+            )}{" "}
+            {editPrivilege ? (
+              <Button colorScheme="red" onClick={onOpen}>
+                Delete Certificate
+              </Button>
+            ) : null}
           </Box>
 
           <AlertDialog

@@ -12,6 +12,9 @@ import bcrypt from "bcrypt"
 
 import loginHandler from "./handlers/loginHandler.js";
 import firstTimeHandler from "./handlers/firstTimeHandler.js";
+import houseHandler from "./handlers/houseHandler.js";
+import eventsHandler from "./handlers/eventsHandler.js";
+import certificateHandler from "./handlers/certificateHandler.js";
 
 import mainAdmin from "./handlers/admin/main.js";
 import mainStudent from "./handlers/student/main.js";
@@ -55,6 +58,10 @@ app.get("/", (req, res) => {
 
 app.use("/auth", loginHandler);
 app.use("/firstTime", firstTimeHandler);
+app.use("/houses", houseHandler);
+app.use("/events", eventsHandler);
+app.use("/certificates", certificateHandler);
+
 
 app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);
 app.use("/student", verifyToken, verifyStudentPriviliges, mainStudent);

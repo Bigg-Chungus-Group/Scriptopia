@@ -26,14 +26,24 @@ import {
   ModalCloseButton,
   Thead,
   Tr,
+  Flex,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  CheckboxGroup,
+  List,
+  ListItem,
+  ListIcon,
+  useRadioGroup,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 
 const Faculty = () => {
-  useAuthCheck("A")
+  useAuthCheck("A");
   const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [faculty, setFaculty] = useState([]);
@@ -44,7 +54,21 @@ const Faculty = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
+  const {
+    isOpen: isPermsOpen,
+    onOpen: onPermsOpen,
+    onClose: onPermsClose,
+  } = useDisclosure();
+
   const [delItem, setDelItem] = useState({});
+  const [mid, setMid] = useState("");
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [facOID, setFacOID] = useState("");
+
+  const [perms, setPerms] = React.useState([]);
 
   const {
     isOpen: isDeleteOpen,
@@ -143,6 +167,71 @@ const Faculty = () => {
       });
   };
 
+  const openEdit = (id) => {
+    onOpen();
+    const faculty = filteredFaculty.find((faculty) => faculty.mid === id);
+    setMid(faculty.mid);
+    setFname(faculty.fname);
+    setLname(faculty.lname);
+    setEmail(faculty.email);
+    setGender(faculty.gender);
+    setFacOID(faculty.id);
+  };
+
+  const updateFaculty = () => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/update`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: facOID,
+        mid: mid,
+        fname: fname,
+        lname: lname,
+        email: email,
+        gender: gender,
+        perms: perms,
+      }),
+    })
+      .then(async (res) => await res.json())
+      .then((data) => {
+        if (data.success) {
+          onClose();
+          setSearchQuery("");
+          toast({
+            title: "Success",
+            description: "Faculty updated successfully",
+            status: "success",
+            duration: 2000,
+            isClosable: true,
+          });
+          window.location.reload();
+        } else {
+          onClose();
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+            status: "error",
+            duration: 2000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        onClose();
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
+  };
+
   if (loading) return <Loader />;
   else
     return (
@@ -190,14 +279,16 @@ const Faculty = () => {
                 {filteredFaculty.map((faculty) => (
                   <Tr key={faculty.mid}>
                     <Td>{faculty.mid}</Td>
-                    <Td>{faculty.name}</Td>
+                    <Td>
+                      {faculty.fname} {faculty.lname}
+                    </Td>
                     <Td>{faculty.branch}</Td>
                     <Td>
                       <Box className="actions">
                         <Box
                           className="action"
                           cursor="pointer"
-                          onClick={onOpen}
+                          onClick={() => openEdit(faculty.mid)}
                         >
                           Edit
                         </Box>
@@ -220,15 +311,85 @@ const Faculty = () => {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
+            <ModalHeader>Edit Faculty</ModalHeader>
             <ModalCloseButton />
-            <ModalBody></ModalBody>
+            <ModalBody>
+              <Box className="form">
+                <Box className="ipgroup">
+                  <FormLabel>Faculty Moodle ID</FormLabel>
+                  <Input
+                    placeholder="Faculty ID"
+                    value={mid}
+                    onChange={(e) => setMid(e.target.value)}
+                  />
+                </Box>
+                <Flex gap="20px" mt="10px">
+                  <Box className="ipgroup">
+                    <FormLabel>First Name</FormLabel>
+                    <Input
+                      placeholder="First Name"
+                      value={fname}
+                      onChange={(e) => setFname(e.target.value)}
+                    />
+                  </Box>
+                  <Box className="ipgroup">
+                    <FormLabel>Last Name</FormLabel>
+                    <Input
+                      placeholder="Last Name"
+                      value={lname}
+                      onChange={(e) => setLname(e.target.value)}
+                    />
+                  </Box>
+                </Flex>
+                <Box className="ipgroup" mt="10px">
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Box>
+
+                <Box className="ipgroup" mt="10px">
+                  <FormLabel>Gender</FormLabel>
+
+                  <RadioGroup
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  >
+                    <Flex gap="20px">
+                      <Radio name="gender" value="Male">
+                        Male
+                      </Radio>
+                      <Radio name="gender" value="Female">
+                        Female
+                      </Radio>
+                      <Radio name="gender" value="Others">
+                        Others
+                      </Radio>
+                    </Flex>
+                  </RadioGroup>
+                </Box>
+              </Box>
+            </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button colorScheme="blue" mr={3}>
                 Close
               </Button>
-              <Button variant="ghost">Secondary Action</Button>
+              <Button
+                onClick={() => {
+                  onClose();
+                  onPermsOpen();
+                }}
+                colorScheme="red"
+                mr={3}
+              >
+                Configure Permissions
+              </Button>
+              <Button variant="ghost" onClick={() => updateFaculty(facOID)}>
+                Update
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -259,6 +420,283 @@ const Faculty = () => {
             </AlertDialogContent>
           </AlertDialogOverlay>
         </AlertDialog>
+
+        <Modal
+          isOpen={isPermsOpen}
+          onClose={onPermsClose}
+          size="3xl"
+          scrollBehavior="inside"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Faculty Permissions</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Box>
+                <Table>
+                  <Tbody>
+                    <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
+                      <Tr>
+                        <Td>
+                          <Checkbox value="VSP">
+                            Access Student Profile
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Access Students profiles
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Access Students Contact
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Access Students Event History
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>
+                          <Checkbox value="VFI">
+                            View Faculty Information
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Access Faculty Profiles
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Access Faculty Contact
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="MHI">Manage House Events</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Create House Events
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Update House Events
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Manage / Edit House Events
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="SND">Send Notifications</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Send Global Notifications to Users
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="GRR">Generate Reports</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Create Reports and Analytics
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="HCO">House Coordinator</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Manage House Profile
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Manage House Members
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="RSP">
+                            Reset Student Password
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Assist in resetting student passwords when
+                              necessary
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="RFP">
+                            Reset Faculty Password
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          {" "}
+                          <List>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Assist in resetting faculty passwords when
+                              necessary
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="AES">Add/Edit Student</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add Students to the system
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Delete Students from the system
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Edit Student Profiles
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+
+                      <Tr>
+                        <Td>
+                          <Checkbox value="AEF">Add/Edit Faculty</Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add Faculty to the system
+                            </ListItem>
+                            <ListItem>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Delete Faculty from the system
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+                    </CheckboxGroup>
+                  </Tbody>
+                </Table>
+              </Box>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="green"
+                onClick={() => {
+                  onPermsClose();
+                  onOpen();
+                }}
+              >
+                Set
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
 };

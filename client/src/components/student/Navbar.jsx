@@ -123,20 +123,9 @@ const Navbar = () => {
         <div className="links">
           <a href="/certificates">Certificates</a>
           <a href="/houses">Houses</a>
+          <a href="/events">Events</a>
         </div>
-        <i
-          className="fa-solid fa-magnifying-glass"
-          id="searchIcon"
-          onClick={showSearch}
-        ></i>
-      </div>
-
-      <Input
-        type="text"
-        placeholder="Search Here"
-        onBlur={checkWidth}
-        variant="filled"
-      />
+</div>
 
       <Menu>
         <Box className="rightmost">

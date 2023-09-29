@@ -238,16 +238,11 @@ const Navbar = () => {
     <div className="navAdmin">
       <div className="left-link">
         <div className="image">
-          <img src={Logo} onClick={() => navigate("/admin")} />
+          <img src={Logo} onClick={() => navigate("/faculty")} />
         </div>
         <div className="links">
-          <Link onClick={() => navigate("/admin/students")}>Students</Link>
-          <Link onClick={() => navigate("/admin/faculty")}>Faculty</Link>
           <Link onClick={() => navigate("/houses")}>Houses</Link>
           <Link onClick={() => navigate("/events")}>Events</Link>
-          <Link onClick={() => navigate("/admin/certificates")}>
-            Certificates
-          </Link>
         </div>
       </div>
 
@@ -264,15 +259,9 @@ const Navbar = () => {
           </MenuButton>
         </Box>
         <MenuList>
-          <Link onClick={() => navigate("/admin/settings")}>
+          <Link onClick={() => navigate("/faculty/settings")}>
             <MenuItem>Settings</MenuItem>
           </Link>
-          {/*}  
-          <Link onClick={() => navigate("/admin/profile")}>
-            <MenuItem>Profile</MenuItem>
-          </Link>
-          <MenuDivider />
-          {*/}
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>

@@ -9,15 +9,12 @@ const mainSocket = () => {
     });
 
     socket.on("onRefreshedPage", (id) => {
-      console.log("Page Refreshed")
       socket.join(id)
-      console.log("ROOMS")
-      console.log(socket.rooms)
     })
   });
 
   io.on("disconnect", (socket) => {
-    console.log("disconnect");
+
   });
 };
 
