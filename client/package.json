@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start" : "serve dist -n -p $PORT"
+    "start": "serve dist -s -n -p  3000"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
