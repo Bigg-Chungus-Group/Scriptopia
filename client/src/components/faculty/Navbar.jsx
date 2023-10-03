@@ -243,6 +243,14 @@ const Navbar = () => {
         <div className="links">
           <Link onClick={() => navigate("/houses")}>Houses</Link>
           <Link onClick={() => navigate("/events")}>Events</Link>
+          {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
+            <>
+              <Link onClick={() => navigate("/faculty/certificates")}>
+                Manage Certificates
+              </Link>
+              <Link onClick={() => navigate("/faculty/enrollments")}>Enrollment Requests</Link>
+            </>
+          ) : null}
         </div>
       </div>
 

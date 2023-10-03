@@ -29,7 +29,7 @@ import {
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
-const FacultyAdd = ({ setModal }) => {
+const FacultyAdd = ({ setModal, h }) => {
   useAuthCheck("A");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -44,10 +44,12 @@ const FacultyAdd = ({ setModal }) => {
   const [moodleid, setMoodleid] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [perms, setPerms] = React.useState([]);
+  const [houses, setHouses] = React.useState([]);
 
   const toast = useToast();
 
   useEffect(() => {
+    setHouses(h.houses);
     onOpen();
   }, []);
 
@@ -186,9 +188,7 @@ const FacultyAdd = ({ setModal }) => {
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
                       <Tr>
                         <Td>
-                          <Checkbox value="VSP">
-                            Access Student Profile
-                          </Checkbox>
+                          <Checkbox value="MHI">Manage Events</Checkbox>
                         </Td>
                         <Td>
                           <List>
@@ -197,76 +197,21 @@ const FacultyAdd = ({ setModal }) => {
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students profiles
+                              Create Events
                             </ListItem>
                             <ListItem mb={2}>
                               <ListIcon
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students Contact
+                              Update Events
                             </ListItem>
                             <ListItem>
                               <ListIcon
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students Event History
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="VFI">
-                            View Faculty Information
-                          </Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Access Faculty Profiles
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Access Faculty Contact
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="MHI">Manage House Events</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Create House Events
-                            </ListItem>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Update House Events
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage / Edit House Events
+                              Manage / Edit Events
                             </ListItem>
                           </List>
                         </Td>
@@ -287,45 +232,33 @@ const FacultyAdd = ({ setModal }) => {
                           </List>
                         </Td>
                       </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="GRR">Generate Reports</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Create Reports and Analytics
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="HCO">House Coordinator</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage House Profile
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage House Members
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
+                      {houses.map((house, index) => (
+                        <Tr key={index}>
+                          <Td>
+                            <Checkbox value={`HCO${index}`}>
+                              House Coordinator - {house}
+                            </Checkbox>
+                          </Td>
+                          <Td>
+                            <List>
+                              <ListItem mb={2}>
+                                <ListIcon
+                                  as={CheckCircleIcon}
+                                  color="green.500"
+                                />
+                                Manage House Profile
+                              </ListItem>
+                              <ListItem>
+                                <ListIcon
+                                  as={CheckCircleIcon}
+                                  color="green.500"
+                                />
+                                Manage House Members
+                              </ListItem>
+                            </List>
+                          </Td>
+                        </Tr>
+                      ))}
                       <Tr>
                         <Td>
                           <Checkbox value="RSP">
@@ -340,25 +273,6 @@ const FacultyAdd = ({ setModal }) => {
                                 color="green.500"
                               />
                               Assist in resetting student passwords when
-                              necessary
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="RFP">
-                            Reset Faculty Password
-                          </Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Assist in resetting faculty passwords when
                               necessary
                             </ListItem>
                           </List>
@@ -390,29 +304,6 @@ const FacultyAdd = ({ setModal }) => {
                                 color="green.500"
                               />
                               Edit Student Profiles
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="AEF">Add/Edit Faculty</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Add Faculty to the system
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Delete Faculty from the system
                             </ListItem>
                           </List>
                         </Td>

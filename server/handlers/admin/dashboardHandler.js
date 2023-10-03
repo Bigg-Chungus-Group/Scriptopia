@@ -8,9 +8,7 @@ router.post("/", async (req, res) => {
     const currentYear = new Date().getFullYear();
 
     const houses = await houseDB.find({}).toArray();
-    const certifications = await certificationsDB
-      .find({ submittedYear: currentYear })
-      .toArray();
+    const certifications = await certificationsDB.find({submittedYear: currentYear }).toArray();
     const certArr = [];
     for (const cert of certifications) {
       const belongsTo = await userDB.findOne({ mid: cert.mid });

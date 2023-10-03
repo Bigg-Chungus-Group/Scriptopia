@@ -10,7 +10,7 @@ router.get("/:id", async (req, res) => {
   const id = req.params.id;
   console.log(id);
   try {
-    const house = await houseDB.findOne({ _id : new ObjectId(id) });
+    const house = await houseDB.findOne({ _id: new ObjectId(id) });
 
     if (house) {
       const members = [];
@@ -68,10 +68,9 @@ router.post("/:id/update", verifyToken, async (req, res) => {
   const jwtToken = req.cookies.token;
   const id = req.params.id;
 
-  const { name, fc, sc, color, abstract, desc } = req.body;
-
+  const { name, fc, sc, color, abstract, desc, hid } = req.body;
   const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-  if (decoded.role !== "A" && decoded.perms !== "MH") {
+  if (decoded.role !== "A" && !decoded.perms.includes(`HCO${hid}`)) {
     return res
       .status(403)
       .send("You are not authorized to perform this action");
@@ -95,6 +94,44 @@ router.post("/:id/update", verifyToken, async (req, res) => {
   } catch (error) {
     res.status(500).send("Error updating house");
     logger.error({ code: "HOH101", message: error, error });
+  }
+});
+
+router.get("/", verifyToken, async (req, res) => {
+  try {
+    const houses = await houseDB.find({}).toArray();
+
+    res.status(200).json({ houses });
+  } catch (error) {
+    res.status(500).send("Error adding house");
+    logger.error({ code: "HOH102", message: error, error });
+  }
+});
+
+router.post("/:id/remove", verifyToken, async (req, res) => {
+  const jwtToken = req.cookies.token;
+  const id = req.params.id;
+  const { mid } = req.body;
+
+  const house = await houseDB.findOne({ _id: new ObjectId(id) });
+  const hno = house.no;
+  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
+  if (decoded.role !== "A" && !decoded.perms.includes(`HCO${hno}`)) {
+    return res
+      .status(403)
+      .send("You are not authorized to perform this action");
+  }
+
+  try {
+    await houseDB.updateOne(
+      { _id: new ObjectId(id) },
+      { $pull: { members: mid } }
+    );
+
+    res.status(200).send("Member deleted successfully");
+  } catch (error) {
+    res.status(500).send("Error deleting member");
+    logger.error({ code: "HOH103", message: error, error });
   }
 });
 

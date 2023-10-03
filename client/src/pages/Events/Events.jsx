@@ -80,7 +80,7 @@ const Events = () => {
         setRole("S");
       }
 
-      if (decoded.perms?.includes("EE") || decoded.role === "A") {
+      if (decoded.perms?.includes("MHI") || decoded.role === "A") {
         setEditPrivilege(true);
       }
     }
@@ -111,6 +111,7 @@ const Events = () => {
   }, [update]);
 
   const date = new Date().toISOString();
+  const tommorow = new Date() + 1;
 
   const dateOptions = {
     year: "numeric",

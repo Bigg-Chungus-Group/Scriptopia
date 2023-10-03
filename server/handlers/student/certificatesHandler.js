@@ -104,6 +104,7 @@ router.post(
         ext: originalFileName.split(".")[1],
         house: user.house.id,
         name: user.fname + " " + user.lname,
+        submittedYear: new Date().getFullYear(),
       });
       res.status(200).send("Certificate uploaded");
     } catch (error) {

@@ -5,7 +5,8 @@ import { enrollmentDB, userDB } from "../configs/mongo.js";
 import logger from "../configs/logger.js";
 
 Router.post("/", verifyToken, async (req, res) => {
-  const { mid, about, technical, projects, certifications, cgpa } = req.body;
+  const { mid, about, technical, projects, cgpa } = req.body;
+  console.log(req.body)
   try {
     const user = await userDB.findOne({ mid: mid.toString() });
     if (user) {
@@ -18,14 +19,14 @@ Router.post("/", verifyToken, async (req, res) => {
         about: about.toString(),
         technical: technical.toString(),
         projects: projects.toString(),
-        certifications: certifications.toString(),
         cgpa: parseFloat(cgpa),
       });
       res.status(200).send({ success: true });
     } else {
       res.status(500).send({ success: false });
     }
-  } catch {
+  } catch (error) {
+    console.log(error);
     logger.error({
       code: "MN-FTH-100",
       message: "Error updating first time data",

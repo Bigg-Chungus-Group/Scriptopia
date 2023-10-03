@@ -23,6 +23,8 @@ import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import IntroModal from "./IntroModal";
+
 const Home = () => {
   const decoded = useAuthCheck("S");
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,7 @@ const Home = () => {
   const [certifications, setCertifications] = useState();
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [hp, setHp] = useState(0);
+  const [firstTime, setFirstTime] = useState(false);
 
   const toast = useToast();
 
@@ -84,6 +87,7 @@ const Home = () => {
         setHouses(data.allHouses);
         setUserHouse(data.userHouse);
         setCertifications(data.certifications);
+        setFirstTime(data.user.firstTime);
         setLoading(false);
       })
       .catch((err) => {
@@ -479,7 +483,7 @@ const Home = () => {
                                 <Text>{cert.certificateName}</Text>
                                 <Text fontSize="12px">{cert.issuingOrg}</Text>
                               </Td>
-                              <Td>{cert.points || "0"}</Td>
+                              <Td>{cert.xp || "0"}</Td>
                               <Td>{cert.submissionDate || null}</Td>
                               <Td>{cert.status}</Td>
                             </Tr>
@@ -579,6 +583,8 @@ const Home = () => {
             </Box>
           </Box>
         </Box>
+
+        {firstTime ? <IntroModal /> : null}
       </>
     );
   } else {

@@ -14,7 +14,7 @@ const mainSocket = () => {
   });
 
   io.on("disconnect", (socket) => {
-
+    socket.leaveAll()
   });
 };
 
