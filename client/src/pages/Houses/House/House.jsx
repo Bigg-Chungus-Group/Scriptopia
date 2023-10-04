@@ -498,7 +498,7 @@ const House = () => {
                     placeholder="House Color Hex*"
                     value={houseColor}
                     onChange={(e) => {
-                      setHouseColor("#" + e.target.value);
+                      setHouseColor(e.target.value);
                     }}
                   />
                 </InputGroup>

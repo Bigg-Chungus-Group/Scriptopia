@@ -52,9 +52,11 @@ Router.post("/accept", verifyToken, async (req, res) => {
 
     const mid = enrollment.mid;
     await userDB.updateOne(
-      { id: mid },
+      { mid: mid.toString() },
       { $set: { approved: true, "house.id": house._id.toString() } }
     );
+
+
     await houseDB.updateOne({ no: hno }, { $push: { members: mid } });
 
     await enrollmentDB.deleteOne({ _id: new ObjectId(id) });

@@ -121,12 +121,12 @@ const Enrollments = () => {
     return (
       <>
         <Navbar />
-        <Box p="30px 70px">
+        <Flex p="30px 70px" gap="20px">
           {enrollments.map((enrollment, index) => {
             const truncatedAbout = truncateText(enrollment.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
             return (
               <Card
-                maxW="sm"
+                minW="sm"
                 key={enrollment._id}
                 cursor="pointer"
                 onClick={() => openModal(enrollment._id, index)}
@@ -146,7 +146,7 @@ const Enrollments = () => {
               </Card>
             );
           })}
-        </Box>
+        </Flex>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
           <ModalOverlay

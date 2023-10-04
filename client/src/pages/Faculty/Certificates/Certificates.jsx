@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../../components/faculty/Navbar";
+import Navbar from "../../../components/faculty/Navbar";
 import {
   Box,
   Button,

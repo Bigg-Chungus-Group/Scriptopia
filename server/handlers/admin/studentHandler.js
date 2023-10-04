@@ -122,7 +122,7 @@ router.post(
   async (req, res) => {
     const { fname, lname, moodleid: mid, email, house, gender } = req.body;
 
-    const password = bcrypt.hash(process.env.DEFAULT_STUDENT_PASSWORD, 10);
+    const password = await bcrypt.hash(process.env.DEFAULT_STUDENT_PASSWORD, 10);
     const firstTime = true;
     const approved = true;
     const defaultPW = true;
