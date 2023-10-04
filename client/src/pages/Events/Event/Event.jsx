@@ -3,7 +3,7 @@ import jwtDecode from "jwt-decode";
 import React, { createElement, useEffect, useState } from "react";
 import AdminNavbar from "../../../components/admin/Navbar";
 import StudentNavbar from "../../../components/student/Navbar";
-import FacultyNavbar from "../../../components/student/Navbar"; // !Change when faculty navbar is made
+import FacultyNavbar from "../../../components/faculty/Navbar"; // !Change when faculty navbar is made
 import GuestNavbar from "../../../components/guest/Navbar";
 import {
   Box,
@@ -222,7 +222,6 @@ const Event = () => {
       return;
     }
     if (registerationStarts > eventStarts) {
-      console.log(registerationStarts, eventStarts);
       toast({
         title: "Error",
         description:
@@ -237,16 +236,6 @@ const Event = () => {
       toast({
         title: "Error",
         description: "Registeration End Date cannot be after Event Start Date",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
-    }
-    if (eventStarts < date) {
-      toast({
-        title: "Error",
-        description: "Event Start Date cannot be before today",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -466,9 +455,6 @@ const Event = () => {
   };
 
   if (!loading) {
-    {
-      console.log(decoded);
-    }
     return (
       <>
         {role === "A" ? (

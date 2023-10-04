@@ -50,6 +50,7 @@ const Faculty = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredFaculty, seFilteredFaculty] = useState([]);
+  const [houses, setHouses] = useState([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -93,6 +94,7 @@ const Faculty = () => {
       .then((data) => {
         setLoading(false);
         setFaculty(data.faculty);
+        setHouses(data.houses);
       })
       .catch((err) => {
         console.log(err);
@@ -176,6 +178,7 @@ const Faculty = () => {
     setEmail(faculty.email);
     setGender(faculty.gender);
     setFacOID(faculty.id);
+    setPerms(faculty.perms);
   };
 
   const updateFaculty = () => {
@@ -438,9 +441,7 @@ const Faculty = () => {
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
                       <Tr>
                         <Td>
-                          <Checkbox value="VSP">
-                            Access Student Profile
-                          </Checkbox>
+                          <Checkbox value="MHI">Manage Events</Checkbox>
                         </Td>
                         <Td>
                           <List>
@@ -449,82 +450,50 @@ const Faculty = () => {
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students profiles
+                              Create Events
                             </ListItem>
                             <ListItem mb={2}>
                               <ListIcon
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students Contact
+                              Update Events
                             </ListItem>
                             <ListItem>
                               <ListIcon
                                 as={CheckCircleIcon}
                                 color="green.500"
                               />
-                              Access Students Event History
+                              Manage / Edit Events
                             </ListItem>
                           </List>
                         </Td>
                       </Tr>
-                      <Tr>
-                        <Td>
-                          <Checkbox value="VFI">
-                            View Faculty Information
-                          </Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Access Faculty Profiles
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Access Faculty Contact
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
-                      <Tr>
-                        <Td>
-                          <Checkbox value="MHI">Manage House Events</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Create House Events
-                            </ListItem>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Update House Events
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage / Edit House Events
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
+                      {houses.map((house, index) => (
+                        <Tr key={index}>
+                          <Td>
+                            <Checkbox value={`HCO${index}`}>House Coordinator - {house}</Checkbox>
+                          </Td>
+                          <Td>
+                            <List>
+                              <ListItem mb={2}>
+                                <ListIcon
+                                  as={CheckCircleIcon}
+                                  color="green.500"
+                                />
+                                Manage House Profile
+                              </ListItem>
+                              <ListItem>
+                                <ListIcon
+                                  as={CheckCircleIcon}
+                                  color="green.500"
+                                />
+                                Manage House Members
+                              </ListItem>
+                            </List>
+                          </Td>
+                        </Tr>
+                      ))}
                       <Tr>
                         <Td>
                           <Checkbox value="SND">Send Notifications</Checkbox>
@@ -541,48 +510,7 @@ const Faculty = () => {
                           </List>
                         </Td>
                       </Tr>
-
-                      <Tr>
-                        <Td>
-                          <Checkbox value="GRR">Generate Reports</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Create Reports and Analytics
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
-                      <Tr>
-                        <Td>
-                          <Checkbox value="HCO">House Coordinator</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage House Profile
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Manage House Members
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
+                      {}
                       <Tr>
                         <Td>
                           <Checkbox value="RSP">
@@ -602,28 +530,6 @@ const Faculty = () => {
                           </List>
                         </Td>
                       </Tr>
-
-                      <Tr>
-                        <Td>
-                          <Checkbox value="RFP">
-                            Reset Faculty Password
-                          </Checkbox>
-                        </Td>
-                        <Td>
-                          {" "}
-                          <List>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Assist in resetting faculty passwords when
-                              necessary
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
                       <Tr>
                         <Td>
                           <Checkbox value="AES">Add/Edit Student</Checkbox>
@@ -650,30 +556,6 @@ const Faculty = () => {
                                 color="green.500"
                               />
                               Edit Student Profiles
-                            </ListItem>
-                          </List>
-                        </Td>
-                      </Tr>
-
-                      <Tr>
-                        <Td>
-                          <Checkbox value="AEF">Add/Edit Faculty</Checkbox>
-                        </Td>
-                        <Td>
-                          <List>
-                            <ListItem mb={2}>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Add Faculty to the system
-                            </ListItem>
-                            <ListItem>
-                              <ListIcon
-                                as={CheckCircleIcon}
-                                color="green.500"
-                              />
-                              Delete Faculty from the system
                             </ListItem>
                           </List>
                         </Td>

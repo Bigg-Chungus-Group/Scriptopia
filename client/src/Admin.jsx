@@ -8,6 +8,7 @@ import AdminFacultyImport from "./pages/Admin/Faculty/Import/FacultyImport.jsx";
 import AdminFaculty from "./pages/Admin/Faculty/Faculty.jsx";
 import AdminSettings from "./pages/Admin/Settings/Settings.jsx";
 import AdminLogs from "./pages/Admin/Logs/Logs.jsx";
+import AdminCertificates from "./pages/Admin/Certificates/Certificates.jsx";
 
 const Admin = () => {
   return (
@@ -20,6 +21,7 @@ const Admin = () => {
       <Route path="/admin/faculty" element={<AdminFaculty />} />
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/logs" element={<AdminLogs />} />
+      <Route path="/admin/certificates" element={<AdminCertificates />} />
 
       <Route
         path="*"

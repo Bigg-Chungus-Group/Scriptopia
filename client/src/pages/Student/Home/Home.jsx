@@ -23,6 +23,8 @@ import Navbar from "../../../components/student/Navbar";
 import Chart from "chart.js/auto";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import IntroModal from "./IntroModal";
+
 const Home = () => {
   const decoded = useAuthCheck("S");
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,7 @@ const Home = () => {
   const [certifications, setCertifications] = useState();
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [hp, setHp] = useState(0);
+  const [firstTime, setFirstTime] = useState(false);
 
   const toast = useToast();
 
@@ -84,6 +87,7 @@ const Home = () => {
         setHouses(data.allHouses);
         setUserHouse(data.userHouse);
         setCertifications(data.certifications);
+        setFirstTime(data.user.firstTime);
         setLoading(false);
       })
       .catch((err) => {
@@ -206,6 +210,20 @@ const Home = () => {
   }, [loading, selectedMonth]);
 
   useEffect(() => {
+    function hexToRgba(hex, opacity) {
+      // Remove the hash character (#) if present
+      hex = hex.replace(/^#/, '');
+    
+      // Parse the hex color into RGB components
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+    
+      // Create and return the RGBA color
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
     const currentDate = new Date();
     let currentYear = currentDate.getFullYear();
     currentYear = currentYear.toString();
@@ -299,8 +317,10 @@ const Home = () => {
                 dec,
               ],
               tension: 0.3,
-              borderColor: "#3e95cd",
-              fill: false,
+              borderColor: houses[0].color,
+              fill: true, // Enable the fill area
+              backgroundColor: hexToRgba(houses[1].color, 0.25), // Fill color
+              
             },
           ],
         },
@@ -464,8 +484,8 @@ const Home = () => {
                       <Thead>
                         <Tr>
                           <Th>Certification Details</Th>
-                          <Th>Points</Th>
-                          <Th>Submitted On</Th>
+                          <Th className="hideOnPhone">Points</Th>
+                          <Th className="hideOnPhone">Submitted On</Th>
                           <Th>Status</Th>
                         </Tr>
                       </Thead>
@@ -479,8 +499,10 @@ const Home = () => {
                                 <Text>{cert.certificateName}</Text>
                                 <Text fontSize="12px">{cert.issuingOrg}</Text>
                               </Td>
-                              <Td>{cert.points || "0"}</Td>
-                              <Td>{cert.submissionDate || null}</Td>
+                              <Td className="hideOnPhone">{cert.xp || "0"}</Td>
+                              <Td className="hideOnPhone">
+                                {cert.submissionDate || null}
+                              </Td>
                               <Td>{cert.status}</Td>
                             </Tr>
                           ))}
@@ -579,6 +601,8 @@ const Home = () => {
             </Box>
           </Box>
         </Box>
+
+        {firstTime ? <IntroModal /> : null}
       </>
     );
   } else {

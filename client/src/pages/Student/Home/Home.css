@@ -5,11 +5,12 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .StudentDashboard .left {
   background-color: var(--darker);
-  width: 60%;
+  width: 59%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -45,6 +46,7 @@
   border-radius: 10px;
   width: 100%;
   padding: 20px;
+  overflow-x: auto;
 }
 
 .StudentDashboard .right .pointAnalysis {
@@ -53,6 +55,7 @@
   border-radius: 10px;
   background-color: var(--container);
   padding: 20px;
+  padding-bottom: 40px;
 }
 
 .StudentDashboard .right .myHouse {
@@ -71,4 +74,28 @@
 .StudentDashboard #contribution {
   width: 150px !important;
   height: 150px !important;
+}
+
+@media screen and (max-width: 1090px) {
+  .StudentDashboard .left,
+  .StudentDashboard .right {
+    width: 100%;
+  }
+
+  .StudentDashboard {
+    padding: 0;
+  }
+
+  .StudentDashboard .hideOnPhone {
+    display: none;
+  }
+
+  .StudentDashboard .pointAnalysis__stats {
+    display: none;
+  }
+
+  .StudentDashboard #contribution {
+    width: 200px !important;
+    height: 200px !important;
+  }
 }

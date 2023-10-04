@@ -1,5 +1,5 @@
 import express from "express";
-import { userDB } from "../../configs/mongo.js";
+import { houseDB, userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { ObjectId } from "mongodb";
@@ -18,12 +18,32 @@ router.post("/", async (req, res) => {
         email: element.email,
         gender: element.gender,
         id: element._id,
+        perms: element.perms,
       });
     });
 
+    const houses = await houseDB.find({}).toArray();
+    const h = [houses[0].name, houses[1].name, houses[2].name, houses[3].name];
+
     return res
       .status(200)
-      .send({ message: "Data fetched successfully", faculty });
+      .send({ message: "Data fetched successfully", faculty, houses: h });
+  } catch (error) {
+    logger.error({
+      code: "ADM-FCH-101",
+      message: "Failed to fetch faculty",
+      err: error.message,
+    });
+    return res.status(500).send({ message: "Error in fetching data" });
+  }
+});
+
+router.get("/houses", async (req, res) => {
+  try {
+    const houses = await houseDB.find({}).toArray();
+    const h = [houses[0].name, houses[1].name, houses[2].name, houses[3].name];
+
+    return res.status(200).send({ houses: h });
   } catch (error) {
     logger.error({
       code: "ADM-FCH-101",
@@ -138,8 +158,8 @@ router.post("/delete", async (req, res) => {
 
 router.post("/update", async (req, res) => {
   const { id, mid, fname, lname, email, gender, perms } = req.body;
-  console.log(perms)
-  console.log(id)
+  console.log(perms);
+  console.log(id);
 
   try {
     await userDB.updateOne(

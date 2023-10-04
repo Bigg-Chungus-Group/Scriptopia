@@ -1,16 +1,76 @@
-import React from 'react'
-import Navbar from '../../components/student/Navbar'
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/student/Navbar";
+import { Box, Link, useToast } from "@chakra-ui/react";
+import AdminNavbar from "../../components/admin/Navbar";
+import FacultyNavbar from "../../components/faculty/Navbar";
+import GuestNavbar from "../../components/guest/Navbar";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 
 const Houses = () => {
-  return (
-    <>
-    <Navbar/>
-    <div>Page Currently Broken :/</div>
-    </>
-  )
-}
+  const toast = useToast();
+  const [role, setRole] = useState("G");
 
-export default Houses
+  useEffect(() => {
+    const token = Cookies.get("token");
+    try {
+      const jwt = jwtDecode(token);
+      if (jwt) {
+        setRole(jwt.role);
+      }
+    } catch (err) {
+      return;
+    }
+  }, []);
+
+  const [houses, setHouses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/houses`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(
+      async (res) =>
+        await res
+          .json()
+          .then((data) => {
+            setHouses(data.houses);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast({
+              title: "Error",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          })
+    );
+  }, []);
+
+  if (!loading) {
+    return (
+      <>
+        {role === "S" ? <Navbar/> : role === "A" ? <AdminNavbar/> : role === "F" ? <FacultyNavbar/> : <GuestNavbar/>}
+        <Box padding="30px 70px">
+          {houses.map((house) => (
+            <Box key={house._id}>
+              <Link href={`/houses/${house._id}`}>{house.name}</Link>
+            </Box>
+          ))}
+        </Box>
+      </>
+    );
+  }
+};
+
+export default Houses;
 
 /*import React, { useEffect, useState } from "react";
 import "./Houses.css";

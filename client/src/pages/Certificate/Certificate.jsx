@@ -399,7 +399,7 @@ const Certificate = () => {
               readOnly
               resize="none"
               value={
-                certificate?.comment ? certificate?.comment : "No Comments Yet"
+                certificate?.comments ? certificate?.comments : "No Comments Yet"
               }
             />
           </Box>
@@ -413,7 +413,7 @@ const Certificate = () => {
               <>
                 <Text color="green" fontWeight="500">
                   Your House Earned{" "}
-                  {certificate?.houseXP ? certificate?.houseXP + " XP" : "0 XP"}{" "}
+                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"}{" "}
                   from this Certificate
                 </Text>
               </>
@@ -421,7 +421,7 @@ const Certificate = () => {
               <>
                 <Text color="green" fontWeight="500">
                   {certificate.name} Earned{" "}
-                  {certificate?.houseXP ? certificate?.houseXP + " XP" : "0 XP"}{" "}
+                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"}{" "}
                   from this Certificate
                 </Text>
               </>

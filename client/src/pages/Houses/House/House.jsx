@@ -5,9 +5,15 @@ import {
   Flex,
   Heading,
   useToast,
-  Image,
   Text,
   Avatar,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -34,10 +40,9 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import AdminNavbar from "../../../components/admin/Navbar";
-import FacultyNavbar from "../../../components/student/Navbar";
+import FacultyNavbar from "../../../components/faculty/Navbar";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
-import { Form } from "react-router-dom";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -56,19 +61,30 @@ const House = () => {
   const [facCordID, setFacCordID] = useState(null);
   const [studentCordID, setStudentCordID] = useState(null);
   const [update, setUpdate] = useState(false);
-
+  const [editPrivilege, setEditPrivilege] = useState(false);
+  const [hid, setHid] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [decoded, setDecoded] = useState(null);
+
   const {
     isOpen: isSettingsOpen,
     onOpen: onSettingsOpen,
     onClose: onSettingsClose,
   } = useDisclosure();
 
-  let jwt;
+  useEffect(() => {
+    if (role === "A" || decoded?.perms?.includes(`HCO${hid}`)) {
+      setEditPrivilege(true);
+    } else {
+      setEditPrivilege(false);
+    }
+  }, [role, hid, decoded]);
+
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
-      jwt = jwtDecode(token);
+      const jwt = jwtDecode(token);
+      setDecoded(jwt);
       setRole(jwt.role);
     }
 
@@ -96,8 +112,7 @@ const House = () => {
         setMembers(data.members);
         setFacCord(data.facCordInfo);
         setStudentCord(data.studentCordInfo);
-
-        console.log(data);
+        setHid(data.house.no);
 
         setHouseName(data.house.name);
         setHouseColor(data.house.color);
@@ -120,14 +135,14 @@ const House = () => {
 
   useEffect(() => {
     if (houses) {
-      for (const year in houses.points) {
-        for (const month in houses.points[year]) {
-          const points =
-            houses.points[year][month].internal +
-            houses.points[year][month].external +
-            houses.points[year][month].events;
-          setTotalPoints((prev) => prev + points);
-        }
+      const currentYear = new Date().getFullYear();
+
+      for (const month in houses.points[currentYear]) {
+        const points =
+          houses.points[currentYear][month].internal +
+          houses.points[currentYear][month].external +
+          houses.points[currentYear][month].events;
+        setTotalPoints((prev) => prev + points);
       }
     }
   }, [houses]);
@@ -184,6 +199,7 @@ const House = () => {
         desc: houseDesc,
         fc: facCordID,
         sc: studentCordID,
+        hid: hid,
       }),
     }).then(async (res) => {
       if (res.status === 200) {
@@ -208,6 +224,54 @@ const House = () => {
     });
   };
   [];
+
+  const cancelRef = React.useRef();
+
+  const [selectedMember, setSelectedMember] = useState(null);
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+
+  const openDelete = (id) => {
+    setSelectedMember(id);
+    onDeleteOpen();
+  };
+
+  const delMem = () => {
+    onDeleteClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/houses/${houseID}/remove`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        mid: selectedMember,
+      }),
+    }).then(async (res) => {
+      if (res.status === 200) {
+        toast({
+          title: "Success",
+          description: "Member removed successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        setUpdate((prev) => !prev);
+        return await res.json();
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    });
+  };
 
   if (houses) {
     return (
@@ -257,7 +321,7 @@ const House = () => {
                     </Flex>
                   </Flex>
                   <Box>
-                    {role === "A" || jwt?.perms.includes("MH") ? (
+                    {editPrivilege ? (
                       <Text cursor="pointer" onClick={onSettingsOpen}>
                         <i className="fa-solid fa-pen"></i>
                       </Text>
@@ -298,7 +362,7 @@ const House = () => {
 
           <Box className="table" margin="80px">
             <Box className="tableTitle">House Ranking</Box>
-            <Table variant="unstyled" color="#848484">
+            <Table variant="striped" color="#848484">
               <Thead>
                 <Tr>
                   <Td>#</Td>
@@ -320,27 +384,26 @@ const House = () => {
                 ))}
               </Tbody>
             </Table>
-            {members.length > 5 ? (
-              <Box
-                float="right"
-                height="32.8px"
-                borderBottom="1px solid #8484849c"
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
+
+            <Box
+              float="right"
+              height="32.8px"
+              borderBottom="1px solid #8484849c"
+              width="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="flex-end"
+            >
+              <Text
+                textTransform="lowercase"
+                fontSize="15px"
+                mr="15px"
+                onClick={onOpen}
+                cursor="pointer"
               >
-                <Text
-                  textTransform="lowercase"
-                  fontSize="15px"
-                  mr="15px"
-                  onClick={onOpen}
-                  cursor="pointer"
-                >
-                  View All
-                </Text>
-              </Box>
-            ) : null}
+                View All
+              </Text>
+            </Box>
           </Box>
         </Box>
 
@@ -368,6 +431,13 @@ const House = () => {
                       </Td>
                       <Td>{member.mid}</Td>
                       <Td>{member.totalPoints}</Td>
+                      {editPrivilege ? (
+                        <Td>
+                          <Link onClick={() => openDelete(member.mid)}>
+                            Remove
+                          </Link>
+                        </Td>
+                      ) : null}
                     </Tr>
                   ))}
                 </Tbody>
@@ -428,7 +498,7 @@ const House = () => {
                     placeholder="House Color Hex*"
                     value={houseColor}
                     onChange={(e) => {
-                      setHouseColor("#" + e.target.value);
+                      setHouseColor(e.target.value);
                     }}
                   />
                 </InputGroup>
@@ -507,6 +577,33 @@ const House = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+        <AlertDialog
+          isOpen={isDeleteOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onDeleteClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Remove Member
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                Are you sure? You can't undo this action afterwards.
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onDeleteClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme="red" onClick={delMem} ml={3}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
       </>
     );
   }

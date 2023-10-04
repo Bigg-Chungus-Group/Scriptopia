@@ -37,7 +37,7 @@ import Cookies from "js-cookie";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const IntroModal = () => {
-  const decoded = useAuthCheck("S")
+  const decoded = useAuthCheck("S");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = React.useState(1);
@@ -86,9 +86,8 @@ const IntroModal = () => {
       setPage(5);
     } else if (page === 5) {
       const projects = document.getElementById("projects").value;
-      const certifications = document.getElementById("certifications").value;
       const cgpa = document.getElementById("cgpa").value;
-      if (projects === "" || certifications === "" || cgpa === "") {
+      if (projects === "" || cgpa === "") {
         toast({
           title: "Please fill all the fields",
           status: "error",
@@ -127,22 +126,24 @@ const IntroModal = () => {
   };
 
   const sendData = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/dashboard/firstTime`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/dashboard/firstTime`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      body: JSON.stringify({
-        about,
-        technical,
-        projects,
-        certifications,
-        cgpa,
-        mid: decoded.mid,
-      }),
-    })
+        body: JSON.stringify({
+          about,
+          technical,
+          projects,
+          cgpa,
+          mid: decoded.mid,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -207,19 +208,19 @@ const IntroModal = () => {
           {page === 1 ? (
             <ModalBody className="IntroModal">
               <Box className="sec1">
-                <Heading>Welcome to Scriptopia!</Heading>
+                <Heading>Welcome to Scriptopia Connect!</Heading>
                 <Box className="Images">
                   {" "}
                   <Image src={Intro1} />
                 </Box>
                 <Text>
-                  Embark on a journey of coding excellence tailored exclusively
-                  for our esteemed college community. Scriptopia isn't just a
-                  coding platform; it's a dynamic realm where innovation meets
-                  competition, where learning meets challenges, and where
-                  collaboration meets individual growth. With three distinct
-                  sections, we're here to revolutionize the way you approach
-                  coding. <span>Click Next to See How</span>
+                  Our innovative house system, certificate uploads, and exciting
+                  events empower you to excel academically and personally. Join
+                  a house, showcase your achievements, participate in events,
+                  and earn XP to make your college experience truly
+                  unforgettable. Welcome to a community that celebrates your
+                  journey and encourages you to reach new heights.{" "}
+                  <span>Click Next to See How</span>
                 </Text>
               </Box>
             </ModalBody>
@@ -232,19 +233,17 @@ const IntroModal = () => {
                 <Box>
                   {" "}
                   <Text>
-                    <span>Assignments:</span> Ignite Curiosity Access real-world
-                    coding challenges that align with your studies. Complete
-                    assignments to earn XP, developing valuable coding skills.
-                  </Text>
-                  <Text>
-                    <span>Practice: </span> Hone your coding mastery through
-                    algorithmic puzzles and challenges. Solve problems, earn XP,
-                    and enhance your problem-solving abilities.
-                  </Text>
-                  <Text>
                     <span>Houses</span> Join dynamic Houses, engage in coding
                     events, and test teamwork. Accumulate House Points (HP) and
                     XP for an exciting journey of growth.
+                  </Text>
+                  <Text>
+                    <span>Events:</span> Ignite Curiosity Access real-world
+                    event and challenges that align with your studies. Participate to Win XP.
+                  </Text>
+                  <Text>
+                    <span>Certificates: </span> Hone your coding mastery through
+                    the certifications you've received.
                   </Text>
                 </Box>
               </Box>
@@ -368,17 +367,11 @@ const IntroModal = () => {
                   placeholder="List your Project, with a short description of each project seperated by a comma (,)"
                   resize="none"
                   id="projects"
+                  rows={10}
                   onChange={(e) => setProjects(e.target.value)}
                   value={projects}
                 ></Textarea>
 
-                <Textarea
-                  placeholder="List your Certifications, with every certification seperated by a comma (,)"
-                  resize="none"
-                  id="certifications"
-                  onChange={(e) => setCertifications(e.target.value)}
-                  value={certifications}
-                ></Textarea>
                 <Input
                   type="number"
                   placeholder="Enter your Average CGPA"

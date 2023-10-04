@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -26,7 +26,8 @@ const FacultyImport = () => {
 
   const [tableData, setTableData] = useState([]);
   const [adding, setAdding] = useState(false);
-  const [addIndividual, setAddIndividual] = useState(false); 
+  const [addIndividual, setAddIndividual] = useState(false);
+  const [houses, setHouses] = useState([]);
   const toast = useToast();
 
   const handleFileUpload = (event) => {
@@ -41,6 +42,17 @@ const FacultyImport = () => {
   const handleModal = (value) => {
     setAddIndividual(value);
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/houses`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setHouses(data);
+      });
+  }, []);
 
   const startImport = () => {
     setAdding(true);
@@ -89,7 +101,14 @@ const FacultyImport = () => {
       <Box className="FacultyImport">
         <Box className="main">
           <Box className="btn">
-            <Button colorScheme="blue" onClick={() => {setAddIndividual(true)}}>Add Individual</Button>
+            <Button
+              colorScheme="blue"
+              onClick={() => {
+                setAddIndividual(true);
+              }}
+            >
+              Add Individual
+            </Button>
             <label htmlFor="file-upload" className="custom-file-upload">
               Upload .CSV
             </label>
@@ -106,9 +125,11 @@ const FacultyImport = () => {
           </Alert>
           <Alert status="info">
             <AlertIcon />
-            <AlertTitle>The following permission will be auto assigned for import: View Student Profile, View Faculty Information</AlertTitle>
-            <AlertDescription>
-            </AlertDescription>
+            <AlertTitle>
+              The following permission will be auto assigned for import: View
+              Student Profile, View Faculty Information
+            </AlertTitle>
+            <AlertDescription></AlertDescription>
           </Alert>
           <input
             id="file-upload"
@@ -156,7 +177,7 @@ const FacultyImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <FacultyAdd setModal={handleModal} /> : <></>}
+      {addIndividual ? <FacultyAdd setModal={handleModal} h={houses} /> : <></>}
     </>
   );
 };
