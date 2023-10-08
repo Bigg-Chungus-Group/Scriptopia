@@ -289,13 +289,13 @@ const Navbar = () => {
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
-            {notifications.length === 0 ? (
+            {notifications?.length === 0 ? (
               <Alert status="info">
                 <AlertIcon />
                 No Notifications
               </Alert>
             ) : (
-              notifications.map((notification) => (
+              notifications?.map((notification) => (
                 <Alert
                   status="info"
                   key={notification._id}

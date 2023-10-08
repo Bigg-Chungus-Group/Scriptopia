@@ -27,6 +27,7 @@ import {
   Textarea,
   Flex,
 } from "@chakra-ui/react";
+import Loader from "../../../components/Loader";
 
 const Enrollments = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -220,6 +221,8 @@ const Enrollments = () => {
         </Modal>
       </>
     );
+  } else {
+    return <Loader/>
   }
 };
 

@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../components/Loader";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
@@ -191,6 +192,8 @@ const Certificates = () => {
         </Modal>
       </>
     );
+  } else {
+    return <Loader />;
   }
 };
 

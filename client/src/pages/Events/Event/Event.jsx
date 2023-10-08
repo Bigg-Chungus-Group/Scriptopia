@@ -632,7 +632,7 @@ const Event = () => {
                       <Td>
                         <Link
                           href={
-                            event.registerationEnds < date ? null : event.link
+                            event.registerationEnds < date ? null : navigate(event.link)
                           }
                           color={
                             event.registerationEnds < date ? "red" : "blacke"

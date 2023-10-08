@@ -13,10 +13,12 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../components/Loader";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/certificates`, {
@@ -28,6 +30,7 @@ const Certificates = () => {
     })
       .then((res) => {
         return res.json();
+        setLoading(false);
       })
       .then((data) => {
         setCertificates(data.certificates);
@@ -37,49 +40,53 @@ const Certificates = () => {
       });
   }, []);
 
-  return (
-    <>
-      <Navbar />
-      <Box p="30px 70px">
-        <Heading fontSize="20px">Certificates</Heading>
-        <Table mt="50px" variant="striped">
-          <Thead>
-            <Tr>
-              <Th>Student Name</Th>
-              <Th>Certificate Name</Th>
-              <Th>Certificate Type</Th>
-              <Th>Issuing Organization</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {certificates.map((certificate) => {
-              return (
-                <Tr key={certificate?._id}>
-                  <Td>{certificate?.name}</Td>
-                  <Td>{certificate?.certificateName}</Td>
-                  <Td>
-                    {certificate?.certificateType.slice(0, 1).toUpperCase() +
-                      certificate?.certificateType.slice(1)}
-                  </Td>
-                  <Td>{certificate?.issuingOrg}</Td>
-                  <Td>
-                    <Button
-                      onClick={() =>
-                        navigate(`/certificates/${certificate?._id}`)
-                      }
-                      mr="20px"
-                    >
-                      View Certificate
-                    </Button>
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </Box>
-    </>
-  );
+  if (!loading) {
+    return (
+      <>
+        <Navbar />
+        <Box p="30px 70px">
+          <Heading fontSize="20px">Certificates</Heading>
+          <Table mt="50px" variant="striped">
+            <Thead>
+              <Tr>
+                <Th>Student Name</Th>
+                <Th>Certificate Name</Th>
+                <Th>Certificate Type</Th>
+                <Th>Issuing Organization</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {certificates.map((certificate) => {
+                return (
+                  <Tr key={certificate?._id}>
+                    <Td>{certificate?.name}</Td>
+                    <Td>{certificate?.certificateName}</Td>
+                    <Td>
+                      {certificate?.certificateType.slice(0, 1).toUpperCase() +
+                        certificate?.certificateType.slice(1)}
+                    </Td>
+                    <Td>{certificate?.issuingOrg}</Td>
+                    <Td>
+                      <Button
+                        onClick={() =>
+                          navigate(`/certificates/${certificate?._id}`)
+                        }
+                        mr="20px"
+                      >
+                        View Certificate
+                      </Button>
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </Box>
+      </>
+    );
+  } else {
+    return <Loader />;
+  }
 };
 
 export default Certificates;

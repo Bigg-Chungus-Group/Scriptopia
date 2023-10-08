@@ -24,12 +24,15 @@ import {
 import Navbar from "../../../components/admin/Navbar";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   useAuthCheck("A")
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
+
+  const Navigate = useNavigate();
 
   const [show1, setShow1] = React.useState(false);
   const handleClick1 = () => setShow1(!show1);
@@ -230,6 +233,8 @@ const Settings = () => {
       });
   };
 
+
+
   if (!loading) {
     return (
       <>
@@ -327,7 +332,7 @@ const Settings = () => {
                     variant="solid"
                     colorScheme="green"
                     onClick={() => {
-                      window.location.href = "/admin/logs";
+                      Navigate("/admin/logs")
                     }}
                   >
                     Check Server Logs

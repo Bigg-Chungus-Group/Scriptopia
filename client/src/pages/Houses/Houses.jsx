@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto";
+import Loader from "../../components/Loader";
 
 const Houses = () => {
   const toast = useToast();
@@ -507,6 +508,8 @@ const Houses = () => {
         </Box>
       </>
     );
+  } else {
+    return <Loader/>
   }
 };
 

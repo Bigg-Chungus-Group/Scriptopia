@@ -15,6 +15,7 @@ import Navbar from "../../../components/admin/Navbar";
 import "./Home.css";
 import Chart from "chart.js/auto";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import Loader from "../../../components/Loader";
 
 const Home = () => {
   useAuthCheck("A");
@@ -24,6 +25,7 @@ const Home = () => {
   const [certifications, setCertifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedHouse, setSelectedHouse] = useState(0);
+  
 
   function calculateTotalPoints(data, year) {
     const currentDate = new Date();
@@ -464,6 +466,8 @@ const Home = () => {
         </Box>
       </>
     );
+  } else {
+    return <Loader/>
   }
 };
 

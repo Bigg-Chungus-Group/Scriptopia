@@ -23,9 +23,11 @@ import "./Logs.css";
 import jsPDF from "jspdf";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import Loader from "../../../components/Loader";
+const [loading, setLoading] = useState(true);
 
 const Logs = () => {
-  useAuthCheck("A")
+  useAuthCheck("A");
   const [logs, setLogs] = useState("");
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,6 +53,7 @@ const Logs = () => {
           );
         });
         setLogs(logLines);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -124,7 +127,6 @@ const Logs = () => {
         });
       });
   };
-
   const exportAsPDF = () => {
     const logContainer = document.querySelector(".log-container");
     const logLines = logContainer.querySelectorAll("div");
@@ -134,8 +136,11 @@ const Logs = () => {
     doc.setFontSize(10);
     let y = 20;
     logLines.forEach((line) => {
-      doc.text(line.innerText, 10, y);
-      y += 5;
+      const text = line.innerText;
+      const maxWidth = 180;
+      const wrappedText = doc.splitTextToSize(text, maxWidth);
+      doc.text(wrappedText, 10, y);
+      y += wrappedText.length * 6; // Adjust the line spacing as needed
     });
     doc.save("server-logs.pdf");
   };
@@ -155,85 +160,89 @@ const Logs = () => {
     element.click();
   };
 
-  return (
-    <>
-      <Navbar />
-      <Box className="AdminLogs">
-        <Flex alignItems="center" direction="row" gap="20px" wrap="wrap">
-          <Heading>Server Logs</Heading>
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              colorScheme="green"
+  if (!loading) {
+    return (
+      <>
+        <Navbar />
+        <Box className="AdminLogs">
+          <Flex alignItems="center" direction="row" gap="20px" wrap="wrap">
+            <Heading>Server Logs</Heading>
+            <Menu>
+              <MenuButton
+                as={Button}
+                rightIcon={<ChevronDownIcon />}
+                colorScheme="green"
+              >
+                Export
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={exportAsPDF}>Export as .PDF</MenuItem>
+                <MenuItem onClick={exportAsTXT}>Export as .TXT</MenuItem>
+                <MenuItem onClick={() => setTimeout(() => window.print(), 100)}>
+                  Print Currently Visible Logs
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            <Button
+              onClick={onOpen}
+              colorScheme="red"
+              alignSelf="flex-end"
+              justifySelf="flex-end"
             >
-              Export
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={exportAsPDF}>Export as .PDF</MenuItem>
-              <MenuItem onClick={exportAsTXT}>Export as .TXT</MenuItem>
-              <MenuItem onClick={() => setTimeout(() => window.print(), 100)}>
-                Print Currently Visible Logs
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <Button
-            onClick={onOpen}
-            colorScheme="red"
-            alignSelf="flex-end"
-            justifySelf="flex-end"
-          >
-            Flush Logs
-          </Button>
-          <Button
-            onClick={() =>
-              document.querySelector(".log-container").scrollTo(0, 0)
-            }
-          >
-            Scroll to Top
-          </Button>
-          <Button onClick={() => window.location.reload()}>Refresh</Button>
+              Flush Logs
+            </Button>
+            <Button
+              onClick={() =>
+                document.querySelector(".log-container").scrollTo(0, 0)
+              }
+            >
+              Scroll to Top
+            </Button>
+            <Button onClick={() => window.location.reload()}>Refresh</Button>
 
-          <Input
-            placeholder="Search Logs"
-            width="250px"
-            variant="filled"
-            onChange={search}
-          />
-        </Flex>
-        <div className="log-wrapper">
-          <div className="log-container">{logs}</div>
-        </div>
-      </Box>
+            <Input
+              placeholder="Search Logs"
+              width="250px"
+              variant="filled"
+              onChange={search}
+            />
+          </Flex>
+          <div className="log-wrapper">
+            <div className="log-container">{logs}</div>
+          </div>
+        </Box>
 
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Flush Server Logs?
-            </AlertDialogHeader>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Flush Server Logs?
+              </AlertDialogHeader>
 
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
+              <AlertDialogBody>
+                Are you sure? You can't undo this action afterwards.
+              </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={deleteLogs} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </>
-  );
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme="red" onClick={deleteLogs} ml={3}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    );
+  } else {
+    <Loader />;
+  }
 };
 
 export default Logs;

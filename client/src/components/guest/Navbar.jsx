@@ -35,8 +35,10 @@ import {
   FormLabel,
   Text,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate(); 
   return (
     <div className="navAdmin">
       <div className="left-link">
@@ -44,7 +46,7 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              window.location.href = "/auth";
+              navigate("/auth")
             }}
           />
         </div>
@@ -52,7 +54,7 @@ const Navbar = () => {
         <i className="fa-solid fa-magnifying-glass" id="searchIcon"></i>
       </div>
       <Box className="rightmost">
-        <Button onClick={() => window.location.href = "/auth"}>Sign In</Button>
+        <Button onClick={() => navigate('/auth')}>Sign In</Button>
       </Box>
     </div>
   );

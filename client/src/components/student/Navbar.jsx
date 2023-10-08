@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -30,6 +30,8 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 
+import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -37,6 +39,7 @@ const Navbar = () => {
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let dec;
@@ -116,14 +119,14 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              window.location.href = "/";
+              Navigate("/")
             }}
           />
         </div>
         <div className="links">
-          <a href="/certificates">Certificates</a>
-          <a href="/houses">Houses</a>
-          <a href="/events">Events</a>
+          <a onClick={() => navigate("/certificates")}>Certificates</a>
+          <a onClick={() => navigate("/houses")}>Houses</a>
+          <a onClick={() => navigate("/events")}>Events</a>
         </div>
 </div>
 

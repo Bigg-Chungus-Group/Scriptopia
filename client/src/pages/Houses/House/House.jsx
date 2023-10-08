@@ -37,12 +37,15 @@ import {
   FormLabel,
   FormControl,
   InputLeftElement,
+  position,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import AdminNavbar from "../../../components/admin/Navbar";
 import FacultyNavbar from "../../../components/faculty/Navbar";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
+import { ChromePicker as SketchPicker } from "react-color";
+import Loader from "../../../components/Loader";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -65,6 +68,8 @@ const House = () => {
   const [hid, setHid] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [decoded, setDecoded] = useState(null);
+
+  const [pickedColor, setPickedColor] = useState("#fff");
 
   const {
     isOpen: isSettingsOpen,
@@ -303,7 +308,7 @@ const House = () => {
                       {houses.name} House
                     </Heading>
                     <Flex align="center" gap="10px">
-                      <a href={`/profile/${facCord?.id}`}>
+                      <a>
                         <Text>
                           @{facCord?.fname} {facCord?.lname}
                         </Text>
@@ -494,6 +499,23 @@ const House = () => {
 
                 <InputGroup width="70%">
                   <InputLeftAddon>Color Hex* #</InputLeftAddon>
+                  <SketchPicker
+                    color={pickedColor}
+                    onChange={(color) => {
+                      setPickedColor(color.hex);
+                      setHouseColor(color.hex);
+                    }}
+                    styles={{
+                      default: {
+                        picker: {
+                          position: "absolute",
+                          zIndex: "999",
+                          right: -298,
+                          width: "80%",
+                        },
+                      },
+                    }}
+                  />
                   <Input
                     placeholder="House Color Hex*"
                     value={houseColor}
@@ -606,7 +628,7 @@ const House = () => {
         </AlertDialog>
       </>
     );
-  }
+  } else {return <Loader/>}
 };
 
 export default House;

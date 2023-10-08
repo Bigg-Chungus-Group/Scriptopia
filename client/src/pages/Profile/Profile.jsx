@@ -26,11 +26,13 @@ import {
 } from "@chakra-ui/react";
 
 import Chart from "chart.js/auto";
+import Loader from "../../components/Loader";
 
 const Profile = () => {
   const [profile, setProfile] = useState([]);
   const [role, setRole] = useState();
   const [loading, setLoading] = useState(true);
+  
 
   const [user, setUser] = useState();
   const [houses, setHouses] = useState();
@@ -179,109 +181,129 @@ const Profile = () => {
     }
   }, []);
 
-  return (
-    <>
-      {role === "S" ? (
-        <StudentNav />
-      ) : role === "A" ? (
-        <AdminNav />
-      ) : role === "F" ? (
-        <FacultyNav />
-      ) : (
-        <GuestNav />
-      )}
+  if (!loading) {
+    return (
+      <>
+        {role === "S" ? (
+          <StudentNav />
+        ) : role === "A" ? (
+          <AdminNav />
+        ) : role === "F" ? (
+          <FacultyNav />
+        ) : (
+          <GuestNav />
+        )}
 
-      <Flex p="30px 70px" gap="20px">
-        <Box width="30%">
-          <Flex
-            p="20px"
-            direction="column"
-            gap="20px"
-            align="center"
-            boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
-            borderRadius="15px"
-          >
-            <Avatar size="2xl" />
-            <Text>Anurag Sawant </Text>
-            <Text>22204016</Text>
+        <Flex p="30px 70px" gap="20px">
+          <Box width="30%">
+            <Flex
+              p="20px"
+              direction="column"
+              gap="20px"
+              align="center"
+              boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
+              borderRadius="15px"
+            >
+              <Avatar size="2xl" />
+              <Text>Anurag Sawant </Text>
+              <Text>22204016</Text>
 
-            <Flex gap="20px">
-              <Box>
-                <Flex direction="column" align="center" justify="center">
-                  <Text>26</Text>
-                  <Text fontSize="13px">Internal Certificates</Text>
-                </Flex>
-              </Box>
+              <Flex gap="20px">
+                <Box>
+                  <Flex direction="column" align="center" justify="center">
+                    <Text>26</Text>
+                    <Text fontSize="13px">Internal Certificates</Text>
+                  </Flex>
+                </Box>
 
-              <Box>
-                <Flex direction="column" align="center" justify="center">
-                  <Text>26</Text>
-                  <Text fontSize="13px">External Certificates</Text>
-                </Flex>
-              </Box>
-            </Flex>
-
-            <Box>
-              <Flex direction="column" align="center" justify="center">
-                <Text>26</Text>
-                <Text fontSize="13px">Events Certificates</Text>
+                <Box>
+                  <Flex direction="column" align="center" justify="center">
+                    <Text>26</Text>
+                    <Text fontSize="13px">External Certificates</Text>
+                  </Flex>
+                </Box>
               </Flex>
-            </Box>
-          </Flex>
 
-          <Flex
-            direction="column"
-            gap="15px"
-            mt="20px"
-            boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
-            borderRadius="15px"
+              <Box>
+                <Flex direction="column" align="center" justify="center">
+                  <Text>26</Text>
+                  <Text fontSize="13px">Events Certificates</Text>
+                </Flex>
+              </Box>
+            </Flex>
+
+            <Flex
+              direction="column"
+              gap="15px"
+              mt="20px"
+              boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
+              borderRadius="15px"
+              p="20px"
+            >
+              <Flex
+                gap="10px"
+                direction="row"
+                align="center"
+                border="1px solid lightgray"
+                padding="8px"
+                borderRadius="5px"
+              >
+                <i className="fa-solid fa-envelopes"></i>
+                <Link>anuragsawant@duck.com</Link>
+              </Flex>
+              <Flex
+                gap="10px"
+                direction="row"
+                align="center"
+                border="1px solid lightgray"
+                padding="8px"
+                borderRadius="5px"
+              >
+                <i className="fa-brands fa-linkedin"></i>
+                <Link>anuragsawant@duck.com</Link>
+              </Flex>
+              <Flex
+                gap="10px"
+                direction="row"
+                align="center"
+                border="1px solid lightgray"
+                padding="8px"
+                borderRadius="5px"
+              >
+                <i className="fa-brands fa-github"></i>
+                <Link>anuragsawant@duck.com</Link>
+              </Flex>
+            </Flex>
+          </Box>
+
+          <Box
+            className="pointAnalysis"
+            width="30%"
+            height="48vh"
+            minHeight="fit-content"
             p="20px"
+            borderRadius="15px"
+            boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
           >
+            <Heading fontSize="17px" mb="50px">
+              House Contribution
+            </Heading>
             <Flex
-              gap="10px"
-              direction="row"
               align="center"
-              border="1px solid lightgray"
-              padding="8px"
-              borderRadius="5px"
+              justify="center"
+              height="60%"
+              gap="20px"
+              direction="column"
             >
-              <i className="fa-solid fa-envelopes"></i>
-              <Link>anuragsawant@duck.com</Link>
+              <canvas id="contribution" width="10px" height="10px"></canvas>
             </Flex>
-            <Flex
-              gap="10px"
-              direction="row"
-              align="center"
-              border="1px solid lightgray"
-              padding="8px"
-              borderRadius="5px"
-            >
-              <i className="fa-brands fa-linkedin"></i>
-              <Link>anuragsawant@duck.com</Link>
-            </Flex>
-            <Flex
-              gap="10px"
-              direction="row"
-              align="center"
-              border="1px solid lightgray"
-              padding="8px"
-              borderRadius="5px"
-            >
-              <i className="fa-brands fa-github"></i>
-              <Link>anuragsawant@duck.com</Link>
-            </Flex>
-          </Flex>
-        </Box>
-
-        <Box className="pointAnalysis" width="30%" height="48vh" minHeight="fit-content" p="20px" borderRadius="15px" boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);">
-          <Heading fontSize="17px" mb="50px">House Contribution</Heading>
-          <Flex align="center" justify="center" height="60%" gap="20px" direction="column">
-            <canvas id="contribution" width="10px" height="10px"></canvas>
-          </Flex>
-        </Box>
-      </Flex>
-    </>
-  );
+          </Box>
+        </Flex>
+      </>
+    );
+  } else {
+    return <Loader />;
+  }
 };
 
 export default Profile;

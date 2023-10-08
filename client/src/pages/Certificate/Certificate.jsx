@@ -46,6 +46,7 @@ import jwtDecode from "jwt-decode";
 import AdminNavbar from "../../components/admin/Navbar";
 import FacultyNavbar from "../../components/faculty/Navbar";
 import GuestNavbar from "../../components/guest/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Certificate = () => {
   const [certificate, setCertificate] = useState({});
@@ -57,6 +58,8 @@ const Certificate = () => {
   const [issueYear, setIssueYear] = useState();
   const [certificateType, setCertificateType] = useState();
   const [certificateLevel, setCertificateLevel] = useState();
+
+  const navigate = useNavigate();
 
   const [editPrivilege, setEditPrivilege] = useState(false);
   const [role, setRole] = useState("");
@@ -295,7 +298,7 @@ const Certificate = () => {
           isClosable: true,
         });
         onClose();
-        window.location.href = "/certificates";
+        navigate("/certificates")
       })
       .catch((err) => {
         setLoader1(false);
