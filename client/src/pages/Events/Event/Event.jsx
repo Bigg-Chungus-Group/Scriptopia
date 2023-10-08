@@ -45,6 +45,7 @@ import {
 import "./Event.css";
 
 import { Link as domLink, useNavigate, useNavigation } from "react-router-dom";
+import Houses from "../../Houses/Houses";
 
 const Event = () => {
   const navigate = useNavigate();
@@ -56,10 +57,13 @@ const Event = () => {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [deregisterLoading, setDeregisterLoading] = useState(false);
 
+  const [allocatePoints, setAllocatePoints] = useState(0);
+
   const [loading, setLoading] = useState(true);
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isAllocateOpen, onOpen: onAllocateOpen, onClose: onAllocateClose } = useDisclosure();
 
   const [eventName, setEventName] = useState("");
   const [eventImage, setEventImage] = useState("");
@@ -454,6 +458,54 @@ const Event = () => {
       });
   };
 
+  const allocate = () => {
+    console.log("REQUEST SENDING")
+    fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/events/${event._id}/allocate`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ points: allocatePoints }),
+      }
+    )
+      .then(async (res) => await res.json())
+      .then((res) => {
+        console.log("REQUEST SENT")
+        if (res.status === "success") {
+          toast({
+            title: "Success",
+            description: "Points Allocated Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          setUpdate(!update);
+          onAllocateClose();
+        } else {
+          toast({
+            title: "Error",
+            description: "Some error occured",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        toast({
+          title: "Error",
+          description: "Some error occured",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }
+
   if (!loading) {
     return (
       <>
@@ -630,6 +682,18 @@ const Event = () => {
                 >
                   Delete This Event
                 </Button>
+
+                {event.eventEnds < date && event?.pointsAllocated === false ? (
+                  <Button
+                    float="right"
+                    mt="15px"
+                    mr="10px"
+                    colorScheme="orange"
+                    onClick={onAllocateOpen}
+                  >
+                    Allocate Points to Participants
+                  </Button>
+                ) : null}
               </>
             ) : event.registerationType ===
               "external" ? null : event.registerationEnds < date ? (
@@ -962,6 +1026,33 @@ const Event = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialogOverlay>
+        </AlertDialog>
+
+        <AlertDialog
+          motionPreset="slideInBottom"
+          onClose={onAllocateClose}
+          isOpen={isAllocateOpen}
+
+          isCentered
+        >
+          <AlertDialogOverlay />
+
+          <AlertDialogContent>
+            <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              <Text mb="20px">How Many Points to Allocate?</Text>
+              <Input value={allocatePoints} onChange={(e) => setAllocatePoints(e.target.value)} type="number" />
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onAllocateClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" ml={3} onClick={allocate}>
+                Allocate!
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
         </AlertDialog>
       </>
     );
