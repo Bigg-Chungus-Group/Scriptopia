@@ -1,0 +1,21 @@
+.AdminStudents {
+  background-color: var(--bg);
+  padding: 20px 75px;
+  height: 77  vh;
+}
+
+.AdminStudents .filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.AdminStudents .table {
+    overflow: auto;
+    height: 59vh;
+}
+
+.AdminStudents .actions {
+    display: flex;
+    gap: 20px;
+}

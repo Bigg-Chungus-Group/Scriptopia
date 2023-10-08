@@ -1,0 +1,74 @@
+.StudentCertificate {
+  height: 85vh;
+  box-sizing: border-box;
+  padding: 30px 70px;
+  gap: 30px;
+  justify-content: center;
+}
+
+.StudentCertificate .track-wrapper {
+  margin-top: 10px;
+}
+
+.StudentCertificate .track-wrapper p {
+  margin-bottom: 20px;
+}
+
+.StudentCertificate .track {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+}
+
+.StudentCertificate .uploaded,
+.StudentCertificate .reviewed,
+.StudentCertificate .status {
+  background-color: lightgray;
+  border-radius: 15px;
+  display: flex;
+  width: 10%;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0;
+  font-weight: bold;
+  color: rgb(98, 92, 92);
+  position: relative;
+}
+
+.StudentCertificate .uploaded::after,
+.StudentCertificate .reviewed::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 2px;
+  background-color: black;
+}
+
+.StudentCertificate textarea {
+  background-color: #afafaf3e;
+  border-radius: 10px;
+  height: 25vh;
+  padding: 20px;
+}
+
+.StudentCertificate .buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.StudentCertificate .green {
+  background-color: #4caf50;
+  color: aliceblue;
+  font-weight: bold;
+}
+
+.StudentCertificate .red {
+    background-color: #f44336;
+    color: aliceblue;
+    font-weight: bold;
+}
