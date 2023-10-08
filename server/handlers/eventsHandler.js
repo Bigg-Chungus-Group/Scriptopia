@@ -1,9 +1,10 @@
 import express from "express";
-import { eventsDB } from "../configs/mongo.js";
+import { eventsDB, userDB, houseDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 import { verifyPerms } from "./verifyPermissions.js";
 import { verifyToken } from "../apis/jwt.js";
+import { parse } from "dotenv";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -206,5 +207,92 @@ router.post("/:id/deregister", verifyToken, async (req, res) => {
     });
   }
 });
+
+router.post(
+  "/:id/allocate",
+  verifyToken,
+  verifyPerms("MHI"),
+  async (req, res) => {
+    const id = req.params.id;
+    const { points } = req.body;
+
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const monthsName = [
+      "january",
+      "febuary",
+      "march",
+      "april",
+      "may",
+      "june",
+      "july",
+      "august",
+      "septemeber",
+      "october",
+      "november",
+      "december",
+    ];
+
+    const monthName = monthsName[currentMonth];
+
+    const houseString = `house.points.${currentYear}.${monthName}.internal`;
+    const houseDBString = `points.${currentYear}.${monthName}.internal`;
+
+
+    try {
+      const event = await eventsDB.findOne({ _id: new ObjectId(id) });
+      if (event.registerationType !== "internal") {
+        res.status(400).json({ message: "Event is not internal" });
+        return;
+      }
+
+      for (const participant of event.registered) {
+        await userDB.updateOne(
+          { mid: participant },
+          {
+            $inc: {
+              [houseString]: parseInt(points),
+              "certificates.internal": 1,
+            },
+          }
+        );
+
+        const user = await userDB.findOne({ mid: participant });
+        const userhouse = user.house;
+
+        await houseDB.updateOne(
+          { _id: new ObjectId(userhouse) },
+          {
+            $inc: {
+              [houseDBString]: parseInt(points),
+              "certificates.internal": 1,
+            },
+          }
+        );
+
+        await eventsDB.updateOne(
+          { _id: new ObjectId(id) },
+          {
+            $set: { pointsAllocated: true },
+            $inc: { points: parseInt(points) },
+          }
+        );
+      }
+
+      res.status(200).json({ status: "success" });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ status: "failed", message: "Error in allocating points" });
+      logger.error({
+        code: "EVH105",
+        message: "Error in allocating points",
+        err: error,
+      });
+    }
+  }
+);
 
 export default router;

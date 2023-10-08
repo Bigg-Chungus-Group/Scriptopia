@@ -319,11 +319,11 @@ const Events = () => {
                   <Text color="blue.600">
                     {event.mode.charAt(0).toUpperCase() + event.mode.slice(1)}
                     <Badge
-                      colorScheme={event.eventStarts > date ? "green" : "red"}
+                      color={event.eventStarts > date ? "green" : event.eventEnds > date ? "blue" : "red"}
                       ml="15px"
                       fontSize="13px"
                     >
-                      {event.eventStarts > date ? "Upcoming" : "Expired"}
+                      {event.eventStarts > date ? "Upcoming" : event.eventEnds > date ? "Ongoing" : "Expired"}
                     </Badge>
                   </Text>
                 </Stack>

@@ -97,7 +97,7 @@ router.post("/:id/update", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const houses = await houseDB.find({}).toArray();
 

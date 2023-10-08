@@ -40,6 +40,7 @@ const Auth = () => {
     if (Cookie.get("blocked")) {
       setDisabled(true);
     }
+    localStorage.removeItem("chakra-ui-color-mode");
   }, []);
 
   useEffect(() => {
