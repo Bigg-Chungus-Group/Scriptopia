@@ -24,9 +24,9 @@ import jsPDF from "jspdf";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 import Loader from "../../../components/Loader";
-const [loading, setLoading] = useState(true);
 
 const Logs = () => {
+  const [loading, setLoading] = useState(true);
   useAuthCheck("A");
   const [logs, setLogs] = useState("");
   const cancelRef = React.useRef();
@@ -56,7 +56,7 @@ const Logs = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(error);
         toast({
           title: "Error",
           description: "Error fetching logs.",
@@ -117,7 +117,7 @@ const Logs = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error deleting logs.",

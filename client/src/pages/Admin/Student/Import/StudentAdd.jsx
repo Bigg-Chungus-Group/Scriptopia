@@ -77,7 +77,7 @@ const StudentAdd = ({ setModal }) => {
         });
       }
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
       toast({
         title: "Error",
         description: "Something went wrong",

@@ -48,7 +48,7 @@ const Navbar = () => {
       const p = dec.picture;
       setPicture(p);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "An error occurred.",
         description: "Please try again later.",
@@ -75,7 +75,7 @@ const Navbar = () => {
           }
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast({
           title: "An error occurred.",
           description: "Please try again later.",
@@ -119,7 +119,7 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              Navigate("/")
+              navigate("/")
             }}
           />
         </div>

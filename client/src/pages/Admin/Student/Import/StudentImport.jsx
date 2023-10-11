@@ -73,7 +73,7 @@ const StudentImport = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setAdding(false);
         toast({
           title: "Error",

@@ -111,7 +111,7 @@ const Settings = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           toast({
             title: "Password Change Failed!",
             status: "error",
@@ -173,7 +173,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show1 ? "text" : "password"}
                   placeholder="Enter Old Password"
-                  onChange={(e) => setOldPass(e.target.value)}
+                  onChange={(e) => setOldPass(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick1}>
@@ -186,7 +186,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show2 ? "text" : "password"}
                   placeholder="Enter New Password"
-                  onChange={(e) => setNewPass(e.target.value)}
+                  onChange={(e) => setNewPass(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick2}>
@@ -199,7 +199,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show3 ? "text" : "password"}
                   placeholder="Confirm New Password"
-                  onChange={(e) => validatePassMatch(e.target.value)}
+                  onChange={(e) => validatePassMatch(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick3}>

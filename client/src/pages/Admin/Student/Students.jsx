@@ -93,7 +93,7 @@ const Students = () => {
         setHouses(data.houses);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching students",

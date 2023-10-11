@@ -87,7 +87,7 @@ const Navbar = () => {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "Error Fetching Notifications",
         status: "error",
@@ -139,7 +139,7 @@ const Navbar = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error Adding Notification",
           status: "error",

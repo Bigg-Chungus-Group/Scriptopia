@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import React from "react";
 
-import StudentProfile from "./pages/Student/Profile/Profile.jsx";
+import StudentProfile from "./pages/Profile/Profile.jsx";
 import StudentHome from "./pages/Student/Home/Home.jsx";
 import StudentCertificates from "./pages/Student/Certificates/Certificates.jsx";
 import StudentSettings from "./pages/Student/Settings/Settings.jsx";

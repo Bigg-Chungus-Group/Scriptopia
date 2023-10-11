@@ -65,7 +65,7 @@ const FacultyImport = () => {
       },
       body: JSON.stringify({ tableData }),
     }).then((res) => {
-      console.log(res);
+      console.error(res);
       setAdding(false);
       if (res.status === 200) {
         toast({

@@ -204,7 +204,7 @@ const Home = () => {
 
     return () => {
       if (hcl) {
-        hcl.destroy();
+        hcl?.destroy();
       }
     };
   }, [loading, selectedMonth]);
@@ -353,7 +353,7 @@ const Home = () => {
 
     return () => {
       if (myHouseChart) {
-        myHouseChart.destroy();
+        myHouseChart?.destroy();
       }
     };
   }, [loading, userHouse]);
@@ -415,14 +415,14 @@ const Home = () => {
 
       return () => {
         if (contrChart) {
-          contrChart.destroy();
+          contrChart?.destroy();
         }
       };
     }
 
     return () => {
       if (cont) {
-        contrChart.destroy();
+        contrChart?.destroy();
       }
     };
   }, [loading, userHouse, user]);
@@ -496,14 +496,14 @@ const Home = () => {
                           .map((cert) => (
                             <Tr key={cert._id}>
                               <Td>
-                                <Text>{cert.certificateName}</Text>
-                                <Text fontSize="12px">{cert.issuingOrg}</Text>
+                                <Text>{cert?.certificateName}</Text>
+                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
-                              <Td className="hideOnPhone">{cert.xp || "0"}</Td>
+                              <Td className="hideOnPhone">{cert?.xp || "0"}</Td>
                               <Td className="hideOnPhone">
-                                {cert.submissionDate || null}
+                                {cert?.submissionDate || null}
                               </Td>
-                              <Td>{cert.status}</Td>
+                              <Td>{cert?.status}</Td>
                             </Tr>
                           ))}
                       </Tbody>
@@ -526,12 +526,12 @@ const Home = () => {
                           .map((cert) => (
                             <Tr key={cert._id}>
                               <Td>
-                                <Text>{cert.certificateName}</Text>
-                                <Text fontSize="12px">{cert.issuingOrg}</Text>
+                                <Text>{cert?.certificateName}</Text>
+                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
-                              <Td>{cert.points || "0"}</Td>
-                              <Td>{cert.submissionDate || null}</Td>
-                              <Td>{cert.status}</Td>
+                              <Td>{cert?.points || "0"}</Td>
+                              <Td>{cert?.submissionDate || null}</Td>
+                              <Td>{cert?.status}</Td>
                             </Tr>
                           ))}
                       </Tbody>
@@ -554,12 +554,12 @@ const Home = () => {
                           .map((cert) => (
                             <Tr key={cert._id}>
                               <Td>
-                                <Text>{cert.certificateName}</Text>
-                                <Text fontSize="12px">{cert.issuingOrg}</Text>
+                                <Text>{cert?.certificateName}</Text>
+                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
-                              <Td>{cert.points || "0"}</Td>
-                              <Td>{cert.submissionDate || null}</Td>
-                              <Td>{cert.status}</Td>
+                              <Td>{cert?.points || "0"}</Td>
+                              <Td>{cert?.submissionDate || null}</Td>
+                              <Td>{cert?.status}</Td>
                             </Tr>
                           ))}
                       </Tbody>
@@ -573,7 +573,7 @@ const Home = () => {
             <Box className="myHouse">
               <Flex justify="space-between">
                 <Heading fontSize="17px">
-                  {userHouse.name} House Leader-board
+                  {userHouse?.name} House Leader-board
                 </Heading>
               </Flex>
 
@@ -588,13 +588,13 @@ const Home = () => {
                 <canvas id="contribution"></canvas>
                 <Box className="pointAnalysis__stats" marginTop="-20px">
                   <Text fontSize="14px">
-                    Internal Certification Points: <b> {hp.totalInternal}</b>
+                    Internal Certification Points: <b> {hp?.totalInternal}</b>
                   </Text>
                   <Text fontSize="14px">
-                    External Certification Points: <b>{hp.totalExternal}</b>
+                    External Certification Points: <b>{hp?.totalExternal}</b>
                   </Text>
                   <Text fontSize="14px">
-                    Events Certification Points: <b>{hp.totalEvents}</b>
+                    Events Certification Points: <b>{hp?.totalEvents}</b>
                   </Text>
                 </Box>
               </Flex>

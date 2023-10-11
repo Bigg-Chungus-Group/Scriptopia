@@ -85,7 +85,7 @@ const CreatePW = ({ isFirstTime, mid }) => {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       onClose();
       toast({
         title: "Error",

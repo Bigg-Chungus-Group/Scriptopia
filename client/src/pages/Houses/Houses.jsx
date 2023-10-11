@@ -62,7 +62,7 @@ const Houses = () => {
     setSelectedMonth(monthNames[currentMonth + 1]);
     setPrevMonth(monthNames[currentMonth]);
 
-    console.log(monthNames[currentMonth + 1]);
+    console.error(monthNames[currentMonth + 1]);
 
     const currentYear = currentDate.getFullYear();
     setCurrentYear(currentYear);
@@ -201,7 +201,7 @@ const Houses = () => {
 
     return () => {
       if (hcl) {
-        hcl.destroy();
+        hcl?.destroy();
       }
     };
   }, [loading, selectedMonth]);
@@ -209,8 +209,8 @@ const Houses = () => {
   useEffect(() => {
     let hcl;
     const currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    currentYear = currentYear.toString();
+    let currentYear = currentDate?.getFullYear();
+    currentYear = currentYear?.toString();
 
     if (!loading) {
       let house1, house2, house3, house4;
@@ -221,30 +221,30 @@ const Houses = () => {
         house4 = calculateTotalPoints(houses[3]);
 
         house1 =
-          house1.totalInternal + house1.totalExternal + house1.totalEvents;
+          house1?.totalInternal + house1?.totalExternal + house1?.totalEvents;
         house2 =
-          house2.totalInternal + house2.totalExternal + house2.totalEvents;
+          house2?.totalInternal + house2?.totalExternal + house2?.totalEvents;
         house3 =
-          house3.totalInternal + house3.totalExternal + house3.totalEvents;
+          house3?.totalInternal + house3?.totalExternal + house3?.totalEvents;
         house4 =
-          house4.totalInternal + house4.totalExternal + house4.totalEvents;
+          house4?.totalInternal + house4?.totalExternal + house4?.totalEvents;
       } else {
         const currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        currentYear = currentYear.toString();
+        let currentYear = currentDate?.getFullYear();
+        currentYear = currentYear?.toString();
 
         house1 = houses[0].points[2023][prevMonth];
         house2 = houses[1].points[2023][prevMonth];
         house3 = houses[2].points[2023][prevMonth];
         house4 = houses[3].points[2023][prevMonth];
 
-        house1 = house1.internal + house1.external + house1.events;
-        house2 = house2.internal + house2.external + house2.events;
-        house3 = house3.internal + house3.external + house3.events;
-        house4 = house4.internal + house4.external + house4.events;
+        house1 = house1?.internal + house1?.external + house1?.events;
+        house2 = house2?.internal + house2?.external + house2?.events;
+        house3 = house3?.internal + house3?.external + house3?.events;
+        house4 = house4?.internal + house4?.external + house4?.events;
       }
 
-      const houseLeaderboard = document.getElementById("prev");
+      const houseLeaderboard = document?.getElementById("prev");
       hcl = new Chart(houseLeaderboard, {
         type: "bar",
         data: {
@@ -328,10 +328,10 @@ const Houses = () => {
       house3 = calculateTotalPoints(houses[2]);
       house4 = calculateTotalPoints(houses[3]);
 
-      house1 = house1.totalInternal + house1.totalExternal + house1.totalEvents;
-      house2 = house2.totalInternal + house2.totalExternal + house2.totalEvents;
-      house3 = house3.totalInternal + house3.totalExternal + house3.totalEvents;
-      house4 = house4.totalInternal + house4.totalExternal + house4.totalEvents;
+      house1 = house1?.totalInternal + house1?.totalExternal + house1?.totalEvents;
+      house2 = house2?.totalInternal + house2?.totalExternal + house2?.totalEvents;
+      house3 = house3?.totalInternal + house3?.totalExternal + house3?.totalEvents;
+      house4 = house4?.totalInternal + house4?.totalExternal + house4?.totalEvents;
 
       const houseLeaderboard = document.getElementById("yearly");
       hcl = new Chart(houseLeaderboard, {
@@ -421,7 +421,7 @@ const Houses = () => {
             setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             toast({
               title: "Error",
               description: "Something went wrong",
@@ -557,7 +557,7 @@ const Houses = () => {
             setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             toast({
               title: "Error",
               description: "Something went wrong",

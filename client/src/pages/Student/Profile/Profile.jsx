@@ -98,13 +98,13 @@ const Profile = () => {
                   <Box
                     className="img"
                     style={{
-                      background: `url(${data.profilePicture}) no-repeat center center/cover`,
+                      background: `url(${data?.profilePicture}) no-repeat center center/cover`,
                     }}
                   ></Box>
                 </Box>
                 <Box className="info">
-                  <h4>{data.fname + " " + data.lname}</h4>
-                  <p>{data.mid}</p>
+                  <h4>{data?.fname + " " + data?.lname}</h4>
+                  <p>{data?.mid}</p>
                 </Box>
 
                 <Box className="stats">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/faculty/Navbar";
+import { useToast } from "@chakra-ui/react"
 import {
   Box,
   Button,
@@ -39,6 +40,8 @@ const Certificates = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const toast = useToast()
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates`, {
       method: "POST",
@@ -55,8 +58,16 @@ const Certificates = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setLoading(false);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, [update]);
 
@@ -86,12 +97,20 @@ const Certificates = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        console.error(data);
         setUpdate(!update);
         onClose();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 

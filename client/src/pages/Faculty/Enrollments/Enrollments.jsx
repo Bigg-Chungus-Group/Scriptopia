@@ -29,6 +29,8 @@ import {
 } from "@chakra-ui/react";
 import Loader from "../../../components/Loader";
 
+import { useToast } from "@chakra-ui/react"
+
 const Enrollments = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,8 @@ const Enrollments = () => {
   const [cgpa, setCgpa] = useState();
   const [technical, setTechnical] = useState();
   const [projects, setProjects] = useState();
+
+  const toast = useToast()
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/enrollments`, {
@@ -56,10 +60,18 @@ const Enrollments = () => {
       })
       .then((data) => {
         setEnrollments(data.enrollments);
-        console.log(data.enrollments);
+        console.error(data.enrollments);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, []);
 
@@ -108,12 +120,20 @@ const Enrollments = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        console.error(data);
         setUpdate(!update);
         onClose();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 
@@ -123,14 +143,14 @@ const Enrollments = () => {
       <>
         <Navbar />
         <Flex p="30px 70px" gap="20px">
-          {enrollments.map((enrollment, index) => {
-            const truncatedAbout = truncateText(enrollment.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
+          {enrollments?.map((enrollment, index) => {
+            const truncatedAbout = truncateText(enrollment?.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
             return (
               <Card
                 minW="sm"
                 key={enrollment._id}
                 cursor="pointer"
-                onClick={() => openModal(enrollment._id, index)}
+                onClick={() => openModal(enrollment?._id, index)}
               >
                 <CardBody>
                   <Stack mt="6" spacing="3">
@@ -140,7 +160,7 @@ const Enrollments = () => {
                     <Text>TECHNICAL: {enrollment.technical}</Text>
                     <Text>PROJECTS: {enrollment.projects}</Text>
                     <Text color="blue.600" fontSize="2xl">
-                      CGPA {enrollment.cgpa}
+                      CGPA {enrollment?.cgpa}
                     </Text>
                   </Stack>
                 </CardBody>

@@ -148,7 +148,7 @@ const Events = () => {
       return;
     }
     if (registerationStarts > eventStarts) {
-      console.log(registerationStarts, eventStarts);
+      console.error(registerationStarts, eventStarts);
       toast({
         title: "Error",
         description:
@@ -244,7 +244,7 @@ const Events = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Some error occured",
@@ -292,18 +292,18 @@ const Events = () => {
                 </Flex>
               </Card>
             ) : null}
-            {events.map((event) => (
+            {events?.map((event) => (
               <Card
                 w="320px"
                 maxW="sm"
                 maxH="md"
                 overflow="hidden"
-                key={event._id}
+                key={event?._id}
               >
                 <CardBody>
                   <Image
                     fallback={<Skeleton height="150px" />}
-                    src={event.image}
+                    src={event?.image}
                     borderRadius="lg"
                     height="150px"
                     objectFit="cover"
@@ -312,30 +312,30 @@ const Events = () => {
 
                   <Stack mt="6" spacing="3">
                     <Divider />
-                    <Heading size="md">{event.name}</Heading>
+                    <Heading size="md">{event?.name}</Heading>
                     <Text>
-                      {new Date(event.eventStarts).toLocaleDateString(
+                      {new Date(event?.eventStarts).toLocaleDateString(
                         "en-US",
                         dateOptions
                       )}
                     </Text>
-                    <Text>{event.location}</Text>
+                    <Text>{event?.location}</Text>
                     <Text color="blue.600">
-                      {event.mode.charAt(0).toUpperCase() + event.mode.slice(1)}
+                      {event?.mode?.charAt(0).toUpperCase() + event?.mode?.slice(1)}
                       <Badge
                         color={
-                          event.eventStarts > date
+                          event?.eventStarts > date
                             ? "green"
-                            : event.eventEnds > date
+                            : event?.eventEnds > date
                             ? "blue"
                             : "red"
                         }
                         ml="15px"
                         fontSize="13px"
                       >
-                        {event.eventStarts > date
+                        {event?.eventStarts > date
                           ? "Upcoming"
-                          : event.eventEnds > date
+                          : event?.eventEnds > date
                           ? "Ongoing"
                           : "Expired"}
                       </Badge>
@@ -349,7 +349,7 @@ const Events = () => {
                   justifyContent="space-between"
                 >
                   <ButtonGroup spacing="2">
-                    <Link to={`/events/${event._id}`}>
+                    <Link to={`/events/${event?._id}`}>
                       <Button variant="solid" colorScheme="blue">
                         View Event
                       </Button>
@@ -368,8 +368,8 @@ const Events = () => {
                       ></i>
                     ) : null}
                     <Text justifySelf="flex-end">
-                      {event.registerationType === "internal"
-                        ? event.registered.length
+                      {event?.registerationType === "internal"
+                        ? event?.registered?.length
                         : null}
                     </Text>
                   </Flex>
@@ -395,7 +395,7 @@ const Events = () => {
                       placeholder="Event Name"
                       mb="10px"
                       value={eventName}
-                      onChange={(e) => setEventName(e.target.value)}
+                      onChange={(e) => setEventName(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -409,7 +409,7 @@ const Events = () => {
                       placeholder="Event Image URL"
                       mb="10px"
                       value={eventImage}
-                      onChange={(e) => setEventImage(e.target.value)}
+                      onChange={(e) => setEventImage(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -423,7 +423,7 @@ const Events = () => {
                     mb="10px"
                     rows={2}
                     value={eventDesc}
-                    onChange={(e) => setEventDesc(e.target.value)}
+                    onChange={(e) => setEventDesc(e?.target?.value)}
                   />
                 </InputGroup>
               </FormControl>
@@ -438,7 +438,7 @@ const Events = () => {
                       placeholder="Event Location"
                       mb="10px"
                       value={eventLocation}
-                      onChange={(e) => setEventLocation(e.target.value)}
+                      onChange={(e) => setEventLocation(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -450,7 +450,7 @@ const Events = () => {
                       placeholder="Event Mode"
                       mb="10px"
                       value={eventMode}
-                      onChange={(e) => setEventMode(e.target.value)}
+                      onChange={(e) => setEventMode(e?.target?.value)}
                     >
                       <option value="online">Online</option>
                       <option value="offline">Offline</option>
@@ -467,7 +467,7 @@ const Events = () => {
                       placeholder="Registeration Mode"
                       mb="10px"
                       value={registerationMode}
-                      onChange={(e) => setRegisterationMode(e.target.value)}
+                      onChange={(e) => setRegisterationMode(e?.target?.value)}
                     >
                       <option value="internal">From Scriptopia</option>
                       <option value="external">External</option>
@@ -485,7 +485,7 @@ const Events = () => {
                         placeholder="Registeration Link"
                         mb="10px"
                         value={eventLink}
-                        onChange={(e) => setEventLink(e.target.value)}
+                        onChange={(e) => setEventLink(e?.target?.value)}
                       />
                     </InputGroup>
                   </FormControl>
@@ -502,7 +502,7 @@ const Events = () => {
                       placeholder="Event Email"
                       mb="10px"
                       value={eventEmail}
-                      onChange={(e) => setEventEmail(e.target.value)}
+                      onChange={(e) => setEventEmail(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -517,7 +517,7 @@ const Events = () => {
                       placeholder="Event Phone"
                       mb="10px"
                       value={eventPhone}
-                      onChange={(e) => setEventPhone(e.target.value)}
+                      onChange={(e) => setEventPhone(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -533,7 +533,7 @@ const Events = () => {
                       placeholder="Event Start Date"
                       mb="10px"
                       value={registerationStarts}
-                      onChange={(e) => setRegisterationStarts(e.target.value)}
+                      onChange={(e) => setRegisterationStarts(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -545,7 +545,7 @@ const Events = () => {
                       mb="10px"
                       value={registerationStartTime}
                       onChange={(e) =>
-                        setRegisterationStartTime(e.target.value)
+                        setRegisterationStartTime(e?.target?.value)
                       }
                     />
                   </InputGroup>
@@ -559,7 +559,7 @@ const Events = () => {
                       placeholder="Event End Date"
                       mb="10px"
                       value={registerationEnds}
-                      onChange={(e) => setRegisterationEnds(e.target.value)}
+                      onChange={(e) => setRegisterationEnds(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -570,7 +570,7 @@ const Events = () => {
                       placeholder="Event End Time"
                       mb="10px"
                       value={registerationEndTime}
-                      onChange={(e) => setRegisterationEndTime(e.target.value)}
+                      onChange={(e) => setRegisterationEndTime(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -586,7 +586,7 @@ const Events = () => {
                       placeholder="Event Registeration Start Date"
                       mb="10px"
                       value={eventStarts}
-                      onChange={(e) => setEventStarts(e.target.value)}
+                      onChange={(e) => setEventStarts(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -597,7 +597,7 @@ const Events = () => {
                       placeholder="Event Registeration End Time"
                       mb="10px"
                       value={eventStartTime}
-                      onChange={(e) => setEventStartTime(e.target.value)}
+                      onChange={(e) => setEventStartTime(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -609,7 +609,7 @@ const Events = () => {
                       placeholder="Event Registeration End Date"
                       mb="10px"
                       value={eventEnds}
-                      onChange={(e) => setEventEnds(e.target.value)}
+                      onChange={(e) => setEventEnds(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -620,7 +620,7 @@ const Events = () => {
                       placeholder="Event Registeration End Time"
                       mb="10px"
                       value={eventEndTime}
-                      onChange={(e) => setEventEndTime(e.target.value)}
+                      onChange={(e) => setEventEndTime(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>

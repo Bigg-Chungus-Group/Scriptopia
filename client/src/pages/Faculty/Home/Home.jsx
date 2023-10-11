@@ -90,8 +90,8 @@ const Home = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log("ERR");
-        console.log(err);
+        console.error("ERR");
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching dashboard data",
@@ -468,8 +468,8 @@ const Home = () => {
                           .map((cert) => (
                             <Tr key={cert._id}>
                               <Td>
-                                <Text>{cert.certificateName}</Text>
-                                <Text fontSize="12px">{cert.issuingOrg}</Text>
+                                <Text>{cert?.certificateName}</Text>
+                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
                               <Td className="hideOnPhone">{cert.xp || "0"}</Td>
                               <Td className="hideOnPhone">

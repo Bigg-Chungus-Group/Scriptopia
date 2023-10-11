@@ -10,6 +10,7 @@ import {
   Tbody,
   Thead,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/certificates`, {
@@ -36,7 +38,14 @@ const Certificates = () => {
         setCertificates(data.certificates);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          });
       });
   }, []);
 

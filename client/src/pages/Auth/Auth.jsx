@@ -186,7 +186,7 @@ const Auth = () => {
           setIsLoading(false);
           if (res.status === 200) {
             const response = await res.json();
-            console.log(response);
+            console.error(response);
             io.emit("onLogin", response.mid);
 
             if (redirectURL !== "/") {
@@ -224,7 +224,7 @@ const Auth = () => {
         })
         .catch((err) => {
           setIsLoading(false);
-          console.log(err);
+          console.error(err);
           toast({
             title: "An Error Occured.",
             description: "Something Went Wrong!",
