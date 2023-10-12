@@ -119,7 +119,7 @@ router.post(
   }
 );
 
-router.post("/download", verifyToken, async (req, res) => {
+router.post("/download", async (req, res) => {
   const { id } = req.body;
   try {
     const certificate = await certificationsDB.findOne({
