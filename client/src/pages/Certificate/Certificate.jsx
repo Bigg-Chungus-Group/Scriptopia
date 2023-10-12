@@ -159,7 +159,7 @@ const Certificate = () => {
     }
 
     fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/certificates/download`,
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/download`,
       {
         method: "POST",
         credentials: "include",
