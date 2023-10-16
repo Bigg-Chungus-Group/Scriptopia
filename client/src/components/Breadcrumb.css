@@ -1,0 +1,28 @@
+.Breadcrumb {
+  padding: 20px 70px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 0px;
+  width: 100%;
+}
+
+.Breadcrumb .left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Breadcrumb .link {
+    transition: .2s;
+    cursor: pointer;
+}
+
+.Breadcrumb .right {
+    display: flex;
+    gap: 20px;
+}
+
+.Breadcrumb .link:hover {
+    text-decoration: underline;
+}

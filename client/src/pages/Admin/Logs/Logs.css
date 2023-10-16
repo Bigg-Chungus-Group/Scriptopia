@@ -1,0 +1,21 @@
+.AdminLogs {
+  padding: 30px 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.AdminLogs .log-container {
+  height: 70vh;
+  padding: 20px;
+  background-color: black;
+  color: white;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-time {
+  color: skyblue; /* Change the color to your desired color */
+  /* Add any other styling you want for the time */
+}

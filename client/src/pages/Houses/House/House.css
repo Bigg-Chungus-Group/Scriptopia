@@ -1,0 +1,49 @@
+.StudentHouse {
+  padding: 30px 12%;
+}
+
+.StudentHouse .top {
+  position: relative;
+  height: 370px;
+}
+
+.StudentHouse .cover {
+  height: 200px;
+  position: relative;
+}
+
+.StudentHouse .details {
+  position: absolute;
+  margin-top: 90px;
+  margin-left: 30px;
+}
+
+.StudentHouse .left {
+  padding: 20px;
+}
+
+.StudentHouse .right {
+  padding: 20px;
+  background-color: rgba(211, 211, 211, 0.068);
+  box-shadow: 0px 0px 10px 0px #84848418;
+}
+
+.StudentHouse .tableTitle {
+  background-color: #5800a040;
+  display: flex;
+  padding: 10px 20px;
+}
+
+/*
+.table-row {
+  margin-bottom: 10px; 
+}
+
+.StudentHouse td + td {
+  border-left: 1.5px solid #8484849c;
+}
+
+.StudentHouse tr {
+  border-bottom: 1.5px solid #8484849c;
+}
+*/
