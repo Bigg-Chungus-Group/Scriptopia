@@ -37,12 +37,15 @@ import {
   FormLabel,
   FormControl,
   InputLeftElement,
+  position,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import AdminNavbar from "../../../components/admin/Navbar";
 import FacultyNavbar from "../../../components/faculty/Navbar";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
+import { ChromePicker as SketchPicker } from "react-color";
+import Loader from "../../../components/Loader";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -65,6 +68,8 @@ const House = () => {
   const [hid, setHid] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [decoded, setDecoded] = useState(null);
+
+  const [pickedColor, setPickedColor] = useState("#fff");
 
   const {
     isOpen: isSettingsOpen,
@@ -122,7 +127,7 @@ const House = () => {
         setStudentCordID(data.studentCordInfo.mid);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -286,24 +291,20 @@ const House = () => {
         <Box className="StudentHouse">
           <Box className="top">
             <Box className="cover" bg={houses.color}>
-              <Flex
-                className="details"
-                align="flex-start"
-                gap="10px"
-                direction="column"
-              >
+              <Flex className="details" align="flex-start" gap="10px">
                 <Avatar height="170px" width="170px" src={houses.logo}></Avatar>
                 <Flex
                   justifyContent="space-between"
                   alignItems="center"
                   width="70vw"
+                  className="details-inside"
                 >
-                  <Flex direction="column">
+                  <Flex direction="column" className="name">
                     <Heading fontSize="40px" fontWeight="600">
-                      {houses.name} House
+                      {houses?.name} House
                     </Heading>
                     <Flex align="center" gap="10px">
-                      <a href={`/profile/${facCord?.id}`}>
+                      <a>
                         <Text>
                           @{facCord?.fname} {facCord?.lname}
                         </Text>
@@ -338,10 +339,10 @@ const House = () => {
             </Box>
           </Box>
 
-          <Flex className="middle" height="220px" gap="20px">
-            <Box className="left" width="50%" bg={houses.color}>
-              <Heading fontSize="20px">{houses.abstract}</Heading>
-              <Text mt="15px">{houses.desc}</Text>
+          <Flex height="220px" gap="20px" className="desc">
+            <Box className="left" width="50%" bg={houses?.color}>
+              <Heading fontSize="20px">{houses?.abstract}</Heading>
+              <Text mt="15px">{houses?.desc}</Text>
             </Box>
             <Flex
               className="right"
@@ -351,12 +352,12 @@ const House = () => {
               fontSize="18px"
             >
               <Text>
-                Internal Certifications: {houses.certificates.internal}
+                Internal Certifications: {houses?.certificates?.internal}
               </Text>
               <Text>
-                External Certifications: {houses.certificates.external}
+                External Certifications: {houses?.certificates?.external}
               </Text>
-              <Text>Events: {houses.certificates.events}</Text>
+              <Text>Events: {houses?.certificates?.events}</Text>
             </Flex>
           </Flex>
 
@@ -373,13 +374,13 @@ const House = () => {
               </Thead>
               <Tbody>
                 {members.slice(0, 5).map((member, index) => (
-                  <Tr key={member.mid}>
+                  <Tr key={member?.mid}>
                     <Td>{index + 1}</Td>
                     <Td>
-                      {member.fname} {member.lname}
+                      {member?.fname} {member?.lname}
                     </Td>
-                    <Td>{member.mid}</Td>
-                    <Td>{member.totalPoints}</Td>
+                    <Td>{member?.mid}</Td>
+                    <Td>{member?.totalPoints}</Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -410,7 +411,7 @@ const House = () => {
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{houses.name} Members</ModalHeader>
+            <ModalHeader>{houses?.name} Members</ModalHeader>
             <ModalCloseButton />
             <ModalBody overflow="auto">
               <Table variant="unstyled" color="#848484">
@@ -424,16 +425,16 @@ const House = () => {
                 </Thead>
                 <Tbody>
                   {members.map((member, index) => (
-                    <Tr key={member.mid}>
+                    <Tr key={member?.mid}>
                       <Td>{index + 1}</Td>
                       <Td>
-                        {member.fname} {member.lname}
+                        {member?.fname} {member?.lname}
                       </Td>
-                      <Td>{member.mid}</Td>
-                      <Td>{member.totalPoints}</Td>
+                      <Td>{member?.mid}</Td>
+                      <Td>{member?.totalPoints}</Td>
                       {editPrivilege ? (
                         <Td>
-                          <Link onClick={() => openDelete(member.mid)}>
+                          <Link onClick={() => openDelete(member?.mid)}>
                             Remove
                           </Link>
                         </Td>
@@ -455,7 +456,7 @@ const House = () => {
         <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{houses.name} Settings</ModalHeader>
+            <ModalHeader>{houses?.name} Settings</ModalHeader>
             <ModalCloseButton />
             <ModalBody display="flex" flexDirection="column" gap="20px">
               <Text fontSize="13px">
@@ -480,7 +481,7 @@ const House = () => {
                     placeholder="House Name*"
                     value={houseName}
                     onChange={(e) => {
-                      setHouseName(e.target.value);
+                      setHouseName(e?.target?.value);
                     }}
                     isDisabled={role !== "A"}
                   />
@@ -494,11 +495,28 @@ const House = () => {
 
                 <InputGroup width="70%">
                   <InputLeftAddon>Color Hex* #</InputLeftAddon>
+                  <SketchPicker
+                    color={pickedColor}
+                    onChange={(color) => {
+                      setPickedColor(color?.hex);
+                      setHouseColor(color?.hex);
+                    }}
+                    styles={{
+                      default: {
+                        picker: {
+                          position: "absolute",
+                          zIndex: "999",
+                          right: -298,
+                          width: "80%",
+                        },
+                      },
+                    }}
+                  />
                   <Input
                     placeholder="House Color Hex*"
                     value={houseColor}
                     onChange={(e) => {
-                      setHouseColor(e.target.value);
+                      setHouseColor(e?.target?.value);
                     }}
                   />
                 </InputGroup>
@@ -510,7 +528,7 @@ const House = () => {
                   placeholder="House Abstract*"
                   value={houseAbstract}
                   onChange={(e) => {
-                    setHouseAbstract(e.target.value);
+                    setHouseAbstract(e?.target?.value);
                   }}
                 />
               </InputGroup>
@@ -521,7 +539,7 @@ const House = () => {
                   placeholder="House Description"
                   value={houseDesc}
                   onChange={(e) => {
-                    setHouseDesc(e.target.value);
+                    setHouseDesc(e?.target?.value);
                   }}
                 />
               </FormControl>
@@ -537,7 +555,7 @@ const House = () => {
                       list="facSelect"
                       value={facCordID}
                       onChange={(e) => {
-                        setFacCordID(e.target.value);
+                        setFacCordID(e?.target?.value);
                       }}
                       isDisabled={role !== "A"}
                     />
@@ -559,7 +577,7 @@ const House = () => {
                       list="stuSelect"
                       value={studentCordID}
                       onChange={(e) => {
-                        setStudentCordID(e.target.value);
+                        setStudentCordID(e?.target?.value);
                       }}
                     />
                   </InputGroup>
@@ -606,6 +624,8 @@ const House = () => {
         </AlertDialog>
       </>
     );
+  } else {
+    return <Loader />;
   }
 };
 

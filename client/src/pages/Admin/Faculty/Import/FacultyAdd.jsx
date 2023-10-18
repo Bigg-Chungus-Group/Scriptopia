@@ -54,7 +54,7 @@ const FacultyAdd = ({ setModal, h }) => {
   }, []);
 
   useEffect(() => {
-    console.log(perms);
+    console.error(perms);
   }, [perms]);
 
   const setClose = () => {
@@ -101,6 +101,12 @@ const FacultyAdd = ({ setModal, h }) => {
     });
   };
 
+  const closePerms = () => {
+    setPermClose();
+    onOpen();
+  };
+  
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
@@ -116,27 +122,27 @@ const FacultyAdd = ({ setModal, h }) => {
                   placeholder="First Name"
                   value={fname}
                   onChange={(e) => {
-                    setFname(e.target.value);
+                    setFname(e?.target?.value);
                   }}
                 />
                 <Input
                   type="text"
                   placeholder="Last Name"
                   value={lname}
-                  onChange={(e) => setLname(e.target.value)}
+                  onChange={(e) => setLname(e?.target?.value)}
                 />
               </Box>
               <Input
                 type="text"
                 placeholder="Moodle ID"
                 value={moodleid}
-                onChange={(e) => setMoodleid(e.target.value)}
+                onChange={(e) => setMoodleid(e?.target?.value)}
               />
               <Input
                 type="text"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e?.target?.value)}
               />
 
               <RadioGroup onChange={setGender} value={gender}>
@@ -172,7 +178,7 @@ const FacultyAdd = ({ setModal, h }) => {
 
       <Modal
         isOpen={isPermOpen}
-        onClose={setPermClose}
+        onClose={closePerms}
         size="3xl"
         scrollBehavior="inside"
       >

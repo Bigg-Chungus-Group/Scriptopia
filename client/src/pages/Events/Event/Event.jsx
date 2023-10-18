@@ -63,7 +63,11 @@ const Event = () => {
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isAllocateOpen, onOpen: onAllocateOpen, onClose: onAllocateClose } = useDisclosure();
+  const {
+    isOpen: isAllocateOpen,
+    onOpen: onAllocateOpen,
+    onClose: onAllocateClose,
+  } = useDisclosure();
 
   const [eventName, setEventName] = useState("");
   const [eventImage, setEventImage] = useState("");
@@ -102,7 +106,7 @@ const Event = () => {
         setEditPrivilege(true);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setDecoded(false);
     }
   }, []);
@@ -459,7 +463,7 @@ const Event = () => {
   };
 
   const allocate = () => {
-    console.log("REQUEST SENDING")
+    console.error("REQUEST SENDING");
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/events/${event._id}/allocate`,
       {
@@ -473,7 +477,7 @@ const Event = () => {
     )
       .then(async (res) => await res.json())
       .then((res) => {
-        console.log("REQUEST SENT")
+        console.error("REQUEST SENT");
         if (res.status === "success") {
           toast({
             title: "Success",
@@ -495,7 +499,7 @@ const Event = () => {
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.error(err);
         toast({
           title: "Error",
           description: "Some error occured",
@@ -504,7 +508,7 @@ const Event = () => {
           isClosable: true,
         });
       });
-  }
+  };
 
   if (!loading) {
     return (
@@ -519,13 +523,18 @@ const Event = () => {
           <GuestNavbar />
         )}
         <Box className="GeneralEvents">
-          <Flex mb="30px">
+          <Flex mb="30px" className="top">
             <Image
               src={event?.image}
               fallback={<Skeleton width="300px" height="250px" />}
               width="300px"
-              height="250px"
+              height="300px"
+              className="image"
             ></Image>
+
+            <Heading mb="30px" className="top-name">
+              {event?.name}
+            </Heading>
 
             <Box
               className="description"
@@ -538,8 +547,10 @@ const Event = () => {
             </Box>
           </Flex>
           <Box className="details">
-            <Heading mb="30px">{event?.name}</Heading>
-            <Flex justify="space-between">
+            <Heading mb="30px" className="bottom-name">
+              {event?.name}
+            </Heading>
+            <Flex justify="space-between" wrap="wrap" gap="30px">
               <Table width="fit-content" variant="unstyled" size="sm">
                 <Tbody>
                   <Tr>
@@ -548,7 +559,7 @@ const Event = () => {
                     </Td>
                     <Td>Start Date Time</Td>
                     <Td>
-                      {new Date(event.eventStarts).toLocaleDateString(
+                      {new Date(event?.eventStarts).toLocaleDateString(
                         "en-US",
                         dateOptions
                       )}
@@ -560,8 +571,8 @@ const Event = () => {
                     </Td>
                     <Td>Location</Td>
                     <Td>
-                      {event.location.slice(0, 1).toUpperCase() +
-                        event.location.slice(1)}
+                      {event?.location?.slice(0, 1).toUpperCase() +
+                        event?.location?.slice(1)}
                     </Td>
                   </Tr>
                   <Tr>
@@ -570,8 +581,8 @@ const Event = () => {
                     </Td>
                     <Td>Type</Td>
                     <Td>
-                      {event.mode.slice(0, 1).toUpperCase() +
-                        event.mode.slice(1)}
+                      {event?.mode?.slice(0, 1).toUpperCase() +
+                        event?.mode?.slice(1)}
                     </Td>
                   </Tr>
                   <Tr>
@@ -600,7 +611,7 @@ const Event = () => {
                     </Td>
                     <Td>End Date Time</Td>
                     <Td>
-                      {new Date(event.eventEnds).toLocaleDateString(
+                      {new Date(event?.eventEnds).toLocaleDateString(
                         "en-US",
                         dateOptions
                       )}
@@ -615,9 +626,9 @@ const Event = () => {
                     <Td>
                       <i className="fa-solid fa-calendar-days"></i>
                     </Td>
-                    <Td>Registeration Deadline</Td>
+                    <Td> Deadline</Td>
                     <Td>
-                      {new Date(event.registerationEnds).toLocaleDateString(
+                      {new Date(event?.registerationEnds).toLocaleDateString(
                         "en-US",
                         dateOptions
                       )}
@@ -632,15 +643,17 @@ const Event = () => {
                       <Td>
                         <Link
                           href={
-                            event.registerationEnds < date ? null : event.link
+                            event?.registerationEnds < date
+                              ? null
+                              : navigate(event?.link)
                           }
                           color={
-                            event.registerationEnds < date ? "red" : "blacke"
+                            event?.registerationEnds < date ? "red" : "blacke"
                           }
                         >
-                          {event.registerationEnds < date
+                          {event?.registerationEnds < date
                             ? "Registeration has Ended"
-                            : event.link}
+                            : event?.link}
                         </Link>
                       </Td>
                     </Tr>
@@ -650,14 +663,14 @@ const Event = () => {
                       <i className="fa-solid fa-envelope"></i>
                     </Td>
                     <Td>Contact Email</Td>
-                    <Td>{event.email}</Td>
+                    <Td>{event?.email}</Td>
                   </Tr>
                   <Tr>
                     <Td>
                       <i className="fa-solid fa-phone"></i>
                     </Td>
                     <Td>Contact Phone</Td>
-                    <Td>{event.phone}</Td>
+                    <Td>{event?.phone}</Td>
                   </Tr>
                 </Tbody>
               </Table>
@@ -683,7 +696,7 @@ const Event = () => {
                   Delete This Event
                 </Button>
 
-                {event.eventEnds < date && event?.pointsAllocated === false ? (
+                {event?.eventEnds < date && event?.pointsAllocated === false ? (
                   <Button
                     float="right"
                     mt="15px"
@@ -696,7 +709,7 @@ const Event = () => {
                 ) : null}
               </>
             ) : event.registerationType ===
-              "external" ? null : event.registerationEnds < date ? (
+              "external" ? null : event?.registerationEnds < date ? (
               <Text
                 colorScheme="green"
                 float="right"
@@ -707,7 +720,7 @@ const Event = () => {
               >
                 Registeration is Closed
               </Text>
-            ) : role === "S" && !event.registered.includes(decoded.mid) ? (
+            ) : role === "S" && !event?.registered?.includes(decoded?.mid) ? (
               <Button
                 colorScheme="green"
                 float="right"
@@ -729,8 +742,8 @@ const Event = () => {
               >
                 You cannot register for this event
               </Text>
-            ) : event.registered.includes(decoded.mid) &&
-              event.registerationEnds > date ? (
+            ) : event?.registered?.includes(decoded?.mid) &&
+              event?.registerationEnds > date ? (
               <Button
                 colorScheme="red"
                 float="right"
@@ -752,7 +765,7 @@ const Event = () => {
                 fontWeight=""
                 fontFamily="default"
                 onClick={() =>
-                  navigate(`/auth?redirect=${window.location.pathname}`)
+                  navigate(`/auth?redirect=${window?.location?.pathname}`)
                 }
               >
                 Sign in to register for this event
@@ -777,7 +790,7 @@ const Event = () => {
                       placeholder="Event Name"
                       mb="10px"
                       value={eventName}
-                      onChange={(e) => setEventName(e.target.value)}
+                      onChange={(e) => setEventName(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -791,12 +804,11 @@ const Event = () => {
                       placeholder="Event Image URL"
                       mb="10px"
                       value={eventImage}
-                      onChange={(e) => setEventImage(e.target.value)}
+                      onChange={(e) => setEventImage(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <FormControl>
                 {" "}
                 <InputGroup>
@@ -805,11 +817,10 @@ const Event = () => {
                     mb="10px"
                     rows={2}
                     value={eventDesc}
-                    onChange={(e) => setEventDesc(e.target.value)}
+                    onChange={(e) => setEventDesc(e?.target?.value)}
                   />
                 </InputGroup>
               </FormControl>
-
               <Flex gap="20px">
                 <FormControl>
                   <InputGroup>
@@ -820,7 +831,7 @@ const Event = () => {
                       placeholder="Event Location"
                       mb="10px"
                       value={eventLocation}
-                      onChange={(e) => setEventLocation(e.target.value)}
+                      onChange={(e) => setEventLocation(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -832,7 +843,7 @@ const Event = () => {
                       placeholder="Event Mode"
                       mb="10px"
                       value={eventMode}
-                      onChange={(e) => setEventMode(e.target.value)}
+                      onChange={(e) => setEventMode(e?.target?.value)}
                     >
                       <option value="online">Online</option>
                       <option value="offline">Offline</option>
@@ -840,7 +851,6 @@ const Event = () => {
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <FormControl>
                 <InputGroup>
                   <InputLeftAddon>
@@ -850,11 +860,10 @@ const Event = () => {
                     placeholder="Event Link"
                     mb="10px"
                     value={eventLink}
-                    onChange={(e) => setEventLink(e.target.value)}
+                    onChange={(e) => setEventLink(e?.target?.value)}
                   />
                 </InputGroup>
               </FormControl>
-
               <Flex gap="20px">
                 <FormControl>
                   <InputGroup>
@@ -865,7 +874,7 @@ const Event = () => {
                       placeholder="Event Email"
                       mb="10px"
                       value={eventEmail}
-                      onChange={(e) => setEventEmail(e.target.value)}
+                      onChange={(e) => setEventEmail(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -880,12 +889,11 @@ const Event = () => {
                       placeholder="Event Phone"
                       mb="10px"
                       value={eventPhone}
-                      onChange={(e) => setEventPhone(e.target.value)}
+                      onChange={(e) => setEventPhone(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <Text mb="5px">Event Registeration</Text>
               <Flex gap="20px" align="center">
                 <FormControl>
@@ -896,7 +904,7 @@ const Event = () => {
                       placeholder="Event Start Date"
                       mb="10px"
                       value={registerationStarts}
-                      onChange={(e) => setRegisterationStarts(e.target.value)}
+                      onChange={(e) => setRegisterationStarts(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -908,7 +916,7 @@ const Event = () => {
                       mb="10px"
                       value={registerationStartTime}
                       onChange={(e) =>
-                        setRegisterationStartTime(e.target.value)
+                        setRegisterationStartTime(e?.target?.value)
                       }
                     />
                   </InputGroup>
@@ -922,7 +930,7 @@ const Event = () => {
                       placeholder="Event End Date"
                       mb="10px"
                       value={registerationEnds}
-                      onChange={(e) => setRegisterationEnds(e.target.value)}
+                      onChange={(e) => setRegisterationEnds(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -933,13 +941,14 @@ const Event = () => {
                       placeholder="Event End Time"
                       mb="10px"
                       value={registerationEndTime}
-                      onChange={(e) => setRegisterationEndTime(e.target.value)}
+                      onChange={(e) =>
+                        setRegisterationEndTime(e?.target?.value)
+                      }
                     />
                   </InputGroup>
                 </FormControl>
               </Flex>
-
-              <Text mb="5px">Event Schedule</Text>
+              <Text mb="5px">Event Schedule</Text>.
               <Flex gap="20px" align="center">
                 <FormControl>
                   {" "}
@@ -949,7 +958,7 @@ const Event = () => {
                       placeholder="Event Registeration Start Date"
                       mb="10px"
                       value={eventStarts}
-                      onChange={(e) => setEventStarts(e.target.value)}
+                      onChange={(e) => setEventStarts(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -960,7 +969,7 @@ const Event = () => {
                       placeholder="Event Registeration End Time"
                       mb="10px"
                       value={eventStartTime}
-                      onChange={(e) => setEventStartTime(e.target.value)}
+                      onChange={(e) => setEventStartTime(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -972,7 +981,7 @@ const Event = () => {
                       placeholder="Event Registeration End Date"
                       mb="10px"
                       value={eventEnds}
-                      onChange={(e) => setEventEnds(e.target.value)}
+                      onChange={(e) => setEventEnds(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>{" "}
@@ -983,7 +992,7 @@ const Event = () => {
                       placeholder="Event Registeration End Time"
                       mb="10px"
                       value={eventEndTime}
-                      onChange={(e) => setEventEndTime(e.target.value)}
+                      onChange={(e) => setEventEndTime(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -1032,7 +1041,6 @@ const Event = () => {
           motionPreset="slideInBottom"
           onClose={onAllocateClose}
           isOpen={isAllocateOpen}
-
           isCentered
         >
           <AlertDialogOverlay />
@@ -1042,12 +1050,14 @@ const Event = () => {
             <AlertDialogCloseButton />
             <AlertDialogBody>
               <Text mb="20px">How Many Points to Allocate?</Text>
-              <Input value={allocatePoints} onChange={(e) => setAllocatePoints(e.target.value)} type="number" />
+              <Input
+                value={allocatePoints}
+                onChange={(e) => setAllocatePoints(e?.target?.value)}
+                type="number"
+              />
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button onClick={onAllocateClose}>
-                Cancel
-              </Button>
+              <Button onClick={onAllocateClose}>Cancel</Button>
               <Button colorScheme="red" ml={3} onClick={allocate}>
                 Allocate!
               </Button>

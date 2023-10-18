@@ -1,7 +1,7 @@
 .AdminStudents {
   background-color: var(--bg);
   padding: 20px 75px;
-  height: 77  vh;
+  height: 77 vh;
 }
 
 .AdminStudents .filters {
@@ -11,11 +11,20 @@
 }
 
 .AdminStudents .table {
-    overflow: auto;
-    height: 59vh;
+  overflow: auto;
+  height: 59vh;
 }
 
 .AdminStudents .actions {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 1250px) {
+}
+
+@media (max-width: 768px) {
+  .AdminStudents {
+    padding: 30px 20px;
+  }
 }

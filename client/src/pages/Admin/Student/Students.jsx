@@ -93,7 +93,7 @@ const Students = () => {
         setHouses(data.houses);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching students",
@@ -306,7 +306,7 @@ const Students = () => {
           ]}
           relatedLinks={[{ href: "/admin/students/add", name: "Add Students" }]}
         />
-        <Box className="AdminStudents">
+        <Box className="AdminStudents-Admin">
           <Box className="filters">
             <Box className="filters">
               <Box className="ipgroup">

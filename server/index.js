@@ -25,6 +25,7 @@ import { verifyAdminPrivilges } from "./handlers/admin/verifyAdmin.js";
 import { verifyStudentPriviliges } from "./handlers/student/verifyStudent.js";
 import { verifyFacultyPriviliges } from "./handlers/faculty/verifyFaculty.js";
 import mainSocket from "./events/mainSocket.js";
+import profileHandler from "./handlers/profileHandler.js";
 
 // # Import Middlewares and APIs
 
@@ -61,6 +62,7 @@ app.use("/firstTime", firstTimeHandler);
 app.use("/houses", houseHandler);
 app.use("/events", eventsHandler);
 app.use("/certificates", certificateHandler);
+app.use("/profile", profileHandler)
 
 
 app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);

@@ -16,6 +16,11 @@
   position: absolute;
   margin-top: 90px;
   margin-left: 30px;
+  flex-direction: column;
+}
+
+.StudentHouse .details-inside {
+  flex-direction: row;
 }
 
 .StudentHouse .left {
@@ -24,26 +29,77 @@
 
 .StudentHouse .right {
   padding: 20px;
-  background-color: rgba(211, 211, 211, 0.068);
+  background-color: rgba(211, 211, 211, 0.426);
   box-shadow: 0px 0px 10px 0px #84848418;
 }
 
 .StudentHouse .tableTitle {
-  background-color: #5800a040;
+  background-color: rgba(0, 0, 0, 0.359);
+  color: aliceblue;
   display: flex;
   padding: 10px 20px;
 }
 
-/*
-.table-row {
-  margin-bottom: 10px; 
+@media screen and (max-width: 1250px) {
+  .StudentHouse {
+    padding: 30px 20px;
+  }
+
+  .StudentHouse .top {
+    position: relative;
+    height: 400px;
+  }
+
+  .StudentHouse .top img {
+    margin-top: 50px;
+  }
+
+  .StudentHouse .cover {
+    height: 120px;
+    position: relative;
+  }
+
+  .StudentHouse .details {
+    position: relative;
+    margin-top: 0px;
+    margin-left: 0px;
+    align-items: center;
+  }
+
+  .StudentHouse .details-inside {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .StudentHouse .name {
+    align-items: center;
+  }
+
+  .StudentHouse .details h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 32px;
+  }
+
+  .StudentHouse .desc {
+    flex-direction: column;
+  }
+
+  .StudentHouse .desc .left,
+  .StudentHouse .desc .right {
+    width: 100%;
+  }
+
+  .StudentHouse .table {
+    width: 90vw;
+    padding: 0;
+    margin: 0;
+    margin-top: 80px;
+    overflow-x: auto;
+  }
 }
 
-.StudentHouse td + td {
-  border-left: 1.5px solid #8484849c;
+@media screen and (max-width: 1024px) {
 }
-
-.StudentHouse tr {
-  border-bottom: 1.5px solid #8484849c;
-}
-*/

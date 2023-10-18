@@ -15,6 +15,7 @@ import Navbar from "../../../components/admin/Navbar";
 import "./Home.css";
 import Chart from "chart.js/auto";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import Loader from "../../../components/Loader";
 
 const Home = () => {
   useAuthCheck("A");
@@ -24,6 +25,7 @@ const Home = () => {
   const [certifications, setCertifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedHouse, setSelectedHouse] = useState(0);
+  
 
   function calculateTotalPoints(data, year) {
     const currentDate = new Date();
@@ -70,7 +72,7 @@ const Home = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching data",
@@ -123,8 +125,8 @@ const Home = () => {
           ],
         },
         options: {
-          responsive: false,
-          maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             x: {
               display: true,
@@ -209,8 +211,8 @@ const Home = () => {
         },
         options: {
           indexAxis: "y",
-          responsive: false,
-          maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             x: {
               display: false, // Hide x-axis gridlines
@@ -353,8 +355,8 @@ const Home = () => {
           ],
         },
         options: {
-          maintainAspectRatio: false,
-          responsive: false,
+          maintainAspectRatio: true,
+          responsive: true,
           plugins: {
             legend: {
               display: false,
@@ -464,6 +466,8 @@ const Home = () => {
         </Box>
       </>
     );
+  } else {
+    return <Loader/>
   }
 };
 

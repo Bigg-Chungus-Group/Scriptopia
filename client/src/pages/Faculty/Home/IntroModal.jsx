@@ -159,10 +159,12 @@ const IntroModal = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
+          description: "Something went wrong",
           status: "error",
+          duration: 5000,
           isClosable: true,
         });
       });
@@ -347,14 +349,14 @@ const IntroModal = () => {
                   placeholder="Write a Few Things About Yourself. (Please do not mention anything that could identify you. Ex. Name, Moodle ID)"
                   resize="none"
                   id="about"
-                  onChange={(e) => setAbout(e.target.value)}
+                  onChange={(e) => setAbout(e?.target?.value)}
                   value={about}
                 ></Textarea>
                 <Textarea
                   placeholder="Write About Your Technical Skills."
                   resize="none"
                   id="technical"
-                  onChange={(e) => setTechnical(e.target.value)}
+                  onChange={(e) => setTechnical(e?.target?.value)}
                   value={technical}
                 ></Textarea>
               </Box>
@@ -368,7 +370,7 @@ const IntroModal = () => {
                   resize="none"
                   id="projects"
                   rows={10}
-                  onChange={(e) => setProjects(e.target.value)}
+                  onChange={(e) => setProjects(e?.target?.value)}
                   value={projects}
                 ></Textarea>
 
@@ -376,7 +378,7 @@ const IntroModal = () => {
                   type="number"
                   placeholder="Enter your Average CGPA"
                   id="cgpa"
-                  onChange={(e) => setCgpa(e.target.value)}
+                  onChange={(e) => setCgpa(e?.target?.value)}
                   value={cgpa}
                 />
               </Box>

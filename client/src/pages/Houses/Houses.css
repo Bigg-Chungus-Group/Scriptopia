@@ -1,34 +1,24 @@
-.StudentHouses {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
+.houses .graph-wrapper {
   padding: 30px 70px;
-  gap: 20px;
-  flex-wrap: wrap;
 }
 
-.StudentHouses .house {
-  width: 49%;
-  height: 39vh;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: var(--box-shadow)
-}
-.StudentHouses .details {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  justify-content: space-between;
+.houses .house-card {
+  width: 23.9%;
 }
 
-.StudentHouses .canvas {
-  margin-top: 10px;
-  width: 60%;
+@media screen and (max-width: 1250px) {
+  .houses .graph-wrapper {
+    padding: 30px 20px;
+  }
+
+  .houses .graphs {
+    width: 100%;
+  }
+
+  .houses .house-card {
+    width: 47%;
+  }
 }
 
-.StudentHouses .det {
-    width: 30%;
+@media screen and (max-width: 1024px) {
 }

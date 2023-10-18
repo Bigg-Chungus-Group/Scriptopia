@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/faculty/Navbar";
+import { useToast } from "@chakra-ui/react"
+import "./Certificates.css";
 import {
   Box,
   Button,
@@ -23,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../components/Loader";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
@@ -37,6 +40,8 @@ const Certificates = () => {
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const toast = useToast()
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates`, {
@@ -54,8 +59,16 @@ const Certificates = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setLoading(false);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, [update]);
 
@@ -85,12 +98,20 @@ const Certificates = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        console.error(data);
         setUpdate(!update);
         onClose();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 
@@ -98,7 +119,7 @@ const Certificates = () => {
     return (
       <>
         <Navbar />
-        <Box p="30px 70px">
+        <Box className="FacultyCertificates">
           <Heading fontSize="20px">Pending Certificates</Heading>
           <Table mt="50px" variant="striped">
             <Thead>
@@ -191,6 +212,8 @@ const Certificates = () => {
         </Modal>
       </>
     );
+  } else {
+    return <Loader />;
   }
 };
 

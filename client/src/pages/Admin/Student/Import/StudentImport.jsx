@@ -73,7 +73,7 @@ const StudentImport = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setAdding(false);
         toast({
           title: "Error",
@@ -112,7 +112,7 @@ const StudentImport = () => {
             </label>
           </Box>
           <Alert status="warning">
-            <AlertIcon />
+            <AlertIcon className="hide" />
 
             <AlertDescription>
               Please Upload a .CSV file with the following columns in the same

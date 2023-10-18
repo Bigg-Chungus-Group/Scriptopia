@@ -46,6 +46,7 @@ import jwtDecode from "jwt-decode";
 import AdminNavbar from "../../components/admin/Navbar";
 import FacultyNavbar from "../../components/faculty/Navbar";
 import GuestNavbar from "../../components/guest/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Certificate = () => {
   const [certificate, setCertificate] = useState({});
@@ -57,6 +58,8 @@ const Certificate = () => {
   const [issueYear, setIssueYear] = useState();
   const [certificateType, setCertificateType] = useState();
   const [certificateLevel, setCertificateLevel] = useState();
+
+  const navigate = useNavigate();
 
   const [editPrivilege, setEditPrivilege] = useState(false);
   const [role, setRole] = useState("");
@@ -94,7 +97,6 @@ const Certificate = () => {
       if (jwt?.role) {
         setRole(jwt.role);
         if (jwt.role === "S") {
-          console.log(jwt.mid);
           setMid(jwt.mid);
         }
       } else {
@@ -122,7 +124,7 @@ const Certificate = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -152,9 +154,9 @@ const Certificate = () => {
 
   const handleDownload = () => {
     setLoader3(true);
-    if (certificate.uploadType === "url") {
+    if (certificate?.uploadType === "url") {
       setLoader3(false);
-      window.open(certificate.certificateURL, "_blank");
+      window.open(certificate?.certificateURL, "_blank");
       return;
     }
 
@@ -178,7 +180,7 @@ const Certificate = () => {
         link.href = url;
         link.setAttribute(
           "download",
-          `${certificate.certificateName}.${certificate.ext}`
+          `${certificate?.certificateName}.${certificate?.ext}`
         );
         document.body.appendChild(link);
         link.click();
@@ -187,7 +189,7 @@ const Certificate = () => {
       })
       .catch((err) => {
         setLoader3(false);
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -258,7 +260,7 @@ const Certificate = () => {
       })
       .catch((err) => {
         setLoader2(false);
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -295,11 +297,11 @@ const Certificate = () => {
           isClosable: true,
         });
         onClose();
-        window.location.href = "/certificates";
+        navigate("/certificates")
       })
       .catch((err) => {
         setLoader1(false);
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -328,16 +330,16 @@ const Certificate = () => {
               {certificate?.certificateType?.charAt(0).toUpperCase() +
                 certificate?.certificateType?.slice(1)}{" "}
               Certification -{" "}
-              {certificate?.certificateLevel.charAt(0).toUpperCase() +
-                certificate?.certificateLevel.slice(1)}{" "}
+              {certificate?.certificateLevel?.charAt(0).toUpperCase() +
+                certificate?.certificateLevel?.slice(1)}{" "}
               Level
             </Text>
             <Text textAlign="center" mt="-17px">
               Uploaded By {certificate.name}
             </Text>
             <Heading textAlign="center">
-              {certificate?.certificateName.charAt(0).toUpperCase() +
-                certificate?.certificateName.slice(1)}{" "}
+              {certificate?.certificateName?.charAt(0).toUpperCase() +
+                certificate?.certificateName?.slice(1)}{" "}
             </Heading>
             <Text textAlign="center">
               By{" "}
@@ -357,9 +359,9 @@ const Certificate = () => {
 
             <Text textAlign="center">
               Issued On{" "}
-              {certificate?.issueMonth.charAt(0).toUpperCase() +
-                certificate?.issueMonth.slice(1)}{" "}
-              {certificate.issueYear}
+              {certificate?.issueMonth?.charAt(0).toUpperCase() +
+                certificate?.issueMonth?.slice(1)}{" "}
+              {certificate?.issueYear}
             </Text>
           </Box>
 
@@ -372,7 +374,7 @@ const Certificate = () => {
                 colorScheme={colorStatus}
                 mb="20px"
               >
-                {steps.map((step, index) => (
+                {steps?.map((step, index) => (
                   <Step key={index}>
                     <StepIndicator>
                       <StepStatus
@@ -383,8 +385,8 @@ const Certificate = () => {
                     </StepIndicator>
 
                     <Box flexShrink="0">
-                      <StepTitle>{step.title}</StepTitle>
-                      <StepDescription>{step.description}</StepDescription>
+                      <StepTitle>{step?.title}</StepTitle>
+                      <StepDescription>{step?.description}</StepDescription>
                     </Box>
 
                     <StepSeparator />
@@ -405,7 +407,7 @@ const Certificate = () => {
           </Box>
 
           <Box className="buttons">
-            {certificate.status !== "approved" && editPrivilege ? (
+            {certificate?.status !== "approved" && editPrivilege ? (
               <Button colorScheme="blue" onClick={onEditOpen}>
                 Edit Certificate
               </Button>
@@ -484,7 +486,7 @@ const Certificate = () => {
                       type="text"
                       placeholder=""
                       onChange={(e) => {
-                        setCertificateName(e.target.value);
+                        setCertificateName(e?.target?.value);
                       }}
                       value={certificateName}
                     />
@@ -496,7 +498,7 @@ const Certificate = () => {
                       type="text"
                       placeholder=""
                       onChange={(e) => {
-                        setIssuingOrg(e.target.value);
+                        setIssuingOrg(e?.target?.value);
                       }}
                       value={issuingOrg}
                     />
@@ -507,7 +509,7 @@ const Certificate = () => {
                     <Box className="flex">
                       <Select
                         placeholder="Select Month"
-                        onChange={(e) => setIssueMonth(e.target.value)}
+                        onChange={(e) => setIssueMonth(e?.target?.value)}
                         value={issueMonth}
                       >
                         <option value="jan">January</option>
@@ -526,7 +528,7 @@ const Certificate = () => {
 
                       <Select
                         placeholder="Select Year"
-                        onChange={(e) => setIssueYear(e.target.value)}
+                        onChange={(e) => setIssueYear(e?.target?.value)}
                         value={issueYear}
                       >
                         <option value={prevPrevPrevYear}>
@@ -542,7 +544,7 @@ const Certificate = () => {
                   <Box className="flex">
                     <Select
                       placeholder="Select Type"
-                      onChange={(e) => setCertificateType(e.target.value)}
+                      onChange={(e) => setCertificateType(e?.target?.value)}
                       value={certificateType}
                     >
                       <option value="internal">Internal Certification</option>
@@ -551,7 +553,7 @@ const Certificate = () => {
 
                     <Select
                       placeholder="Select Level"
-                      onChange={(e) => setCertificateLevel(e.target.value)}
+                      onChange={(e) => setCertificateLevel(e?.target?.value)}
                       value={certificateLevel}
                     >
                       <option value="beginner">Beginner</option>

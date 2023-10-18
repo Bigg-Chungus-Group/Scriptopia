@@ -209,29 +209,29 @@ const Certificates = () => {
               <Tbody>
                 {certificates.map((certificate, index) => (
                   /* ! CHANGE TARGET*/
-                  <Tr key={certificate._id}>
+                  <Tr key={certificate?._id}>
                     <Td>{index + 1}</Td>
-                    <Td>{certificate.certificateName}</Td>
-                    <Td>{certificate.issuingOrg}</Td>
+                    <Td>{certificate?.certificateName}</Td>
+                    <Td>{certificate?.issuingOrg}</Td>
                     <Td>
-                      {certificate?.issueMonth.charAt(0).toUpperCase() +
-                        certificate?.issueMonth.slice(1)}{" "}
-                      {certificate.issueYear}
+                      {certificate?.issueMonth?.charAt(0).toUpperCase() +
+                        certificate?.issueMonth?.slice(1)}{" "}
+                      {certificate?.issueYear}
                     </Td>
                     <Td>
-                      {certificate?.certificateType.charAt(0).toUpperCase() +
-                        certificate?.certificateType.slice(1)}
+                      {certificate?.certificateType?.charAt(0).toUpperCase() +
+                        certificate?.certificateType?.slice(1)}
                     </Td>
                     <Td>
-                      {certificate?.certificateLevel.charAt(0).toUpperCase() +
-                        certificate?.certificateLevel.slice(1)}
+                      {certificate?.certificateLevel?.charAt(0).toUpperCase() +
+                        certificate?.certificateLevel?.slice(1)}
                     </Td>
                     <Td>
                       {certificate.status?.charAt(0).toUpperCase() +
                         certificate.status?.slice(1)}
                     </Td>
                     <Td>
-                      <Link to={`/certificates/${certificate._id}`}>View</Link>
+                      <Link to={`/certificates/${certificate?._id}`}>View</Link>
                     </Td>
                   </Tr>
                 ))}
@@ -256,7 +256,7 @@ const Certificates = () => {
                       type="text"
                       placeholder=""
                       onChange={(e) => {
-                        setCertificateName(e.target.value);
+                        setCertificateName(e?.target?.value);
                       }}
                       value={certificateName}
                     />
@@ -268,7 +268,7 @@ const Certificates = () => {
                       type="text"
                       placeholder=""
                       onChange={(e) => {
-                        setIssuingOrg(e.target.value);
+                        setIssuingOrg(e?.target?.value);
                       }}
                       value={issuingOrg}
                     />
@@ -279,7 +279,7 @@ const Certificates = () => {
                     <Box className="flex">
                       <Select
                         placeholder="Select Month"
-                        onChange={(e) => setIssueMonth(e.target.value)}
+                        onChange={(e) => setIssueMonth(e?.target?.value)}
                         value={issueMonth}
                       >
                         <option value="jan">January</option>
@@ -298,7 +298,7 @@ const Certificates = () => {
 
                       <Select
                         placeholder="Select Year"
-                        onChange={(e) => setIssueYear(e.target.value)}
+                        onChange={(e) => setIssueYear(e?.target?.value)}
                         value={issueYear}
                       >
                         <option value={prevPrevPrevYear}>
@@ -314,7 +314,7 @@ const Certificates = () => {
                   <Box className="flex">
                     <Select
                       placeholder="Select Type"
-                      onChange={(e) => setCertificateType(e.target.value)}
+                      onChange={(e) => setCertificateType(e?.target?.value)}
                       value={certificateType}
                     >
                       <option value="internal">Internal Certification</option>
@@ -323,7 +323,7 @@ const Certificates = () => {
 
                     <Select
                       placeholder="Select Level"
-                      onChange={(e) => setCertificateLevel(e.target.value)}
+                      onChange={(e) => setCertificateLevel(e?.target?.value)}
                       value={certificateLevel}
                     >
                       <option value="beginner">Beginner</option>
@@ -337,7 +337,7 @@ const Certificates = () => {
                       <Input
                         type="text"
                         placeholder="Enter Certification URL"
-                        onChange={(e) => setCertificateUrl(e.target.value)}
+                        onChange={(e) => setCertificateUrl(e?.target?.value)}
                         value={certificateUrl}
                       />
                     </FormControl>
@@ -356,7 +356,7 @@ const Certificates = () => {
                         id="upload"
                         accept=".pdf , .jpg , .jpeg , .png, .webp"
                         onChange={(e) => {
-                          handleFile(e.target.files[0]);
+                          handleFile(e?.target?.files[0]);
                         }}
                       />
                     </FormControl>

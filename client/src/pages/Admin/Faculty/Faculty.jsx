@@ -97,7 +97,7 @@ const Faculty = () => {
         setHouses(data.houses);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching faculty",
@@ -158,7 +158,7 @@ const Faculty = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -223,7 +223,7 @@ const Faculty = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         onClose();
         toast({
           title: "Error",
@@ -285,7 +285,7 @@ const Faculty = () => {
                     <Td>
                       {faculty.fname} {faculty.lname}
                     </Td>
-                    <Td>{faculty.branch}</Td>
+                    <Td>IT</Td>
                     <Td>
                       <Box className="actions">
                         <Box

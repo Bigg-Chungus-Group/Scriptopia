@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import {io as socket} from "../../events/socketConnection";
+import { io as socket } from "../../events/socketConnection";
 
 import {
   Menu,
@@ -30,6 +30,8 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 
+import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -37,6 +39,7 @@ const Navbar = () => {
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let dec;
@@ -45,7 +48,7 @@ const Navbar = () => {
       const p = dec.picture;
       setPicture(p);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "An error occurred.",
         description: "Please try again later.",
@@ -72,7 +75,7 @@ const Navbar = () => {
           }
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast({
           title: "An error occurred.",
           description: "Please try again later.",
@@ -116,16 +119,32 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              window.location.href = "/";
+              navigate("/");
             }}
           />
         </div>
+        <Menu>
+          <Box className="">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <Link to="/certificates">
+              <MenuItem className="menuitem">Certificates</MenuItem>
+            </Link>
+            <Link to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </Link>
+            <Link to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </Link>
+          </MenuList>
+        </Menu>
         <div className="links">
-          <a href="/certificates">Certificates</a>
-          <a href="/houses">Houses</a>
-          <a href="/events">Events</a>
+          <a onClick={() => navigate("/certificates")}>Certificates</a>
+          <a onClick={() => navigate("/houses")}>Houses</a>
+          <a onClick={() => navigate("/events")}>Events</a>
         </div>
-</div>
+      </div>
 
       <Menu>
         <Box className="rightmost">
@@ -152,7 +171,6 @@ const Navbar = () => {
             <MenuItem className="menuitem">Profile</MenuItem>
           </Link>
           <MenuDivider />
-          <MenuItem className="menuitem">Change Theme</MenuItem>
           <MenuItem className="menuitem" onClick={logout}>
             Logout
           </MenuItem>
