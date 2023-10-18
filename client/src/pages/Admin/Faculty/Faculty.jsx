@@ -285,7 +285,7 @@ const Faculty = () => {
                     <Td>
                       {faculty.fname} {faculty.lname}
                     </Td>
-                    <Td>{faculty.branch}</Td>
+                    <Td>IT</Td>
                     <Td>
                       <Box className="actions">
                         <Box

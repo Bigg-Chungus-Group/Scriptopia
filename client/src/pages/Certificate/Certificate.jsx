@@ -97,7 +97,6 @@ const Certificate = () => {
       if (jwt?.role) {
         setRole(jwt.role);
         if (jwt.role === "S") {
-          console.error(jwt.mid);
           setMid(jwt.mid);
         }
       } else {

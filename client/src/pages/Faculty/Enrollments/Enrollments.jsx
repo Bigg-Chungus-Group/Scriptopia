@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../../components/faculty/Navbar";
+import "./Enrollments.css";
 import {
   Box,
   Card,
@@ -60,7 +61,6 @@ const Enrollments = () => {
       })
       .then((data) => {
         setEnrollments(data.enrollments);
-        console.error(data.enrollments);
       })
       .catch((err) => {
         console.error(err);
@@ -142,15 +142,16 @@ const Enrollments = () => {
     return (
       <>
         <Navbar />
-        <Flex p="30px 70px" gap="20px">
+        <Flex gap="20px" className="FacultyEnrollments" wrap="wrap">
           {enrollments?.map((enrollment, index) => {
             const truncatedAbout = truncateText(enrollment?.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
             return (
               <Card
-                minW="sm"
+                minW="xs"
                 key={enrollment._id}
                 cursor="pointer"
                 onClick={() => openModal(enrollment?._id, index)}
+                alignSelf="center"
               >
                 <CardBody>
                   <Stack mt="6" spacing="3">

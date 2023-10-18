@@ -63,7 +63,11 @@ const Event = () => {
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isAllocateOpen, onOpen: onAllocateOpen, onClose: onAllocateClose } = useDisclosure();
+  const {
+    isOpen: isAllocateOpen,
+    onOpen: onAllocateOpen,
+    onClose: onAllocateClose,
+  } = useDisclosure();
 
   const [eventName, setEventName] = useState("");
   const [eventImage, setEventImage] = useState("");
@@ -459,7 +463,7 @@ const Event = () => {
   };
 
   const allocate = () => {
-    console.error("REQUEST SENDING")
+    console.error("REQUEST SENDING");
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/events/${event._id}/allocate`,
       {
@@ -473,7 +477,7 @@ const Event = () => {
     )
       .then(async (res) => await res.json())
       .then((res) => {
-        console.error("REQUEST SENT")
+        console.error("REQUEST SENT");
         if (res.status === "success") {
           toast({
             title: "Success",
@@ -495,7 +499,7 @@ const Event = () => {
         }
       })
       .catch((err) => {
-        console.error(err)
+        console.error(err);
         toast({
           title: "Error",
           description: "Some error occured",
@@ -504,7 +508,7 @@ const Event = () => {
           isClosable: true,
         });
       });
-  }
+  };
 
   if (!loading) {
     return (
@@ -519,13 +523,18 @@ const Event = () => {
           <GuestNavbar />
         )}
         <Box className="GeneralEvents">
-          <Flex mb="30px">
+          <Flex mb="30px" className="top">
             <Image
               src={event?.image}
               fallback={<Skeleton width="300px" height="250px" />}
               width="300px"
-              height="250px"
+              height="300px"
+              className="image"
             ></Image>
+
+            <Heading mb="30px" className="top-name">
+              {event?.name}
+            </Heading>
 
             <Box
               className="description"
@@ -538,8 +547,10 @@ const Event = () => {
             </Box>
           </Flex>
           <Box className="details">
-            <Heading mb="30px">{event?.name}</Heading>
-            <Flex justify="space-between">
+            <Heading mb="30px" className="bottom-name">
+              {event?.name}
+            </Heading>
+            <Flex justify="space-between" wrap="wrap" gap="30px">
               <Table width="fit-content" variant="unstyled" size="sm">
                 <Tbody>
                   <Tr>
@@ -615,7 +626,7 @@ const Event = () => {
                     <Td>
                       <i className="fa-solid fa-calendar-days"></i>
                     </Td>
-                    <Td>Registeration Deadline</Td>
+                    <Td> Deadline</Td>
                     <Td>
                       {new Date(event?.registerationEnds).toLocaleDateString(
                         "en-US",
@@ -632,7 +643,9 @@ const Event = () => {
                       <Td>
                         <Link
                           href={
-                            event?.registerationEnds < date ? null : navigate(event?.link)
+                            event?.registerationEnds < date
+                              ? null
+                              : navigate(event?.link)
                           }
                           color={
                             event?.registerationEnds < date ? "red" : "blacke"
@@ -796,7 +809,6 @@ const Event = () => {
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <FormControl>
                 {" "}
                 <InputGroup>
@@ -809,7 +821,6 @@ const Event = () => {
                   />
                 </InputGroup>
               </FormControl>
-
               <Flex gap="20px">
                 <FormControl>
                   <InputGroup>
@@ -840,7 +851,6 @@ const Event = () => {
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <FormControl>
                 <InputGroup>
                   <InputLeftAddon>
@@ -854,7 +864,6 @@ const Event = () => {
                   />
                 </InputGroup>
               </FormControl>
-
               <Flex gap="20px">
                 <FormControl>
                   <InputGroup>
@@ -885,7 +894,6 @@ const Event = () => {
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <Text mb="5px">Event Registeration</Text>
               <Flex gap="20px" align="center">
                 <FormControl>
@@ -933,12 +941,13 @@ const Event = () => {
                       placeholder="Event End Time"
                       mb="10px"
                       value={registerationEndTime}
-                      onChange={(e) => setRegisterationEndTime(e?.target?.value)}
+                      onChange={(e) =>
+                        setRegisterationEndTime(e?.target?.value)
+                      }
                     />
                   </InputGroup>
                 </FormControl>
               </Flex>
-
               <Text mb="5px">Event Schedule</Text>.
               <Flex gap="20px" align="center">
                 <FormControl>
@@ -1032,7 +1041,6 @@ const Event = () => {
           motionPreset="slideInBottom"
           onClose={onAllocateClose}
           isOpen={isAllocateOpen}
-
           isCentered
         >
           <AlertDialogOverlay />
@@ -1042,12 +1050,14 @@ const Event = () => {
             <AlertDialogCloseButton />
             <AlertDialogBody>
               <Text mb="20px">How Many Points to Allocate?</Text>
-              <Input value={allocatePoints} onChange={(e) => setAllocatePoints(e?.target?.value)} type="number" />
+              <Input
+                value={allocatePoints}
+                onChange={(e) => setAllocatePoints(e?.target?.value)}
+                type="number"
+              />
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button onClick={onAllocateClose}>
-                Cancel
-              </Button>
+              <Button onClick={onAllocateClose}>Cancel</Button>
               <Button colorScheme="red" ml={3} onClick={allocate}>
                 Allocate!
               </Button>

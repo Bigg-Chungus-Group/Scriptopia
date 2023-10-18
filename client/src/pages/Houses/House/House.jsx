@@ -291,19 +291,15 @@ const House = () => {
         <Box className="StudentHouse">
           <Box className="top">
             <Box className="cover" bg={houses.color}>
-              <Flex
-                className="details"
-                align="flex-start"
-                gap="10px"
-                direction="column"
-              >
+              <Flex className="details" align="flex-start" gap="10px">
                 <Avatar height="170px" width="170px" src={houses.logo}></Avatar>
                 <Flex
                   justifyContent="space-between"
                   alignItems="center"
                   width="70vw"
+                  className="details-inside"
                 >
-                  <Flex direction="column">
+                  <Flex direction="column" className="name">
                     <Heading fontSize="40px" fontWeight="600">
                       {houses?.name} House
                     </Heading>
@@ -343,7 +339,7 @@ const House = () => {
             </Box>
           </Box>
 
-          <Flex className="middle" height="220px" gap="20px">
+          <Flex height="220px" gap="20px" className="desc">
             <Box className="left" width="50%" bg={houses?.color}>
               <Heading fontSize="20px">{houses?.abstract}</Heading>
               <Text mt="15px">{houses?.desc}</Text>
@@ -628,7 +624,9 @@ const House = () => {
         </AlertDialog>
       </>
     );
-  } else {return <Loader/>}
+  } else {
+    return <Loader />;
+  }
 };
 
 export default House;

@@ -19,3 +19,12 @@
   color: skyblue; /* Change the color to your desired color */
   /* Add any other styling you want for the time */
 }
+
+@media (max-width: 1250px) {
+  .AdminLogs {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+}

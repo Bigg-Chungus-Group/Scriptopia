@@ -239,13 +239,13 @@ router.post(
 router.post("/bulkdelete", async (req, res) => {
   const { mids } = req.body;
   const midArr = [];
-
+  
   mids.forEach((mid) => {
     mid.toString();
   });
 
   try {
-    await userDB.deleteMany({ mid: { $in: midArr } });
+    await userDB.deleteMany({ mid: { $in: mids } });
     return res.status(200).send({ success: true });
   } catch (error) {
     logger.error({

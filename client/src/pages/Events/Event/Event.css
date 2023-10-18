@@ -1,3 +1,42 @@
 .GeneralEvents {
   padding: 30px 70px;
 }
+
+.GeneralEvents .top-name {
+  display: none;
+}
+
+@media screen and (max-width: 1250px) {
+  .GeneralEvents {
+    padding: 30px 20px;
+  }
+
+  .GeneralEvents .top {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .GeneralEvents .description {
+    margin: 0;
+    padding-right: 15px;
+    width: 100%;
+  }
+
+  .GeneralEvents .image {
+    align-self: center;
+  }
+
+  .GeneralEvents .top-name {
+    display: block;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .GeneralEvents .bottom-name {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+}

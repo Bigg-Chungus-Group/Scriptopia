@@ -25,3 +25,12 @@
   height: 200px;
   width: 25%;
 }
+
+@media screen and (max-width: 1250px) {
+  .AdminEvents {
+    padding: 30px 20px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+}

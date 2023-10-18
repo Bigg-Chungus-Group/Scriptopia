@@ -306,7 +306,7 @@ const Students = () => {
           ]}
           relatedLinks={[{ href: "/admin/students/add", name: "Add Students" }]}
         />
-        <Box className="AdminStudents">
+        <Box className="AdminStudents-Admin">
           <Box className="filters">
             <Box className="filters">
               <Box className="ipgroup">

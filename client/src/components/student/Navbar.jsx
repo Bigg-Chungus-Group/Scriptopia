@@ -4,7 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import {io as socket} from "../../events/socketConnection";
+import { io as socket } from "../../events/socketConnection";
 
 import {
   Menu,
@@ -119,16 +119,32 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              navigate("/")
+              navigate("/");
             }}
           />
         </div>
+        <Menu>
+          <Box className="">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <Link to="/certificates">
+              <MenuItem className="menuitem">Certificates</MenuItem>
+            </Link>
+            <Link to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </Link>
+            <Link to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </Link>
+          </MenuList>
+        </Menu>
         <div className="links">
           <a onClick={() => navigate("/certificates")}>Certificates</a>
           <a onClick={() => navigate("/houses")}>Houses</a>
           <a onClick={() => navigate("/events")}>Events</a>
         </div>
-</div>
+      </div>
 
       <Menu>
         <Box className="rightmost">
@@ -155,7 +171,6 @@ const Navbar = () => {
             <MenuItem className="menuitem">Profile</MenuItem>
           </Link>
           <MenuDivider />
-          <MenuItem className="menuitem">Change Theme</MenuItem>
           <MenuItem className="menuitem" onClick={logout}>
             Logout
           </MenuItem>

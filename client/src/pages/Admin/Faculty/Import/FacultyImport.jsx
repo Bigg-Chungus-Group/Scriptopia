@@ -114,7 +114,7 @@ const FacultyImport = () => {
             </label>
           </Box>
           <Alert status="warning">
-            <AlertIcon />
+            <AlertIcon className="hide" />
 
             <AlertDescription>
               Please Upload a .CSV file with the following columns in the same
@@ -124,7 +124,7 @@ const FacultyImport = () => {
             </AlertDescription>
           </Alert>
           <Alert status="info">
-            <AlertIcon />
+            <AlertIcon className="hide" />
             <AlertTitle>
               The following permission will be auto assigned for import: View
               Student Profile, View Faculty Information

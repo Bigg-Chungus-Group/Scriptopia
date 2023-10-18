@@ -125,8 +125,8 @@ const Home = () => {
           ],
         },
         options: {
-          responsive: false,
-          maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             x: {
               display: true,
@@ -211,8 +211,8 @@ const Home = () => {
         },
         options: {
           indexAxis: "y",
-          responsive: false,
-          maintainAspectRatio: false,
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             x: {
               display: false, // Hide x-axis gridlines
@@ -355,8 +355,8 @@ const Home = () => {
           ],
         },
         options: {
-          maintainAspectRatio: false,
-          responsive: false,
+          maintainAspectRatio: true,
+          responsive: true,
           plugins: {
             legend: {
               display: false,

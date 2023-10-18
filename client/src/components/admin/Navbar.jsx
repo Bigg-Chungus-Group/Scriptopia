@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Navbar.css";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -10,7 +10,6 @@ import {
   MenuList,
   MenuItem,
   Link,
-  MenuDivider,
   Box,
   useDisclosure,
   Drawer,
@@ -240,6 +239,30 @@ const Navbar = () => {
         <div className="image">
           <img src={Logo} onClick={() => navigate("/admin")} />
         </div>
+
+        <Menu>
+          <Box className="mobile-menu">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <RouterLink to="/admin/students">
+              <MenuItem className="menuitem">Students</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/faculty">
+              <MenuItem className="menuitem">Faculty</MenuItem>
+            </RouterLink>
+            <RouterLink to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </RouterLink>
+            <RouterLink to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/certificates">
+              <MenuItem className="menuitem">Certificates</MenuItem>
+            </RouterLink>
+          </MenuList>
+        </Menu>
+
         <div className="links">
           <Link onClick={() => navigate("/admin/students")}>Students</Link>
           <Link onClick={() => navigate("/admin/faculty")}>Faculty</Link>

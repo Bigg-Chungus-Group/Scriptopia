@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import React, { useState, useEffect } from "react";
-
+import "./Profile.css";
 import StudentNav from "../../components/student/Navbar";
 import AdminNav from "../../components/admin/Navbar";
 import FacultyNav from "../../components/faculty/Navbar";
@@ -586,7 +586,7 @@ const Profile = () => {
           <GuestNav />
         )}
 
-        <Flex p="10px 70px 0px" gap="20px">
+        <Flex gap="20px" className="StudentProfile">
           <Heading>{privilege}</Heading>
           {console.log(privilege)}
           <Box width="300vw">
@@ -744,15 +744,15 @@ const Profile = () => {
 
           <Flex direction="column" gap="20px">
             <Box height="fit-content" gap="20px">
-              <Flex width="65vw" gap="20px">
+              <Flex width="65vw" gap="20px" className="graphs">
                 <Box
-                  className="pointAnalysis"
                   height="41.5vh"
                   minHeight="fit-content"
                   p="20px"
                   borderRadius="15px"
                   boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
                   width="50%"
+                  className="graphs"
                 >
                   <Heading fontSize="17px" mb="50px">
                     House Contribution
@@ -773,14 +773,14 @@ const Profile = () => {
                 </Box>
 
                 <Box
-                  className="pointAnalysis"
                   height="41.5vh"
                   minHeight="fit-content"
                   borderRadius="15px"
                   boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
-                  width="50%"
                   p="0px 10px"
                   pb="30px"
+                  width="80vw"
+                  className="graphs"
                 >
                   <Heading p="20px" pb="0" fontSize="17px" mb="50px">
                     Contribution Graph
@@ -793,14 +793,13 @@ const Profile = () => {
                     gap="20px"
                     direction="column"
                   >
-                    <canvas id="graph" width="10px" height="10px"></canvas>
+                    <canvas id="graph"></canvas>
                   </Flex>
                 </Box>
               </Flex>
             </Box>
 
             <Box
-              className="pointAnalysis"
               width="100%"
               height="41.5vh"
               minHeight="fit-content"
@@ -808,6 +807,7 @@ const Profile = () => {
               boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
               p="20px"
               overflowY="auto"
+              className="table"
             >
               <Table>
                 <Thead>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/faculty/Navbar";
 import { useToast } from "@chakra-ui/react"
+import "./Certificates.css";
 import {
   Box,
   Button,
@@ -118,7 +119,7 @@ const Certificates = () => {
     return (
       <>
         <Navbar />
-        <Box p="30px 70px">
+        <Box className="FacultyCertificates">
           <Heading fontSize="20px">Pending Certificates</Heading>
           <Table mt="50px" variant="striped">
             <Thead>

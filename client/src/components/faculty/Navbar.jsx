@@ -9,7 +9,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Link,
   MenuDivider,
   Box,
   useDisclosure,
@@ -35,8 +34,10 @@ import {
   Textarea,
   FormLabel,
   Text,
+  Link as ChakraLink
 } from "@chakra-ui/react";
 
+import { Link } from "react-router-dom";
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -74,7 +75,7 @@ const Navbar = () => {
   useEffect(() => {
     try {
       fetch(
-        `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/receive`,
         {
           method: "GET",
           credentials: "include",
@@ -111,7 +112,7 @@ const Navbar = () => {
 
   const addNotification = () => {
     onAlertClose();
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/add`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/add`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -165,7 +166,7 @@ const Navbar = () => {
   const updateNotification = () => {
     onEditClose();
     fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/update`,
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/update`,
       {
         method: "POST",
         credentials: "include",
@@ -203,7 +204,7 @@ const Navbar = () => {
   const deleteNotification = () => {
     onEditClose();
     fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/delete`,
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/delete`,
       {
         method: "POST",
         credentials: "include",
@@ -235,20 +236,48 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navAdmin">
+    <div className="navFaculty">
       <div className="left-link">
         <div className="image">
           <img src={Logo} onClick={() => navigate("/faculty")} />
         </div>
+
+        <Menu>
+          <Box className="">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <Link to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </Link>
+            <Link to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </Link>
+
+            {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
+              <>
+                <Link to="/faculty/certificates">
+                  <MenuItem className="menuitem">Manage Certificates</MenuItem>
+                </Link>
+                <Link to="/faculty/enrollments">
+                  <MenuItem className="menuitem">Enrollment Requests</MenuItem>
+                </Link>
+              </>
+            ) : null}
+          </MenuList>
+        </Menu>
+
         <div className="links">
-          <Link onClick={() => navigate("/houses")}>Houses</Link>
-          <Link onClick={() => navigate("/events")}>Events</Link>
+          <ChakraLink onClick={() => navigate("/houses")}>Houses</ChakraLink>
+          <ChakraLink onClick={() => navigate("/events")}>Events</ChakraLink>
           {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
             <>
-              <Link onClick={() => navigate("/faculty/certificates")}>
+              <ChakraLink onClick={() => navigate("/faculty/certificates")}>
                 Manage Certificates
-              </Link>
-              <Link onClick={() => navigate("/faculty/enrollments")}>Enrollment Requests</Link>
+              </ChakraLink>
+              <ChakraLink onClick={() => navigate("/faculty/enrollments")}>
+                Enrollment Requests
+              </ChakraLink>
             </>
           ) : null}
         </div>
@@ -281,51 +310,32 @@ const Navbar = () => {
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent className="drawer-studentNav">
           <DrawerCloseButton />
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
             {notifications.length === 0 ? (
-              <Alert status="info">
+              <Alert>
                 <AlertIcon />
                 No Notifications
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert
-                  status="info"
-                  key={notification._id}
-                  marginBottom="5px"
-                  className="notificationBody"
-                >
+                <Alert status="info" key={notification._id} marginBottom="5px">
                   <AlertIcon />
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    width="100%"
-                  >
-                    <p>{notification.body}</p>
-                    <Text
-                      _hover={{
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                      }}
-                      onClick={() => {
-                        updateNotificationOpen(notification._id);
-                      }}
-                    >
-                      Manage
-                    </Text>
-                  </Box>
+
+                  <AlertDialogBody width="100%">
+                    {notification.body}
+                  </AlertDialogBody>
                 </Alert>
               ))
             )}
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onAlertOpen}>
-              Add Site Wide Notification
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Clear All
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -343,7 +353,7 @@ const Navbar = () => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Box className="alert-navAdmin-notification">
+              <Box className="alert-navFaculty-notification">
                 <Textarea
                   placeholder="Enter Notification Here"
                   resize="none"
@@ -386,7 +396,7 @@ const Navbar = () => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Box className="alert-navAdmin-notification">
+              <Box className="alert-navFaculty-notification">
                 <Textarea
                   placeholder="Enter Notification Here"
                   resize="none"

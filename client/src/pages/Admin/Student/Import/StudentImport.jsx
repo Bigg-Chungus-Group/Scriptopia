@@ -112,7 +112,7 @@ const StudentImport = () => {
             </label>
           </Box>
           <Alert status="warning">
-            <AlertIcon />
+            <AlertIcon className="hide" />
 
             <AlertDescription>
               Please Upload a .CSV file with the following columns in the same

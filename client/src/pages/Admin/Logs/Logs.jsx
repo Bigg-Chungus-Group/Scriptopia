@@ -47,7 +47,7 @@ const Logs = () => {
           const [time, message] = line.split("] ");
           return (
             <div key={index}>
-              <span className="log-time">{time}] </span>
+              <span className="log-time">{time.length > 0 ? time + "]" : ""}</span>
               {message}
             </div>
           );
@@ -70,7 +70,9 @@ const Logs = () => {
 
   useEffect(() => {
     const logContainer = document.querySelector(".log-container");
-    logContainer.scrollTop = logContainer.scrollHeight;
+    if (logContainer) {
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
   }, [logs]);
 
   const search = (e) => {

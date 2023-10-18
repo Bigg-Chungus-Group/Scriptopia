@@ -101,6 +101,12 @@ const FacultyAdd = ({ setModal, h }) => {
     });
   };
 
+  const closePerms = () => {
+    setPermClose();
+    onOpen();
+  };
+  
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
@@ -172,7 +178,7 @@ const FacultyAdd = ({ setModal, h }) => {
 
       <Modal
         isOpen={isPermOpen}
-        onClose={setPermClose}
+        onClose={closePerms}
         size="3xl"
         scrollBehavior="inside"
       >

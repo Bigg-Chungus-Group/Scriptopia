@@ -23,7 +23,7 @@ const Breadcrumb = ({ title, links, relatedLinks }) => {
             </BreadcrumbItem>
           ))}
         </ChakraBreadcrumb>
-        <Heading>{title}</Heading>
+        <Heading p="0">{title}</Heading>
       </Box>
       <Box className="right">
         {relatedLinks?.map((link, index) => (

@@ -69,9 +69,9 @@ const Events = () => {
 
   const [update, setUpdate] = useState(false);
 
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = Cookies.get("token");
-    const [loading, setLoading] = useState(true);
     if (token) {
       const decoded = jwtDecode(token);
       if (decoded.role === "A") {

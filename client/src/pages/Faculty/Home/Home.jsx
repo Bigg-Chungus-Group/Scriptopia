@@ -552,12 +552,13 @@ const Home = () => {
               <canvas id="myHouse"></canvas>
             </Box>
             <Box className="pointAnalysis">
-              <Heading mb="10px" fontSize="17px">Your Permissions</Heading>
-              <Text>
-                {permsArray.map((perm) => {
-                  return <Text>{perm}</Text>;
-                })}
-              </Text>
+              <Heading mb="10px" fontSize="17px">
+                Your Permissions
+              </Heading>
+
+              {permsArray.map((perm, index) => {
+                return <Text key={index}>{perm}</Text>;
+              })}
             </Box>
           </Box>
         </Box>

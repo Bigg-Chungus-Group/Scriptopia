@@ -1,7 +1,7 @@
 .StudentCertificates {
   box-sizing: border-box;
   padding: 30px 70px;
-  height: 91vh;
+  height: fit-content;
 }
 
 .StudentCertificates .table {
@@ -15,13 +15,12 @@
 }
 
 .upload-main-StudentCertificates .flex {
-    display: flex;
-    margin-top: 10px;
-    align-items: center;
-    gap: 20px;
-    justify-content: center;
+  display: flex;
+  margin-top: 10px;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
 }
-
 
 input[type="file"] {
   display: none;
@@ -42,5 +41,14 @@ input[type="file"] {
 }
 
 .red-required {
-    color: red;
+  color: red;
+}
+
+@media screen and (max-width: 1250px) {
+  .StudentCertificates {
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
 }
