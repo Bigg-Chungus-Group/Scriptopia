@@ -243,7 +243,7 @@ const Navbar = () => {
         </div>
 
         <Menu>
-          <Box className="">
+          <Box className="hidden">
             <MenuButton>Pages</MenuButton>
           </Box>
           <MenuList className="menu">
@@ -296,9 +296,9 @@ const Navbar = () => {
           </MenuButton>
         </Box>
         <MenuList>
-          <Link onClick={() => navigate("/faculty/settings")}>
+          <ChakraLink onClick={() => navigate("/faculty/settings")}>
             <MenuItem>Settings</MenuItem>
-          </Link>
+          </ChakraLink>
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>

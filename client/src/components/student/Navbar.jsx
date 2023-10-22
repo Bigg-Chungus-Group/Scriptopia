@@ -113,7 +113,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="nav">
+    <div className="navStudent">
       <div className="left-link">
         <div className="image">
           <img
@@ -124,7 +124,7 @@ const Navbar = () => {
           />
         </div>
         <Menu>
-          <Box className="">
+          <Box className="hidden">
             <MenuButton>Pages</MenuButton>
           </Box>
           <MenuList className="menu">

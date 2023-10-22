@@ -3,6 +3,9 @@ const router = express.Router();
 import { certificationsDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
+import { app } from "../firebase.js";
+
+const fbstorage = app.storage().bucket("gs://scriptopia-90b1a.appspot.com");
 
 router.post("/get", async (req, res) => {
   const { id } = req.body;

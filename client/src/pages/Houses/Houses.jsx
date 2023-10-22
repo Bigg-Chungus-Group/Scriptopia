@@ -470,13 +470,7 @@ const Houses = () => {
           </Flex>
           <Box className="graph-wrapper">
             <Flex gap="20px" justifyContent="space-between" wrap="wrap">
-              <Box
-                bg="#F6F6F6"
-                p="20px"
-                width="32%"
-                className="graphs"
-                height="65vh"
-              >
+              <Box p="20px" width="32%" className="graphs" height="65vh">
                 <Text fontSize="25px" mb="50px">
                   Leaderboard - Monthly
                 </Text>
@@ -485,13 +479,7 @@ const Houses = () => {
                 </Box>
               </Box>
 
-              <Box
-                bg="#F6F6F6"
-                p="20px"
-                width="32%"
-                className="graphs"
-                height="65vh"
-              >
+              <Box p="20px" width="32%" className="graphs" height="65vh">
                 <Text
                   fontSize="25px"
                   mb="50px"
@@ -508,7 +496,7 @@ const Houses = () => {
               </Box>
 
               <Box
-                bg="#F6F6F6"
+                
                 p="20px"
                 width="32%"
                 className="graphs"

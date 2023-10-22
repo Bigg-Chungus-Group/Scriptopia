@@ -183,6 +183,7 @@ const Home = () => {
             x: {
               grid: {
                 color: "#f2f2f2",
+                display: false
               },
               ticks: {
                 display: false,
@@ -195,6 +196,7 @@ const Home = () => {
             y: {
               grid: {
                 color: "#f2f2f2",
+                display: false
               },
             },
           },
@@ -335,10 +337,10 @@ const Home = () => {
 
           scales: {
             x: {
-              grid: { color: "#f2f2f2", display: true },
+              grid: { color: "#f2f2f2", display: false },
             },
             y: {
-              grid: { color: "#f2f2f2", display: true },
+              grid: { color: "#f2f2f2", display: false },
               ticks: {
                 display: false, // Set the step size to 1 to show whole numbers
               },

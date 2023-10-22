@@ -26,8 +26,11 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
+  const decoded = useAuthCheck("F");
+
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);
