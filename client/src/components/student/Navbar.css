@@ -1,4 +1,4 @@
-.navAdmin {
+.navStudent {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -8,23 +8,24 @@
   color: #59616f;
 }
 
-.navAdmin .image {
+.navStudent .image {
   width: 30px;
   cursor: pointer;
 }
 
-.navAdmin i {
+.navStudent i {
   font-size: 1.5rem;
   cursor: pointer;
   margin-right: 20px;
   color: var(--accent-color);
 }
 
-.navAdmin .links a {
+.navStudent .links a {
   transition: 0.2s;
+  cursor: pointer;
 }
 
-.navAdmin .links a:hover {
+.navStudent .links a:hover {
   color: var(--accent-color);
 }
 
@@ -40,7 +41,7 @@
   margin-right: 20px;
 }
 
-.navAdmin input {
+.navStudent input {
   background-color: #e8e8e8;
   border: none;
   outline: none;
@@ -52,7 +53,7 @@
   transition: 0.2s;
 }
 
-.navAdmin .profile {
+.navStudent .profile {
   background-size: cover;
   background-position: center;
   width: 40px;
@@ -62,18 +63,18 @@
   margin-right: 20px;
 }
 
-.navAdmin .rightmost {
+.navStudent .rightmost {
   display: flex;
   align-items: center;
 }
 
-.navAdmin .rightmost i {
+.navStudent .rightmost i {
   font-size: 20px;
   margin-right: 30px;
   cursor: pointer;
 }
 
-.navAdmin #searchIcon {
+.navStudent #searchIcon {
   display: none;
   font-size: 1rem;
 }
@@ -84,13 +85,25 @@
   flex-direction: column;
 }
 
-.navAdmin .notificationBody {
+.navStudent .notificationBody {
   display: flex;
   justify-content: space-between;
 }
 
+.navStudent .hidden {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .navAdmin .links {
+  .navStudent .links {
     display: none;
+  }
+
+  .navStudent .links {
+    display: none;
+  }
+
+  .navStudent .hidden {
+    display: block;
   }
 }

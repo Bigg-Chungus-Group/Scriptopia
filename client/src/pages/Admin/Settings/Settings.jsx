@@ -267,6 +267,7 @@ const Settings = () => {
                       id="dark-mode"
                       onChange={(e) => {
                         toggleColorMode();
+                        window.location.reload()
                       }}
                       isChecked={colorMode === "dark" ? true : false}
                     />

@@ -31,8 +31,11 @@ import {
 import Loader from "../../../components/Loader";
 
 import { useToast } from "@chakra-ui/react"
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Enrollments = () => {
+  const decoded = useAuthCheck("F");
+
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);

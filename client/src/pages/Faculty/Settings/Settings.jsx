@@ -160,7 +160,7 @@ const Settings = () => {
                 id="email-alerts"
                 onChange={(e) => {
                   toggleColorMode();
-                  setToastDispatched(true);
+                  window.location.reload();
                 }}
                 isChecked={colorMode === "dark" ? true : false}
               />

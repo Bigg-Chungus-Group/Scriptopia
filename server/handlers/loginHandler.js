@@ -195,11 +195,10 @@ router.post(
               ay: user.AY,
               branch: user.branch,
               picture: user.profilePicture,
-              role: user.role,
+              role: "S",
             },
             process.env.JWT_SECRET
           );
-
           const expirationTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
           const expirationDate = new Date(Date.now() + expirationTime);
 

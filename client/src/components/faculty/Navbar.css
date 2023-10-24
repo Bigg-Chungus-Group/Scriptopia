@@ -73,6 +73,10 @@
   cursor: pointer;
 }
 
+.navFaculty .hidden {
+  display: none;
+}
+
 .navFaculty #searchIcon {
   display: none;
   font-size: 1rem;
@@ -92,5 +96,9 @@
 @media (max-width: 768px) {
   .navFaculty .links {
     display: none;
+  }
+
+  .navFaculty .hidden {
+    display: block;
   }
 }

@@ -16,12 +16,15 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+
+  const decoded = useAuthCheck("A");
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/certificates`, {

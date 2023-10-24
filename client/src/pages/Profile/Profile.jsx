@@ -30,16 +30,35 @@ import {
   useToast,
   Tbody,
   InputLeftAddon,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
 } from "@chakra-ui/react";
 
 import Chart from "chart.js/auto";
 import Loader from "../../components/Loader";
+import AvatarEditor from "react-avatar-editor";
 
 const Profile = () => {
   const [privilege, setPrivilege] = useState(false);
   const [profile, setProfile] = useState([]);
   const [role, setRole] = useState();
   const [loading, setLoading] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [update, setUpdate] = useState(false);
+
+  const newImageRef = React.useRef(null);
 
   const toast = useToast();
 
@@ -55,6 +74,9 @@ const Profile = () => {
   const [linkedin, setLinkedin] = useState("");
   const [github, setGithub] = useState("");
   const [mid, setMid] = useState("");
+  const [newImage, setNewImage] = useState("");
+
+  const [btnLoading, setBtnLoading] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -156,7 +178,7 @@ const Profile = () => {
           isClosable: true,
         });
       });
-  }, []);
+  }, [update]);
 
   useEffect(() => {
     let cont;
@@ -361,10 +383,10 @@ const Profile = () => {
 
           scales: {
             x: {
-              grid: { color: "#f2f2f2", display: true },
+              grid: { color: "#f2f2f2", display: false },
             },
             y: {
-              grid: { color: "#f2f2f2", display: true },
+              grid: { color: "#f2f2f2", display: false },
               ticks: {
                 display: false, // Set the step size to 1 to show whole numbers
               },
@@ -573,6 +595,61 @@ const Profile = () => {
     }
   };
 
+  const selectImage = () => {
+    document.getElementById("file").click();
+  };
+
+  const openInAvatarEditor = (e) => {
+    const image = e.target.files[0];
+    if (!image) {
+      return;
+    }
+
+    setNewImage(image);
+    onOpen();
+  };
+
+  const uploadImage = () => {
+    setBtnLoading(true);
+    const image = newImageRef.current.getImageScaledToCanvas().toDataURL();
+
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/profile/${mid}/updatepfp`, {
+      method: "POST",
+      credentials: "include",
+      body: image,
+    })
+      .then((res) => {
+        setBtnLoading(false);
+        if (res.status === 200) {
+          toast({
+            title: "Profile Picture Updated Successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          onClose();
+          setUpdate(!update);
+        } else {
+          toast({
+            title: "Error",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        setBtnLoading(false);
+        console.error(err);
+        toast({
+          title: "Error",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   if (!loading) {
     return (
       <>
@@ -599,7 +676,37 @@ const Profile = () => {
               borderRadius="15px"
               width="100%"
             >
-              <Avatar size="2xl" src={user.profilePicture} />
+              <Box className="pfp">
+                <Avatar
+                  size="2xl"
+                  src={user.profilePicture}
+                  className="original"
+                />
+                <Flex
+                  onClick={selectImage}
+                  align="center"
+                  justify="center"
+                  cursor="pointer"
+                  width="100%"
+                  height="100%"
+                  borderRadius="50%"
+                  className="overlay"
+                  bg="black"
+                >
+                  <i
+                    className="fa-solid fa-pen"
+                    style={{ fontSize: "20px", color: "white" }}
+                  ></i>
+                </Flex>
+              </Box>
+              <Input
+                type="file"
+                id="file"
+                style={{ display: "none" }}
+                accept="image/*"
+                onChange={openInAvatarEditor}
+              />
+
               <Text>
                 {user?.fname} {user?.lname}
               </Text>
@@ -637,6 +744,7 @@ const Profile = () => {
                 boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
                 borderRadius="15px"
                 p="20px"
+                height="29.6vh"
               >
                 <InputGroup>
                   <InputLeftAddon>
@@ -697,6 +805,7 @@ const Profile = () => {
                 boxShadow="0px 0px 10px 0px rgba(185, 100, 245, 0.1);"
                 borderRadius="15px"
                 p="20px"
+                height="29.6vh"
               >
                 <Flex
                   gap="10px"
@@ -836,6 +945,61 @@ const Profile = () => {
             </Box>
           </Flex>
         </Flex>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Modal Title</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Flex
+                align="center"
+                justify="center"
+                direction="column"
+                gap="50px"
+              >
+                <AvatarEditor
+                  image={newImage}
+                  width={200}
+                  height={200}
+                  border={50}
+                  borderRadius={100}
+                  color={[0, 0, 0, 0.6]} // RGBA
+                  scale={zoom}
+                  rotate={0}
+                  className="avatar-editor"
+                  ref={newImageRef}
+                />
+                <Box width="100%">
+                  <Text textAlign="center">Zoom</Text>
+                  <Slider
+                    aria-label="slider-ex-1"
+                    min={1.2}
+                    value={zoom}
+                    onChange={setZoom}
+                  >
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb />
+                  </Slider>
+                </Box>
+              </Flex>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button
+                variant="ghost"
+                isLoading={btnLoading}
+                onClick={uploadImage}
+              >
+                Set
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
   } else {

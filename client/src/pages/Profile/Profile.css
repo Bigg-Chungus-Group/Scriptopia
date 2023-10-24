@@ -2,6 +2,27 @@
   padding: 10px 70px 0px;
 }
 
+.StudentProfile .pfp {
+  position: relative;
+}
+
+.StudentProfile .pfp .overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: .2s;
+}
+
+.StudentProfile .pfp:hover .overlay {
+  opacity: 0.5;
+}
+
+.StudentProfile .pfp:hover .original {
+  filter: blur(2px)
+}
+
 @media screen and (max-width: 1250px) {
   .StudentProfile {
     flex-wrap: wrap;
@@ -18,7 +39,6 @@
     overflow-x: scroll;
     width: 100%;
   }
-
 }
 
 @media screen and (max-width: 1024px) {

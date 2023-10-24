@@ -4,3 +4,4 @@ public
 ERROR-CODES.pdf
 server/backups/*
 out
+server/fbServiceAccount.js

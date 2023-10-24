@@ -30,7 +30,7 @@
 
 .AdminHome .housePoints,
 .AdminHome .certifications {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   width: 50%;
@@ -39,14 +39,14 @@
 
 .AdminHome .left .bottom {
   margin-top: 20px;
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 45%;
 }
 
 .AdminHome .right .houseAssesment {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 40vh;
@@ -56,7 +56,7 @@
 }
 
 .AdminHome .right .currentEvents {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 35vh;

@@ -6,7 +6,8 @@ import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import cors from "cors";
 import { instrument } from "@socket.io/admin-ui";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
+import bodyParser from "body-parser";
 
 // # Import Handlers
 
@@ -27,6 +28,8 @@ import { verifyFacultyPriviliges } from "./handlers/faculty/verifyFaculty.js";
 import mainSocket from "./events/mainSocket.js";
 import profileHandler from "./handlers/profileHandler.js";
 
+import { v2 as cloudinary } from "cloudinary";
+
 // # Import Middlewares and APIs
 
 // # CONFIGURATIONS, MIDDLEWARES, INITIALIZATIONS
@@ -35,15 +38,29 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
+  origin: [
+    "https://admin.socket.io",
+    process.env.FRONTEND_ADDRESS,
+    process.env.DEBUG_SERVER,
+  ],
   credentials: true,
 };
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 app.use(cors(corsOptions));
 app.disable("x-powered-by");
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(bodyParser.json({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.text({ limit: '200mb' }));
 
 // # APIS
 
@@ -62,8 +79,7 @@ app.use("/firstTime", firstTimeHandler);
 app.use("/houses", houseHandler);
 app.use("/events", eventsHandler);
 app.use("/certificates", certificateHandler);
-app.use("/profile", profileHandler)
-
+app.use("/profile", profileHandler);
 
 app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);
 app.use("/student", verifyToken, verifyStudentPriviliges, mainStudent);
@@ -77,17 +93,20 @@ app.get("/cron", (req, res) => {
 const server = app.listen(5000);
 export const io = new Server(server, {
   cors: {
-    origin: ["https://admin.socket.io", process.env.FRONTEND_ADDRESS, process.env.DEBUG_SERVER],
+    origin: [
+      "https://admin.socket.io",
+      process.env.FRONTEND_ADDRESS,
+      process.env.DEBUG_SERVER,
+    ],
     credentials: true,
   },
 });
-
 
 instrument(io, {
   auth: {
     type: "basic",
     username: "admin",
-    password: await bcrypt.hash("admin", 10)
+    password: await bcrypt.hash("admin", 10),
   },
   mode: "development",
   namespaceName: "/socketadmin",

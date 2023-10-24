@@ -15,9 +15,11 @@ Router.post("/", verifyToken, async (req, res) => {
     const { mid } = req.body;
     const allHouses = await houseDB.find({}).toArray();
     const user = await userDB.findOne({ mid: mid.toString() });
-    const userHouse = await houseDB.findOne({
-      _id: new ObjectId(user.house.id),
-    });
+    let userHouse = null;
+    if (user.house.id) {
+      userHouse = await houseDB.findOne({ _id: new ObjectId(user.house.id) });
+    }
+
     const certifications = await certificationsDB.find({ mid }).toArray();
 
     res.status(200).send({ allHouses, userHouse, user, certifications });
@@ -28,6 +30,7 @@ Router.post("/", verifyToken, async (req, res) => {
       err: error.message,
       mid: req.user.mid,
     });
+    console.log(error);
     res.status(500).send({ success: false });
   }
 });
