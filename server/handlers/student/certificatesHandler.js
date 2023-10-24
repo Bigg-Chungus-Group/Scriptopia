@@ -116,7 +116,7 @@ router.post(
   }
 );
 
-router.post("/download", verifyToken, async (req, res) => {
+router.post("/download", async (req, res) => {
   const { id } = req.body;
   console.log("DOWNLOAD");
 
