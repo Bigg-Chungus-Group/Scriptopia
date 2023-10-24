@@ -3,6 +3,7 @@ import { houseDB, userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { body } from "express-validator";
+import { ObjectId } from "mongodb";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -122,7 +123,10 @@ router.post(
   async (req, res) => {
     const { fname, lname, moodleid: mid, email, house, gender } = req.body;
 
-    const password = await bcrypt.hash(process.env.DEFAULT_STUDENT_PASSWORD, 10);
+    const password = await bcrypt.hash(
+      process.env.DEFAULT_STUDENT_PASSWORD,
+      10
+    );
     const firstTime = true;
     const approved = true;
     const defaultPW = true;
@@ -185,6 +189,7 @@ router.post(
   body("gender").notEmpty().trim().escape(),
   async (req, res) => {
     const { fName, lName, mid, email, house, gender } = req.body;
+    const todaysYear = new Date().getFullYear();
 
     try {
       await userDB.updateOne(
@@ -196,9 +201,33 @@ router.post(
             email: email.toString(),
             house: {
               id: house.toString(),
-              contribution: 0,
+              points: {
+                [todaysYear]: 0,
+              },
             },
             gender: gender.toString(),
+          },
+        }
+      );
+
+
+      const oldHouse = await userDB.findOne({ mid: mid.toString() });
+      console.log(house.toString())
+
+      await houseDB.updateOne(
+        { _id: new ObjectId(oldHouse.house.id.toString()) },
+        {
+          $pull: {
+            members: mid.toString(),
+          },
+        }
+      );
+
+      await houseDB.updateOne(
+        { _id: new ObjectId(house.toString()) },
+        {
+          $push: {
+            members: mid.toString(),
           },
         }
       );
@@ -239,7 +268,7 @@ router.post(
 router.post("/bulkdelete", async (req, res) => {
   const { mids } = req.body;
   const midArr = [];
-  
+
   mids.forEach((mid) => {
     mid.toString();
   });

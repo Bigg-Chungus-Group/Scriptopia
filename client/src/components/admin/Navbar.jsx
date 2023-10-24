@@ -127,6 +127,8 @@ const Navbar = () => {
             duration: 3000,
             isClosable: true,
           });
+          setNotificationBody("");
+          setNotificationExpiry("");
           setUpdate(!update);
         } else {
           toast({

@@ -36,6 +36,8 @@ import {
   useToast,
   Alert,
   Flex,
+  Link,
+  Code,
 } from "@chakra-ui/react";
 import "./Certificate.css";
 import Navbar from "../../components/student/Navbar";
@@ -47,6 +49,7 @@ import AdminNavbar from "../../components/admin/Navbar";
 import FacultyNavbar from "../../components/faculty/Navbar";
 import GuestNavbar from "../../components/guest/Navbar";
 import { useNavigate } from "react-router-dom";
+import { CopyIcon } from "@chakra-ui/icons";
 
 const Certificate = () => {
   const [certificate, setCertificate] = useState({});
@@ -83,6 +86,12 @@ const Certificate = () => {
     onClose: onEditClose,
   } = useDisclosure();
   const cancelRef = React.useRef();
+
+  const {
+    isOpen: isHashOpen,
+    onOpen: onHashOpen,
+    onClose: onHashClose,
+  } = useDisclosure();
 
   const year = new Date().getFullYear();
   const prevYear = year - 1;
@@ -160,19 +169,16 @@ const Certificate = () => {
       return;
     }
 
-    fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/download`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: certificate._id,
-        }),
-      }
-    )
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/certificates/download`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: certificate._id,
+      }),
+    })
       .then((res) => res.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -190,13 +196,13 @@ const Certificate = () => {
       .catch((err) => {
         setLoader3(false);
         console.error(err);
-        toast({
+        /* toast({
           title: "Error",
           description: "Something went wrong",
           status: "error",
           duration: 5000,
           isClosable: true,
-        });
+        });*/
       });
   };
 
@@ -223,7 +229,7 @@ const Certificate = () => {
     }
 
     if (certificate.status === "pending") {
-      updatedSteps[2].title = "Pending";
+      updatedSteps[2].description = "Pending";
       setActiveStep(0);
       setColorStatus("blue");
     }
@@ -297,7 +303,7 @@ const Certificate = () => {
           isClosable: true,
         });
         onClose();
-        navigate("/certificates")
+        navigate("/certificates");
       })
       .catch((err) => {
         setLoader1(false);
@@ -310,6 +316,17 @@ const Certificate = () => {
           isClosable: true,
         });
       });
+  };
+
+  const copyText = (text) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied",
+      description: "Copied to Clipboard",
+      status: "info",
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   if (!loading) {
@@ -325,7 +342,7 @@ const Certificate = () => {
           <GuestNavbar />
         )}
         <Box className="StudentCertificate">
-          <Box className="info" display="flex" flexDir="column" gap="20px">
+          <Box className="info" display="flex" flexDir="column" gap="15px">
             <Text textAlign="center">
               {certificate?.certificateType?.charAt(0).toUpperCase() +
                 certificate?.certificateType?.slice(1)}{" "}
@@ -356,6 +373,9 @@ const Certificate = () => {
             >
               Download / View Certificate
             </Button>
+            <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
+              Verify Hashes
+            </Link>
 
             <Text textAlign="center">
               Issued On{" "}
@@ -401,7 +421,9 @@ const Certificate = () => {
               readOnly
               resize="none"
               value={
-                certificate?.comments ? certificate?.comments : "No Comments Yet"
+                certificate?.comments
+                  ? certificate?.comments
+                  : "No Comments Yet"
               }
             />
           </Box>
@@ -415,16 +437,16 @@ const Certificate = () => {
               <>
                 <Text color="green" fontWeight="500">
                   Your House Earned{" "}
-                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"}{" "}
-                  from this Certificate
+                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from this
+                  Certificate
                 </Text>
               </>
             ) : (
               <>
                 <Text color="green" fontWeight="500">
                   {certificate.name} Earned{" "}
-                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"}{" "}
-                  from this Certificate
+                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from this
+                  Certificate
                 </Text>
               </>
             )}{" "}
@@ -579,6 +601,79 @@ const Certificate = () => {
             </ModalContent>
           </Modal>
         </Box>
+
+        <Modal isOpen={isHashOpen} onClose={onHashClose} size="2xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Verify Hashes</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Text>SHA256 Hash:</Text>
+              <Code>{certificate?.sha256}</Code>
+              <CopyIcon
+                ml="10px"
+                cursor="pointer"
+                onClick={() => copyText(certificate?.sha256)}
+              />
+              <Text>MD5 Hash: </Text>
+              <Code>{certificate?.md5}</Code>
+              <CopyIcon
+                ml="10px"
+                cursor="pointer"
+                onClick={() => copyText(certificate?.md5)}
+              />
+
+              <Text mt="20px">
+                <b>1.</b> Go to the directory containing the fle
+              </Text>
+              <Text>
+                <b>2.</b> Open a Terminal in that Directory
+              </Text>
+              <Text>
+                <b>3.</b> Type the following command
+              </Text>
+
+              <Box ml="20px">
+                {" "}
+                <Text mt="10px">On Windows</Text>
+                <Code>
+                  certUtil -hashfile{" "}
+                  '{certificate?.certificateName +
+                    "." +
+                    certificate?.ext +
+                    "' MD5"}
+                </Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() =>
+                    copyText(
+                      `certUtil -hashfile '${certificate?.certificateName + "." + certificate?.ext + "' MD5"}`
+                    )
+                  }
+                />
+                <Text mt="10px">On Linux</Text>
+                <Code>
+                  sha256sum{" "}
+                  '{certificate?.certificateName + "." + certificate?.ext}'
+                </Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() =>
+                    copyText(`sha256sum '${certificate?.certificateName + "." + certificate?.ext}'`)
+                  }
+                />
+              </Box>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onHashClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
   } else {

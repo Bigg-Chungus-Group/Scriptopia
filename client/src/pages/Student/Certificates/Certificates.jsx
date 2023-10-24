@@ -126,9 +126,6 @@ const Certificates = () => {
         formData.append("certificateURL", certificateUrl);
         formData.append("certificate", file);
 
-        console.log(file);
-        console.log(formData);
-
         fetch(
           `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/upload`,
           {

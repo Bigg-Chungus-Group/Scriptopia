@@ -38,6 +38,15 @@ import {
   FormControl,
   InputLeftElement,
   position,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
 } from "@chakra-ui/react";
 import Navbar from "../../../components/student/Navbar";
 import AdminNavbar from "../../../components/admin/Navbar";
@@ -46,6 +55,9 @@ import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { ChromePicker as SketchPicker } from "react-color";
 import Loader from "../../../components/Loader";
+import GuestNavbar from "../../../components/guest/Navbar";
+import Chart from "chart.js/auto";
+import AvatarEditor from "react-avatar-editor";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -54,8 +66,25 @@ const House = () => {
   const [studentCord, setStudentCord] = useState(null);
   const houseID = window.location.pathname.split("/")[2];
   const [totalpoints, setTotalPoints] = useState(0);
-  const [role, setRole] = useState(null); // [student, faculty, admin
+  const [role, setRole] = useState(null);
   const toast = useToast();
+
+  const [logo, setLogo] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [logoZoom, setLogoZoom] = useState(1);
+  const [bannerZoom, setBannerZoom] = useState(1);
+
+  const {
+    isOpen: isLogoOpen,
+    onOpen: onLogoOpen,
+    onClose: onLogoClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isBannerOpen,
+    onOpen: onBannerOpen,
+    onClose: onBannerClose,
+  } = useDisclosure();
 
   const [houseName, setHouseName] = useState(null);
   const [houseColor, setHouseColor] = useState(null);
@@ -125,6 +154,9 @@ const House = () => {
         setHouseDesc(data.house.desc);
         setFacCordID(data.facCordInfo.mid);
         setStudentCordID(data.studentCordInfo.mid);
+        setBanner(data.house.banner);
+
+        setLogo(data.house.logo);
       })
       .catch((err) => {
         console.error(err);
@@ -278,6 +310,35 @@ const House = () => {
     });
   };
 
+  useEffect(() => {
+    if (houses) {
+      var ctx = document.getElementById("myChart").getContext("2d");
+      var data = {
+        labels: ["Label 1", "Label 2", "Label 3"],
+        datasets: [
+          {
+            data: [30, 40, 30],
+            backgroundColor: ["red", "blue", "green"],
+          },
+        ],
+      };
+
+      var myPieChart = new Chart(ctx, {
+        type: "doughnut",
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    }
+  }, [houses]);
+
   if (houses) {
     return (
       <>
@@ -287,134 +348,207 @@ const House = () => {
           <FacultyNavbar />
         ) : role == "A" ? (
           <AdminNavbar />
-        ) : null}
+        ) : (
+          <GuestNavbar />
+        )}
         <Box className="StudentHouse">
-          <Box className="top">
-            <Box className="cover" bg={houses.color}>
-              <Flex className="details" align="flex-start" gap="10px">
-                <Avatar height="170px" width="170px" src={houses.logo}></Avatar>
-                <Flex
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="70vw"
-                  className="details-inside"
-                >
-                  <Flex direction="column" className="name">
-                    <Heading fontSize="40px" fontWeight="600">
-                      {houses?.name} House
-                    </Heading>
-                    <Flex align="center" gap="10px">
-                      <a>
-                        <Text>
-                          @{facCord?.fname} {facCord?.lname}
-                        </Text>
-                      </a>
-
-                      <a href="">
-                        <i className="fa-brands fa-linkedin"></i>
-                      </a>
-                      <a href="">
-                        <i className="fa-brands fa-instagram"></i>
-                      </a>
-                      <a href="">
-                        <i className="fa-brands fa-twitter"></i>
-                      </a>
-                    </Flex>
-                  </Flex>
-                  <Box>
+          <Flex gap="20px">
+            <Box width="60%">
+              <Box className="top">
+                <Box className="cover" bg={`url(${houses.banner})`} position={"relative"}>
+                  <Box className="cover-wrapper">
+                    <Box className="cover-inside" bg={houses.color}></Box>
                     {editPrivilege ? (
-                      <Text cursor="pointer" onClick={onSettingsOpen}>
-                        <i className="fa-solid fa-pen"></i>
-                      </Text>
+                      <Flex
+                        height="100%"
+                        width="100%"
+                        position="absolute"
+                        bg="black"
+                        transform="translate(-50%, -50%)"
+                        borderRadius="20px"
+                        top="50%"
+                        left="50%"
+                        className="cover-overlay"
+                        justify="center"
+                        align="center"
+                        onClick={onBannerOpen}
+                      >
+                        <i
+                          className="fa-solid fa-pen"
+                          style={{
+                            color: "white",
+                            marginTop: "-80px",
+                            marginLeft: "30px",
+                          }}
+                        ></i>
+                      </Flex>
                     ) : null}
-                    <Text fontSize="17.5px" fontWeight="500">
-                      {houses.members.length} Members
-                    </Text>
-                    <Text fontSize="17.5px" fontWeight="500">
-                      {totalpoints} Points
-                    </Text>
                   </Box>
-                </Flex>
-              </Flex>
+                  <Flex className="details" gap="10px" alignItems="center">
+                    <Box className="logo" position="relative">
+                      <Avatar
+                        height="150px"
+                        width="150px"
+                        src={houses.logo}
+                        className="logo-img"
+                      ></Avatar>
+
+                      {editPrivilege ? (
+                        <Flex
+                          height="150px"
+                          width="150px"
+                          position="absolute"
+                          bg="black"
+                          transform="translate(-50%, -50%)"
+                          borderRadius="50%"
+                          top="50%"
+                          left="50%"
+                          className="logo-overlay"
+                          justify="center"
+                          align="center"
+                          onClick={onLogoOpen}
+                        >
+                          <i
+                            className="fa-solid fa-pen"
+                            style={{ color: "white" }}
+                          ></i>
+                        </Flex>
+                      ) : null}
+                    </Box>
+                    <Box
+                      gap="50px"
+                      alignItems="center"
+                      className="details-inside"
+                    >
+                      <Flex
+                        direction="column"
+                        className="name"
+                        alignItems="center"
+                      >
+                        <Heading
+                          fontSize="30px"
+                          fontWeight="600"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          {houses?.name} House
+                          {editPrivilege ? (
+                            <i
+                              className="fa-solid fa-pen"
+                              onClick={onSettingsOpen}
+                              style={{
+                                cursor: "pointer",
+                                fontSize: "15px",
+                                marginLeft: "10px",
+                              }}
+                            ></i>
+                          ) : null}
+                        </Heading>
+                        <Flex align="center" gap="10px">
+                          <a>
+                            <Text fontSize="15px">
+                              @{facCord?.fname} {facCord?.lname}
+                            </Text>
+                          </a>
+
+                          <a href="">
+                            <i className="fa-brands fa-linkedin"></i>
+                          </a>
+                          <a href="">
+                            <i className="fa-brands fa-instagram"></i>
+                          </a>
+                          <a href="">
+                            <i className="fa-brands fa-twitter"></i>
+                          </a>
+                        </Flex>
+                      </Flex>
+                      <Box height="180px" mt="50px">
+                        <Heading fontSize="20px">{houses?.abstract}</Heading>
+                        <Text overflowY="auto" mt="5px" pr="20px">
+                          {houses?.desc} Lorem ipsum dolor sit amet, consectetur
+                          adipisicing elit. Architecto, alias aut. Temporibus
+                          dolorum, corrupti voluptate maiores iusto, cupiditate
+                          numquam facilis ipsam at itaque nesciunt, omnis alias
+                          delectus corporis perspiciatis? Perferendis? Amet
+                          maiores magnam repudiandae deleniti dolorem. Eligendi
+                          expedita eum fugiat maxime quo molestiae, ad aliquid.
+                          Dignissimos eum quae obcaecati quisquam minus
+                          doloremque totam laboriosam, nesciunt eius enim sint
+                          quasi? Dolore.
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Flex>
+                </Box>
+              </Box>
             </Box>
-          </Box>
 
-          <Flex height="220px" gap="20px" className="desc">
-            <Box className="left" width="50%" bg={houses?.color}>
-              <Heading fontSize="20px">{houses?.abstract}</Heading>
-              <Text mt="15px">{houses?.desc}</Text>
-            </Box>
-            <Flex
-              className="right"
-              width="50%"
-              direction="column"
-              justifyContent="space-around"
-              fontSize="18px"
-            >
-              <Text>
-                Internal Certifications: {houses?.certificates?.internal}
-              </Text>
-              <Text>
-                External Certifications: {houses?.certificates?.external}
-              </Text>
-              <Text>Events: {houses?.certificates?.events}</Text>
-            </Flex>
-          </Flex>
-
-          <Box className="table" margin="80px">
-            <Box className="tableTitle">House Ranking</Box>
-            <Table variant="striped" color="#848484">
-              <Thead>
-                <Tr>
-                  <Td>#</Td>
-                  <Td>Name</Td>
-                  <Td>Moodle ID</Td>
-                  <Td>Points</Td>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {members.slice(0, 5).map((member, index) => (
-                  <Tr key={member?.mid}>
-                    <Td>{index + 1}</Td>
-                    <Td>
-                      {member?.fname} {member?.lname}
-                    </Td>
-                    <Td>{member?.mid}</Td>
-                    <Td>{member?.totalPoints}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-
-            <Box
-              float="right"
-              height="32.8px"
-              borderBottom="1px solid #8484849c"
-              width="100%"
-              display="flex"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              <Text
-                textTransform="lowercase"
-                fontSize="15px"
-                mr="15px"
-                onClick={onOpen}
-                cursor="pointer"
+            <Box>
+              <Flex
+                align="center"
+                justify="center"
+                direction="column"
+                className="mychart"
               >
-                View All
-              </Text>
+                <Box height="80%">
+                  <canvas id="myChart"></canvas>
+                </Box>
+                <Text mt="20px">Total Points: {totalpoints}</Text>
+              </Flex>
+
+              <Box
+                className="table"
+                mt="20px"
+                borderRadius="20px"
+                padding="20px"
+                height="40.5vh"
+              >
+                <Tabs isFitted>
+                  <TabList>
+                    <Tab>House Ranking</Tab>
+                    <Tab>Recent Contribution</Tab>
+                  </TabList>
+
+                  <TabPanels>
+                    <TabPanel>
+                      <Table variant="striped" width="inherit">
+                        <Thead>
+                          <Tr>
+                            <Td>#</Td>
+                            <Td>Name</Td>
+                            <Td>Moodle ID</Td>
+                            <Td>Points</Td>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {members.slice(0, 5).map((member, index) => (
+                            <Tr key={member?.mid}>
+                              <Td>{index + 1}</Td>
+                              <Td>
+                                {member?.fname} {member?.lname}
+                              </Td>
+                              <Td>{member?.mid}</Td>
+                              <Td>{member?.totalPoints}</Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </Box>
             </Box>
-          </Box>
+          </Flex>
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{houses?.name} Members</ModalHeader>
+            <ModalHeader>{houses?.members.length} Members</ModalHeader>
             <ModalCloseButton />
             <ModalBody overflow="auto">
-              <Table variant="unstyled" color="#848484">
+              <Table variant="striped">
                 <Thead>
                   <Tr>
                     <Td>#</Td>
@@ -622,6 +756,99 @@ const House = () => {
             </AlertDialogContent>
           </AlertDialogOverlay>
         </AlertDialog>
+
+        <Modal isOpen={isLogoOpen} onClose={onLogoClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Edit Logo</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody overflow="auto"></ModalBody>
+            <Flex
+              align="center"
+              justify="center"
+              direction="column"
+              gap="20px"
+              p="20px"
+            >
+              <AvatarEditor
+                image={logo}
+                width={250}
+                height={250}
+                border={50}
+                color={[255, 255, 255, 0.6]} // RGBA
+                scale={logoZoom}
+                rotate={0}
+                borderRadius={250}
+              />
+
+              <Slider
+                aria-label="slider-ex-1"
+                value={logoZoom}
+                onChange={setLogoZoom}
+                min={1}
+              >
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+            </Flex>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onLogoClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Modal isOpen={isBannerOpen} onClose={onBannerClose} size="5xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Edit Logo</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody overflow="auto"></ModalBody>
+            <Flex
+              align="center"
+              justify="center"
+              direction="column"
+              gap="20px"
+              p="20px"
+            >
+              <AvatarEditor
+                image={banner}
+                width={865}
+                height={200}
+                border={50}
+                color={[255, 255, 255, 0.6]} // RGBA
+                scale={bannerZoom}
+                rotate={0}
+                borderRadius={20}
+              />
+
+              <Slider
+                aria-label="slider-ex-1"
+                value={bannerZoom}
+                onChange={setBannerZoom}
+                min={1}
+                step={0.1}
+                max={2}
+              
+              >
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+            </Flex>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onBannerClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
   } else {
