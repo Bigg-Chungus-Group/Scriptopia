@@ -79,7 +79,7 @@ const Home = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mid: decoded.mid }),
+      body: JSON.stringify({ mid: decoded.mid.toString() }),
     })
       .then((res) => res.json())
       .then((data) => {
