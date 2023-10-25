@@ -30,3 +30,4 @@ export const eventsDB = db.collection("events");
 export const houseDB = db.collection("houses");
 export const notificationDB = db.collection("notifications");
 export const userDB = db.collection("users");
+export const otpDB = db.collection("otp");
