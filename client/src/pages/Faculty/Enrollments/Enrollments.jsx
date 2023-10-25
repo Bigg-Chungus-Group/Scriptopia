@@ -174,7 +174,7 @@ const Enrollments = () => {
         </Flex>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay
+          <ModalOverlay 
             bg="blackAlpha.300"
             backdropFilter="blur(10px) hue-rotate(90deg)"
           />

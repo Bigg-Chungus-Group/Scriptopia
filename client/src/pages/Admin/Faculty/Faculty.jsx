@@ -312,7 +312,7 @@ const Faculty = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Edit Faculty</ModalHeader>
             <ModalCloseButton />
@@ -430,7 +430,7 @@ const Faculty = () => {
           size="3xl"
           scrollBehavior="inside"
         >
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Faculty Permissions</ModalHeader>
             <ModalCloseButton />

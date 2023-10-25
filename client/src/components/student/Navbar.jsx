@@ -62,12 +62,10 @@ const Navbar = () => {
   useEffect(() => {
     socket.on("onNotification", async () => {
       try {
-        await fetch(
-          `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
-          {
-            method: "GET",
-          }
-        ).then(async (res) => {
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+          method: "POST",
+          credentials: "include",
+        }).then(async (res) => {
           if (res.status === 200) {
             await res.json().then((data) => {
               setNotifications(data.notifications);
@@ -85,6 +83,30 @@ const Navbar = () => {
         });
       }
     });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          await res.json().then((data) => {
+            setNotifications(data.notifications);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast({
+          title: "An error occurred.",
+          description: "Please try again later.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
   }, []);
 
   const showSearch = () => {
@@ -110,6 +132,39 @@ const Navbar = () => {
       domain: import.meta.env.VITE_COOKIE_DOMAIN2,
     });
     window.location.href = "/auth";
+  };
+
+  const clearNotifications = () => {
+    const notificationIDs = notifications.map((notification) => {
+      return notification._id;
+    });
+    onClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/clear`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({ notificationIDs }),
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          await res.json().then((data) => {
+            setNotifications([]);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast({
+          title: "An error occurred.",
+          description: "Please try again later.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
   };
 
   return (
@@ -208,7 +263,7 @@ const Navbar = () => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button variant="outline" mr={3} onClick={clearNotifications}>
               Clear All
             </Button>
           </DrawerFooter>

@@ -78,6 +78,8 @@ const Profile = () => {
 
   const [btnLoading, setBtnLoading] = useState(false);
 
+  const [totalPoints, setTotalPoints] = useState(0);
+
   useEffect(() => {
     const token = Cookies.get("token");
     let jwt;
@@ -106,8 +108,8 @@ const Profile = () => {
     let totalExternalPoints = 0;
     let totalEventsPoints = 0;
 
-    if (data && data.points && data.points[currentYear.toString()]) {
-      const monthlyPoints = data.points[currentYear.toString()];
+    if (data && data.points && data.points[currentYear?.toString()]) {
+      const monthlyPoints = data.points[currentYear?.toString()];
       for (const month in monthlyPoints) {
         if (monthlyPoints.hasOwnProperty(month)) {
           // Separate internal, external, and events points
@@ -120,6 +122,10 @@ const Profile = () => {
         }
       }
     }
+
+    setTotalPoints(
+      totalInternalPoints + totalExternalPoints + totalEventsPoints
+    );
 
     return {
       totalInternal: totalInternalPoints,
@@ -184,7 +190,7 @@ const Profile = () => {
     let cont;
     const currentDate = new Date();
     let currentYear = currentDate.getFullYear();
-    currentYear = currentYear.toString();
+    currentYear = currentYear?.toString();
 
     if (!loading) {
       const sepPoints = calculateTotalPoints(user.house);
@@ -275,60 +281,72 @@ const Profile = () => {
 
     const currentDate = new Date();
     let currentYear = currentDate.getFullYear();
-    currentYear = currentYear.toString();
+    currentYear = currentYear?.toString();
 
     let myHouseChart;
     let myHouse;
 
     if (!loading && userHouse) {
       const jan =
-        userHouse.points[currentYear.toString()]["january"].internal +
-        userHouse.points[currentYear.toString()]["january"].external +
-        userHouse.points[currentYear.toString()]["january"].events;
+        (userHouse.points[currentYear?.toString()]?.["january"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["january"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["january"]?.events ?? 0);
       const feb =
-        userHouse.points[currentYear.toString()]["february"].internal +
-        userHouse.points[currentYear.toString()]["february"].external +
-        userHouse.points[currentYear.toString()]["february"].events;
+        (userHouse.points[currentYear?.toString()]?.["february"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["february"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["february"]?.events ?? 0);
       const mar =
-        userHouse.points[currentYear.toString()]["march"].internal +
-        userHouse.points[currentYear.toString()]["march"].external +
-        userHouse.points[currentYear.toString()]["march"].events;
+        (userHouse.points[currentYear?.toString()]?.["march"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["march"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["march"]?.events ?? 0);
       const apr =
-        userHouse.points[currentYear.toString()]["april"].internal +
-        userHouse.points[currentYear.toString()]["april"].external +
-        userHouse.points[currentYear.toString()]["april"].events;
+        (userHouse.points[currentYear?.toString()]?.["april"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["april"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["april"]?.events ?? 0);
       const may =
-        userHouse.points[currentYear.toString()]["may"].internal +
-        userHouse.points[currentYear.toString()]["may"].external +
-        userHouse.points[currentYear.toString()]["may"].events;
+        (userHouse.points[currentYear?.toString()]?.["may"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["may"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["may"]?.events ?? 0);
       const jun =
-        userHouse.points[currentYear.toString()]["june"].internal +
-        userHouse.points[currentYear.toString()]["june"].external +
-        userHouse.points[currentYear.toString()]["june"].events;
+        (userHouse.points[currentYear?.toString()]?.["june"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["june"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["june"]?.events ?? 0);
       const jul =
-        userHouse.points[currentYear.toString()]["july"].internal +
-        userHouse.points[currentYear.toString()]["july"].external +
-        userHouse.points[currentYear.toString()]["july"].events;
+        (userHouse.points[currentYear?.toString()]?.["july"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["july"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["july"]?.events ?? 0);
       const aug =
-        userHouse.points[currentYear.toString()]["august"].internal +
-        userHouse.points[currentYear.toString()]["august"].external +
-        userHouse.points[currentYear.toString()]["august"].events;
+        (userHouse.points[currentYear?.toString()]?.["august"]?.internal ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["august"]?.external ?? 0) +
+        (userHouse.points[currentYear?.toString()]?.["august"]?.events ?? 0);
       const sep =
-        userHouse.points[currentYear.toString()]["september"].internal +
-        userHouse.points[currentYear.toString()]["september"].external +
-        userHouse.points[currentYear.toString()]["september"].events;
+        (userHouse.points[currentYear?.toString()]?.["september"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["september"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["september"]?.events ?? 0);
       const oct =
-        userHouse.points[currentYear.toString()]["october"].internal +
-        userHouse.points[currentYear.toString()]["october"].external +
-        userHouse.points[currentYear.toString()]["october"].events;
+        (userHouse.points[currentYear?.toString()]?.["october"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["october"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["october"]?.events ?? 0);
       const nov =
-        userHouse.points[currentYear.toString()]["november"].internal +
-        userHouse.points[currentYear.toString()]["november"].external +
-        userHouse.points[currentYear.toString()]["november"].events;
+        (userHouse.points[currentYear?.toString()]?.["november"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["november"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["november"]?.events ?? 0);
       const dec =
-        userHouse.points[currentYear.toString()]["december"].internal +
-        userHouse.points[currentYear.toString()]["december"].external +
-        userHouse.points[currentYear.toString()]["december"].events;
+        (userHouse.points[currentYear?.toString()]?.["december"]?.internal ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["december"]?.external ??
+          0) +
+        (userHouse.points[currentYear?.toString()]?.["december"]?.events ?? 0);
 
       myHouse = document.getElementById("graph");
       myHouseChart = new Chart(myHouse, {
@@ -367,8 +385,8 @@ const Profile = () => {
               ],
               tension: 0.3,
               borderColor: houses[0].color,
-              fill: true, // Enable the fill area
-              backgroundColor: hexToRgba(houses[1].color, 0.25), // Fill color
+              fill: true,
+              backgroundColor: hexToRgba(houses[1].color, 0.25),
             },
           ],
         },
@@ -380,7 +398,6 @@ const Profile = () => {
               display: false,
             },
           },
-
           scales: {
             x: {
               grid: { color: "#f2f2f2", display: false },
@@ -388,7 +405,7 @@ const Profile = () => {
             y: {
               grid: { color: "#f2f2f2", display: false },
               ticks: {
-                display: false, // Set the step size to 1 to show whole numbers
+                display: false,
               },
               border: {
                 display: false,
@@ -609,9 +626,11 @@ const Profile = () => {
     onOpen();
   };
 
-  const uploadImage = () => {
+  const uploadImage = async () => {
     setBtnLoading(true);
-    const image = newImageRef.current.getImageScaledToCanvas().toDataURL();
+    const image = await newImageRef.current
+      .getImageScaledToCanvas()
+      .toDataURL("image/png");
 
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/profile/${mid}/updatepfp`, {
       method: "POST",
@@ -629,6 +648,7 @@ const Profile = () => {
           });
           onClose();
           setUpdate(!update);
+          window.location.reload();
         } else {
           toast({
             title: "Error",
@@ -648,6 +668,11 @@ const Profile = () => {
           isClosable: true,
         });
       });
+  };
+
+  const closeModal = () => {
+    onClose();
+    newImageRef.current.image = null;
   };
 
   if (!loading) {
@@ -873,11 +898,15 @@ const Profile = () => {
                     gap="20px"
                     direction="column"
                   >
-                    <canvas
-                      id="contribution"
-                      width="10px"
-                      height="10px"
-                    ></canvas>
+                    {totalPoints > 0 ? (
+                      <canvas
+                        id="contribution"
+                        width="10px"
+                        height="10px"
+                      ></canvas>
+                    ) : (
+                      <Text>No points yet</Text>
+                    )}
                   </Flex>
                 </Box>
 
@@ -945,10 +974,10 @@ const Profile = () => {
             </Box>
           </Flex>
         </Flex>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
+        <Modal isOpen={isOpen} onClose={closeModal}>
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
+            <ModalHeader>Upload Picture</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <Flex

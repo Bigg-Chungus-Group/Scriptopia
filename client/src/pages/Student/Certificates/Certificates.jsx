@@ -126,9 +126,6 @@ const Certificates = () => {
         formData.append("certificateURL", certificateUrl);
         formData.append("certificate", file);
 
-        console.log(file);
-        console.log(formData);
-
         fetch(
           `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/upload`,
           {
@@ -242,7 +239,7 @@ const Certificates = () => {
             </Table>
           </Box>
           <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-            <ModalOverlay />
+            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
             <ModalContent>
               <ModalHeader>Upload Certificate</ModalHeader>
               <ModalCloseButton />

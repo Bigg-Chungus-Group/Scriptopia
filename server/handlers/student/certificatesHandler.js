@@ -11,6 +11,7 @@ import { ObjectId } from "mongodb";
 import logger from "../../configs/logger.js";
 import { app } from "../../firebase.js";
 import admin from "firebase-admin";
+import crypto from "crypto";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: 8000000 });
@@ -79,6 +80,17 @@ router.post(
       const certificateName = `certificates/${mid}/${_id}`;
       const file = fbstorage.file(certificateName);
 
+      const sha256 = crypto
+        .createHash("sha256")
+        .update(certificate.buffer)
+        .digest("hex");
+      const md5 = crypto
+        .createHash("md5")
+        .update(certificate.buffer)
+        .digest("hex");
+
+        console.log(sha256, md5);
+
       file.save(certificate.buffer, {
         metadata: {
           contentType: certificate.mimetype,
@@ -101,6 +113,9 @@ router.post(
         house: user.house.id,
         name: user.fname + " " + user.lname,
         submittedYear: new Date().getFullYear(),
+        submittedMonth: new Date().getMonth(),
+        sha256,
+        md5,
       });
       res.status(200).send("Certificate uploaded");
     } catch (error) {
@@ -192,7 +207,7 @@ router.post("/delete", verifyToken, async (req, res) => {
       if (fileExists) {
         await file.delete();
       }
-    } 
+    }
 
     await certificationsDB.deleteOne({ _id: new ObjectId(id) });
 

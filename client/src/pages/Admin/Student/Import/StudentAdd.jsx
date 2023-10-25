@@ -91,7 +91,7 @@ const StudentAdd = ({ setModal }) => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
         <ModalContent>
           <ModalHeader>Add Student</ModalHeader>
           <ModalCloseButton />

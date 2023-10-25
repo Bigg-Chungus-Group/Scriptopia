@@ -27,6 +27,20 @@ router.get("/:id", async (req, res) => {
 
   try {
     const event = await eventsDB.findOne({ _id: new ObjectId(id) });
+    const registered = event.registered;
+    const regInfo = [];
+    for (const element of registered) {
+      const result = await userDB.findOne({ mid: element });
+      regInfo.push({
+        fname: result.fname,
+        lname: result.lname,
+        mid: result.mid,
+        id: result._id,
+      });
+    }
+
+    event.participants = regInfo;
+
     if (event) {
       res.status(200).json(event);
     } else {
@@ -238,7 +252,6 @@ router.post(
 
     const houseString = `house.points.${currentYear}.${monthName}.internal`;
     const houseDBString = `points.${currentYear}.${monthName}.internal`;
-
 
     try {
       const event = await eventsDB.findOne({ _id: new ObjectId(id) });

@@ -75,7 +75,7 @@ const Navbar = () => {
   useEffect(() => {
     try {
       fetch(
-        `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/receive`,
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`,
         {
           method: "GET",
           credentials: "include",

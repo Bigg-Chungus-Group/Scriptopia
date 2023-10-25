@@ -2,7 +2,7 @@
 
 :root {
   --container: #ffffff;
-  --darker: #F6F6F6;
+  --darker: #f6f6f6;
   --accent1: #cdc2fe;
   --accent2: #aac9ff;
   --accent3: #93e2b8;
@@ -64,4 +64,25 @@ input[type="number"] {
 
 .Hard {
   color: #ff0000;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 30px;
+  background: #44C9C1;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

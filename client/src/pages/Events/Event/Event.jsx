@@ -41,11 +41,14 @@ import {
   InputGroup,
   InputLeftAddon,
   Text,
+  Thead,
+  Th,
 } from "@chakra-ui/react";
 import "./Event.css";
 
 import { Link as domLink, useNavigate, useNavigation } from "react-router-dom";
 import Houses from "../../Houses/Houses";
+import papa from "papaparse"
 
 const Event = () => {
   const navigate = useNavigate();
@@ -69,6 +72,13 @@ const Event = () => {
     onClose: onAllocateClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isParticipantsOpen,
+    onOpen: onParticipantsOpen,
+    onClose: onParticipantsClose,
+  } = useDisclosure();
+  
+
   const [eventName, setEventName] = useState("");
   const [eventImage, setEventImage] = useState("");
   const [eventDesc, setEventDesc] = useState("");
@@ -85,6 +95,7 @@ const Event = () => {
   const [eventEndTime, setEventEndTime] = useState("");
   const [registerationStartTime, setRegisterationStartTime] = useState("");
   const [registerationEndTime, setRegisterationEndTime] = useState("");
+  const [participants, setParticipants] = useState([]);
 
   const [update, setUpdate] = useState(false);
 
@@ -130,6 +141,7 @@ const Event = () => {
         setEventLink(res.link);
         setEventEmail(res.email);
         setEventPhone(res.phone);
+        setParticipants(res.participants);
 
         // Assuming res.eventStarts, res.eventEnds, res.registerationStarts, and res.registerationEnds
         // are date strings in some timezone
@@ -462,6 +474,8 @@ const Event = () => {
       });
   };
 
+  const viewParticipants = () => {};
+
   const allocate = () => {
     console.error("REQUEST SENDING");
     fetch(
@@ -509,6 +523,16 @@ const Event = () => {
         });
       });
   };
+
+  const exportCSV = () => {
+    const csv = papa.unparse(participants);
+    const csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const csvURL = window.URL.createObjectURL(csvData);
+    const tempLink = document.createElement("a");
+    tempLink.href = csvURL;
+    tempLink.setAttribute("download", "participants.csv");
+    tempLink.click();
+  }
 
   if (!loading) {
     return (
@@ -695,6 +719,15 @@ const Event = () => {
                 >
                   Delete This Event
                 </Button>
+                <Button
+                  float="right"
+                  mt="15px"
+                  mr="10px"
+                  colorScheme="green"
+                  onClick={onParticipantsOpen}
+                >
+                  View Participants
+                </Button>
 
                 {event?.eventEnds < date && event?.pointsAllocated === false ? (
                   <Button
@@ -775,7 +808,7 @@ const Event = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Edit Event</ModalHeader>
             <ModalCloseButton />
@@ -1064,6 +1097,43 @@ const Event = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <Modal isOpen={isParticipantsOpen} onClose={onParticipantsClose} size="3xl">
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalContent>
+            <ModalHeader>Participants</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Table variant="striped" colorScheme="gray">
+                <Thead>
+                  <Tr>
+                    <Th>Moodle ID</Th>
+                    <Th>Name</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {participants.map((participant) => {
+                    return (
+                      <Tr key={participant.mid}>
+                        <Td>{participant?.mid}</Td>
+                        <Td>{participant?.fname} {participant?.lname}</Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onParticipantsClose}>
+                Close
+              </Button>
+              <Button variant="ghost" onClick={exportCSV}>
+                Export as CSV
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
   }
