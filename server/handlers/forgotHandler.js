@@ -8,10 +8,15 @@ router.post("/send", async (req, res) => {
   const { mid } = req.body;
   console.log(mid);
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+  const otp = Math.floor(111111 + Math.random() * 900000).toString();
   const tenMinutes = 10 * 60 * 1000;
 
   try {
+    const exist = otpDB.findOne({ mid });
+    if (exist) {
+      await otpDB.deleteMany({ mid });
+    }
+
     await otpDB.insertOne({
       mid,
       otp,
@@ -28,6 +33,7 @@ router.post("/send", async (req, res) => {
         .status(400)
         .json({ message: "Email Not Registered! Please Contact Admin" });
     }
+    
 
     const templateParams = {
       to: email.email,
@@ -54,18 +60,22 @@ router.post("/send", async (req, res) => {
 
 router.post("/verify", async (req, res) => {
   const { mid, otp } = req.body;
+  console.log(mid.toString(), otp);
 
   try {
-    const otpData = await otpDB.findOne({ mid });
+    const otpData = await otpDB.findOne({ mid: mid.toString() });
+    console.log(otpData);
+
     if (!otpData) {
       return res.status(400).json({ message: "OTP Expired" });
     }
+    
+
+    console.log(otpData);
 
     if (otpData.expiresAt < new Date()) {
       return res.status(400).json({ message: "OTP Expired" });
     }
-
-    await otpDB.deleteMany({ mid });
 
     if (otpData.otp === otp) {
       await otpDB.deleteOne({ mid });
