@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useToast } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const Forgot = () => {
   const toast = useToast();
