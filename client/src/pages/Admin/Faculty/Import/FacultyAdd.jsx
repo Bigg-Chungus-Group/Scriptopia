@@ -110,7 +110,7 @@ const FacultyAdd = ({ setModal, h }) => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
         <ModalContent>
           <ModalHeader>Add Faculty</ModalHeader>
           <ModalCloseButton />
@@ -182,7 +182,7 @@ const FacultyAdd = ({ setModal, h }) => {
         size="3xl"
         scrollBehavior="inside"
       >
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
         <ModalContent>
           <ModalHeader>Faculty Permissions</ModalHeader>
           <ModalCloseButton />

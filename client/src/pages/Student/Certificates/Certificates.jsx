@@ -239,7 +239,7 @@ const Certificates = () => {
             </Table>
           </Box>
           <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-            <ModalOverlay />
+            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
             <ModalContent>
               <ModalHeader>Upload Certificate</ModalHeader>
               <ModalCloseButton />

@@ -380,7 +380,7 @@ const Events = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Add Event</ModalHeader>
             <ModalCloseButton />
