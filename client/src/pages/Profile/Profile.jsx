@@ -975,7 +975,7 @@ const Profile = () => {
           </Flex>
         </Flex>
         <Modal isOpen={isOpen} onClose={closeModal}>
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Upload Picture</ModalHeader>
             <ModalCloseButton />

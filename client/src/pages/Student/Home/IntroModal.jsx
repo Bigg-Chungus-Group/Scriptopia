@@ -193,9 +193,10 @@ const IntroModal = () => {
       >
         <ModalOverlay
           bg="none"
-          backdropFilter="auto"
+          backdropFilter="blur(10px) hue-rotate(90deg)/"
           backdropInvert="80%"
           backdropBlur="2px"
+          
         />
         <ModalContent
           minH="80%"
