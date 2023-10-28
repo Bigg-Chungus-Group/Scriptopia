@@ -1,4 +1,4 @@
 .card:nth-child(3n) {
     margin-top: -100px;
-    background: #f9f9f9;
+    background: var(--darker);
 }

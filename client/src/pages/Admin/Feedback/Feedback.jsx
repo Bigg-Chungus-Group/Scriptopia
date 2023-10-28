@@ -12,8 +12,10 @@ import {
 } from "@chakra-ui/react";
 import "./Feedback.css";
 import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Feedback = () => {
+  useAuthCheck("A");
   const [feedback, setFeedback] = useState([""]);
   const toast = useToast();
   const [loading, setLoading] = useState(true);
