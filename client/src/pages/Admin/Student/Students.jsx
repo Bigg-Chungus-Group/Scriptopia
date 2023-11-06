@@ -523,18 +523,12 @@ const Students = () => {
                 </Box>
                 <Input
                   type="text"
-                  placeholder="Moodle ID"
-                  value={moodleid}
-                  onChange={(e) => setMoodleid(e.target.value)}
-                />
-                <Input
-                  type="text"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <Select
+                {/*}                <Select
                   placeholder="Select a House"
                   onChange={(e) => setHouse(e.target.value)}
                   value={house}
@@ -544,7 +538,7 @@ const Students = () => {
                       {house.name}
                     </option>
                   ))}
-                </Select>
+                  </Select>{*/}
 
                 <RadioGroup onChange={setGender} value={gender}>
                   <Stack direction="row">

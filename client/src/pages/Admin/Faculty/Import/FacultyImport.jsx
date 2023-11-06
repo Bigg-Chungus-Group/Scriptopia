@@ -75,6 +75,14 @@ const FacultyImport = () => {
           duration: 3000,
           isClosable: true,
         });
+      } else if (res.status === 409) {
+        toast({
+          title: "Error",
+          description: "Moodle ID already exists",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       } else {
         toast({
           title: "Error",
@@ -127,7 +135,7 @@ const FacultyImport = () => {
           <input
             id="file-upload"
             type="file"
-            accept= ".csv"
+            accept=".csv"
             onChange={handleFileUpload}
           />
 

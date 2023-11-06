@@ -207,17 +207,14 @@ const Navbar = () => {
 
   const deleteNotification = () => {
     onEditClose();
-    fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}  /notifications/delete`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ notificationId: updateNotificationId }),
-      }
-    )
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}  /notifications/delete`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notificationId: updateNotificationId }),
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -262,6 +259,7 @@ const Navbar = () => {
         } else {
           toast({
             title: "Password Not Reset",
+            description: data.message,
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -289,7 +287,10 @@ const Navbar = () => {
               <MenuItem className="menuitem">Events</MenuItem>
             </Link>
 
-            {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
+            {decoded.perms.includes("HCO0") ||
+            decoded.perms.includes("HCO1") ||
+            decoded.perms.includes("HCO2") ||
+            decoded.perms.includes("HCO3") ? (
               <>
                 <Link to="/faculty/certificates">
                   <MenuItem className="menuitem">Manage Certificates</MenuItem>
@@ -323,7 +324,10 @@ const Navbar = () => {
         <div className="links">
           <ChakraLink onClick={() => navigate("/houses")}>Houses</ChakraLink>
           <ChakraLink onClick={() => navigate("/events")}>Events</ChakraLink>
-          {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
+          {decoded.perms.includes("HCO0") ||
+          decoded.perms.includes("HCO1") ||
+          decoded.perms.includes("HCO2") ||
+          decoded.perms.includes("HCO3") ? (
             <>
               <ChakraLink onClick={() => navigate("/faculty/certificates")}>
                 Manage Certificates

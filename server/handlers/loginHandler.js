@@ -52,7 +52,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "A", mid });
+            .send({ role: "A", mid, colorMode: findUser.colorMode });
 
           logger.warn({
             code: "MN-LH-200",
@@ -94,7 +94,7 @@ router.post(
             expires: expirationDate,
             domain: process.env.COOKIE_DOMAIN,
           })
-          .send({ role: "F", firstTime, mid });
+          .send({ role: "F", firstTime, mid, colorMode: findUser.colorMode });
 
         logger.info({
           code: "MN-LH-201",
@@ -140,7 +140,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "S", firstTime, mid });
+            .send({ role: "S", firstTime, mid, colorMode: findUser.colorMode });
 
           logger.info({
             code: "MN-LH-202",

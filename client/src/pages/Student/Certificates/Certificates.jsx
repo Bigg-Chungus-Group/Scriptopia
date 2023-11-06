@@ -29,6 +29,7 @@ import {
   InputGroup,
   InputRightAddon,
   Flex,
+  CheckboxGroup,
 } from "@chakra-ui/react";
 import Breadcrumb from "../../../components/Breadcrumb";
 import "./Certificates.css";
@@ -39,6 +40,7 @@ import { useAuthCheck } from "../../../hooks/useAuthCheck";
 const Certificates = () => {
   useAuthCheck("S");
   const [certificates, setCertificates] = React.useState([]);
+  const [filteredCertificates, setFilteredCertificates] = React.useState([]); // eslint-disable-line no-unused-vars
   const [loading, setLoading] = React.useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -200,6 +202,36 @@ const Certificates = () => {
     setFile(file);
   };
 
+  useEffect(() => {
+    setFilteredCertificates(certificates);
+  }, [certificates]);
+
+  const search = (e) => {
+    const keyword = e.target.value;
+    if (keyword !== "") {
+      const result = filteredCertificates.filter((certificate) => {
+        certificate.certificateName = certificate.certificateName.toLowerCase();
+
+        return certificate.certificateName.includes(keyword.toLowerCase());
+      });
+      setFilteredCertificates(result);
+    } else {
+      setFilteredCertificates(certificates);
+    }
+  };
+
+  const filterType = (e) => {
+    const type = e;
+    if (type.length !== 0) {
+      const result = certificates.filter((certificate) => {
+        return type.includes(certificate.certificateType);
+      });
+      setFilteredCertificates(result);
+    } else {
+      setFilteredCertificates(certificates);
+    }
+  };
+
   if (!loading) {
     return (
       <>
@@ -209,6 +241,19 @@ const Certificates = () => {
           <Button colorScheme="green" marginBottom="20px" onClick={onOpen}>
             Upload Certificate
           </Button>
+          <Flex gap="20px" alignItems="center" mb="20px">
+            <Input
+              type="text"
+              placeholder="Search"
+              onChange={(e) => search(e)}
+              width="50%"
+            />
+
+            <CheckboxGroup onChange={(e) => filterType(e)}>
+              <Checkbox value="internal">Internal</Checkbox>
+              <Checkbox value="external">External</Checkbox>
+            </CheckboxGroup>
+          </Flex>
           <Box className="table">
             <Table variant="striped">
               <Thead>
@@ -224,7 +269,7 @@ const Certificates = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {certificates.map((certificate, index) => (
+                {filteredCertificates.map((certificate, index) => (
                   /* ! CHANGE TARGET*/
                   <Tr key={certificate?._id}>
                     <Td>{index + 1}</Td>
@@ -385,7 +430,6 @@ const Certificates = () => {
                             <option value={year + 1}>{year + 1}</option>
                             <option value={year + 2}>{year + 2}</option>
                             <option value={year + 3}>{year + 3}</option>
-                            
                           </Select>
                         </>
                       ) : null}

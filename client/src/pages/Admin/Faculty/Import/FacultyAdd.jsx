@@ -26,7 +26,7 @@ import {
   Tr,
   Td,
 } from "@chakra-ui/react";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
 const FacultyAdd = ({ setModal, h }) => {
@@ -43,7 +43,7 @@ const FacultyAdd = ({ setModal, h }) => {
   const [lname, setLname] = React.useState("");
   const [moodleid, setMoodleid] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [perms, setPerms] = React.useState([]);
+  const [perms, setPerms] = React.useState(["UFC"]);
   const [houses, setHouses] = React.useState([]);
 
   const toast = useToast();
@@ -72,6 +72,33 @@ const FacultyAdd = ({ setModal, h }) => {
       perms: perms,
     };
 
+    function checkElements(arr) {
+      const elementsToCheck = ["HCO0", "HCO1", "HCO2", "HCO3"];
+      let count = 0;
+
+      for (const element of elementsToCheck) {
+        if (arr.includes(element)) {
+          count++;
+          if (count > 1) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    if (!checkElements(perms)) {
+      toast({
+        title: "Error",
+        description: "Please select only one house coordinator",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/add`, {
       method: "POST",
       credentials: "include",
@@ -86,6 +113,14 @@ const FacultyAdd = ({ setModal, h }) => {
           title: "Faculty Added",
           description: "Faculty has been added successfully",
           status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else if(res.status === 409) {
+        toast({
+          title: "Error",
+          description: "Moodle ID already exists",
+          status: "error",
           duration: 3000,
           isClosable: true,
         });
@@ -105,7 +140,6 @@ const FacultyAdd = ({ setModal, h }) => {
     setPermClose();
     onOpen();
   };
-  
 
   return (
     <>
@@ -192,6 +226,28 @@ const FacultyAdd = ({ setModal, h }) => {
                 <Table>
                   <Tbody>
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
+                      <Tr>
+                        <Td>
+                          <Checkbox value="UFC" readOnly>
+                            Upload Faculty Certificates
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon as={WarningIcon} color="yellow.500" />
+                              Default permission - Cannot be changed
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add their own certifications to the system
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
                       <Tr>
                         <Td>
                           <Checkbox value="MHI">Manage Events</Checkbox>

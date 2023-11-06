@@ -110,6 +110,7 @@ const Home = () => {
     if (!loading) {
       let house1, house2, house3, house4;
       if (selectedMonth === "all") {
+        console.log(houses);
         house1 = calculateTotalPoints(houses[0]);
         house2 = calculateTotalPoints(houses[1]);
         house3 = calculateTotalPoints(houses[2]);
@@ -464,7 +465,7 @@ const Home = () => {
                       </Thead>
                       <Tbody>
                         {certifications
-                          .slice(0, 3)
+                          ?.slice(0, 3)
                           .filter((cert) => cert.certificateType === "internal")
                           .map((cert) => (
                             <Tr key={cert._id}>
@@ -494,7 +495,7 @@ const Home = () => {
                       </Thead>
                       <Tbody>
                         {certifications
-                          .slice(0, 3)
+                          ?.slice(0, 3)
                           .filter((cert) => cert.certificateType === "external")
                           .map((cert) => (
                             <Tr key={cert._id}>
@@ -522,7 +523,7 @@ const Home = () => {
                       </Thead>
                       <Tbody>
                         {certifications
-                          .slice(0, 3)
+                          ?.slice(0, 3)
                           .filter((cert) => cert.certificateType === "event")
                           .map((cert) => (
                             <Tr key={cert._id}>
@@ -546,7 +547,7 @@ const Home = () => {
             <Box className="myHouse">
               <Flex justify="space-between">
                 <Heading fontSize="17px">
-                  {userHouse.name} House Leader-board
+                  {userHouse?.name} House Leader-board
                 </Heading>
               </Flex>
 

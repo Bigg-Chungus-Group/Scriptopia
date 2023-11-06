@@ -265,9 +265,10 @@ const Navbar = () => {
           </DrawerBody>
 
           <DrawerFooter>
+            {/*}
             <Button variant="outline" mr={3} onClick={clearNotifications}>
               Clear All
-            </Button>
+            </Button>{*/}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

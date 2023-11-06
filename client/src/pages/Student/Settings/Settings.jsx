@@ -20,7 +20,7 @@ import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Settings = () => {
-  useAuthCheck("S")
+  useAuthCheck("S");
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -65,6 +65,35 @@ const Settings = () => {
     } else {
       setErr("");
       setIsButtonLoading(true);
+
+      function isPasswordValid(password) {
+        if (password.length < 9) {
+          return false;
+        }
+        if (!/[A-Z]/.test(password)) {
+          return false;
+        }
+        if (!/[a-z]/.test(password)) {
+          return false;
+        }
+        if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
+          return false;
+        }
+        if (!/\d/.test(password)) {
+          return false;
+        }
+        return true;
+      }
+
+      if (!isPasswordValid(newPass)) {
+        setErr(
+          "Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character and must be at least 9 characters long"
+        );
+        setToastDispatched(false);
+        setIsButtonLoading(false);
+        return;
+      }
+
       fetch(
         `${import.meta.env.VITE_BACKEND_ADDRESS}/student/profile/updatePW`,
         {
@@ -73,7 +102,10 @@ const Settings = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ oldPass: oldPass.toString(), newPass: newPass.toString() }),
+          body: JSON.stringify({
+            oldPass: oldPass.toString(),
+            newPass: newPass.toString(),
+          }),
         }
       )
         .then(async (res) => {
@@ -128,6 +160,28 @@ const Settings = () => {
     setLoading(false);
   }, []);
 
+  const setDark = () => {
+    if (colorMode === "dark") {
+      toggleColorMode();
+    } else {
+      toggleColorMode();
+    }
+
+    fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/profile/updateTheme`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          theme: colorMode === "dark" ? "light" : "dark",
+        }),
+      }
+    );
+  };
+
   useEffect(() => {
     if (toastDispatched) {
       toast({
@@ -159,8 +213,7 @@ const Settings = () => {
               <Switch
                 id="email-alerts"
                 onChange={(e) => {
-                  toggleColorMode();
-                  window.location.reload()
+                  setDark();
                 }}
                 isChecked={colorMode === "dark" ? true : false}
               />

@@ -1,5 +1,5 @@
 .AdminEvents {
-  padding: 30px 70px;
+  padding: 0 70px 30px 70px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -8,8 +8,8 @@
 
 .AdminEvents .events {
   display: flex;
-  justify-content: flex-start;
-  gap: 20px;
+  justify-content: center;
+  gap: 50px;
   flex-wrap: wrap;
 }
 

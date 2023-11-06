@@ -265,6 +265,7 @@ const Navbar = () => {
         } else {
           toast({
             title: "Password Not Reset",
+            description: data.message,
             status: "error",
             duration: 3000,
             isClosable: true,

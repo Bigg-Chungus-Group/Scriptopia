@@ -34,6 +34,8 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  CheckboxGroup,
+  Checkbox,
 } from "@chakra-ui/react";
 import "./Events.css";
 import { Link } from "react-router-dom";
@@ -44,6 +46,7 @@ import Loader from "../../components/Loader";
 const Events = () => {
   const toast = useToast();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]); // For Search Bar
   const [role, setRole] = useState("G");
   const [editPrivilege, setEditPrivilege] = useState(false);
 
@@ -255,6 +258,47 @@ const Events = () => {
       });
   };
 
+  useEffect(() => {
+    setFilteredEvents(events.reverse());
+  }, [events]);
+
+  const search = (e) => {
+    const query = e?.target?.value;
+
+    if (query === "") {
+      setFilteredEvents(events); // Reset the events to their original state
+      return;
+    }
+
+    const fe = filteredEvents.filter((event) => {
+      return event?.name?.toLowerCase().includes(query.toLowerCase());
+    });
+    setFilteredEvents(fe);
+  };
+
+  const filterEvents = (e) => {
+    const query = e;
+    if (query.length === 0) {
+      setFilteredEvents(events); // Reset the events to their original state
+      return;
+    }
+
+    const fe = events.filter((event) => {
+      if (query.includes("active")) {
+        return (
+          event?.eventStarts < date &&
+          event?.eventEnds > date &&
+          event?.registerationEnds > date
+        );
+      } else if (query.includes("upcoming")) {
+        return event?.eventStarts > date;
+      } else if (query.includes("expired")) {
+        return event?.eventEnds < date;
+      }
+    });
+    setFilteredEvents(fe);
+  };
+
   if (!loading) {
     return (
       <>
@@ -268,7 +312,24 @@ const Events = () => {
           <GuestNavbar />
         )}
         <Box className="AdminEvents">
-          <Heading>Events </Heading>
+          <Heading textAlign="center">Events </Heading>
+          <Flex align="center" justify="center" gap="20px">
+            <Input
+              placeholder="Search Events"
+              mb="10px"
+              onChange={search}
+              width="50%"
+            />
+            <Text>Type: </Text>
+            <CheckboxGroup
+              colorScheme="green"
+              onChange={(e) => filterEvents(e)}
+            >
+              <Checkbox value="active">Active</Checkbox>
+              <Checkbox value="upcoming">Upcoming</Checkbox>
+              <Checkbox value="expired">Expired</Checkbox>
+            </CheckboxGroup>
+          </Flex>
           <Box className="events">
             {editPrivilege ? (
               <Card
@@ -292,7 +353,7 @@ const Events = () => {
                 </Flex>
               </Card>
             ) : null}
-            {events?.map((event) => (
+            {filteredEvents?.map((event) => (
               <Card
                 w="320px"
                 maxW="sm"
@@ -321,7 +382,8 @@ const Events = () => {
                     </Text>
                     <Text>{event?.location}</Text>
                     <Text color="blue.600">
-                      {event?.mode?.charAt(0).toUpperCase() + event?.mode?.slice(1)}
+                      {event?.mode?.charAt(0).toUpperCase() +
+                        event?.mode?.slice(1)}
                       <Badge
                         color={
                           event?.eventStarts > date
@@ -570,7 +632,9 @@ const Events = () => {
                       placeholder="Event End Time"
                       mb="10px"
                       value={registerationEndTime}
-                      onChange={(e) => setRegisterationEndTime(e?.target?.value)}
+                      onChange={(e) =>
+                        setRegisterationEndTime(e?.target?.value)
+                      }
                     />
                   </InputGroup>
                 </FormControl>

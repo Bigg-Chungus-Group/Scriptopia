@@ -30,7 +30,7 @@ Router.post("/", verifyToken, async (req, res) => {
     const userHouse = await houseDB.findOne({
       no: hno,
     });
-    const certifications = await certificationsDB.find({ house: userHouse._id.toString() }).toArray();
+    const certifications = await certificationsDB.find({ house: userHouse?._id.toString() }).toArray();
 
     res.status(200).send({ allHouses, userHouse, user, certifications });
   } catch (error) {

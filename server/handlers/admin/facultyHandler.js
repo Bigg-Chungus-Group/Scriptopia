@@ -71,6 +71,9 @@ router.post("/import", async (req, res) => {
       const defaultPW = true;
       const perms = ["VSP", "VFI"];
 
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) continue;
+
       insertData.push({
         mid: mid.toString(),
         password: password.toString(),
@@ -86,6 +89,7 @@ router.post("/import", async (req, res) => {
         perms: perms,
       });
     }
+
     const result = await userDB.insertMany(insertData);
     if (result) {
       return res.status(200).send({ message: "Data inserted successfully" });
@@ -127,6 +131,11 @@ router.post("/add", async (req, res) => {
   };
 
   try {
+    const user = await userDB.findOne({ mid: mid.toString() });
+    if (user) {
+      return res.status(409).send({ message: "User already exists" });
+    }
+
     await userDB.insertOne(userSchema);
     return res.status(200).send({ message: "Data inserted successfully" });
   } catch {
