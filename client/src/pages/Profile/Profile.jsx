@@ -43,11 +43,13 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Portal,
 } from "@chakra-ui/react";
 
 import Chart from "chart.js/auto";
 import Loader from "../../components/Loader";
 import AvatarEditor from "react-avatar-editor";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [privilege, setPrivilege] = useState(false);
@@ -57,6 +59,8 @@ const Profile = () => {
   const [zoom, setZoom] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [update, setUpdate] = useState(false);
+
+  const navigator = useNavigate();
 
   const newImageRef = React.useRef(null);
 
@@ -75,6 +79,7 @@ const Profile = () => {
   const [github, setGithub] = useState("");
   const [mid, setMid] = useState("");
   const [newImage, setNewImage] = useState("");
+  const [exportPrivilege, setExportPrivilege] = useState(false);
 
   const [btnLoading, setBtnLoading] = useState(false);
 
@@ -89,8 +94,15 @@ const Profile = () => {
           jwt = jwtDecode(token);
           if (jwt?.mid === user?.mid) {
             setPrivilege(true);
+            setExportPrivilege(true);
             setMid(jwt?.mid);
+            console.log(jwt);
           } else {
+            if (jwt?.role === "A" || jwt?.role === "F") {
+              setExportPrivilege(true);
+            } else {
+              setExportPrivilege(false);
+            }
             setPrivilege(false);
           }
         }
@@ -113,7 +125,11 @@ const Profile = () => {
       for (const month in monthlyPoints) {
         if (monthlyPoints.hasOwnProperty(month)) {
           // Separate internal, external, and events points
-          const { internal, external, events } = monthlyPoints[month];
+          const {
+            internal = 0,
+            external = 0,
+            events = 0,
+          } = monthlyPoints[month];
 
           // Add them to their respective totals
           totalInternalPoints += internal;
@@ -425,8 +441,6 @@ const Profile = () => {
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
-    console.log("<ID");
-    console.log(mid);
 
     const validateEmail = (email) => {
       return String(email)
@@ -675,6 +689,10 @@ const Profile = () => {
     newImageRef.current.image = null;
   };
 
+  const generateReport = () => {
+    navigator("generate/report")
+  };
+
   if (!loading) {
     return (
       <>
@@ -688,10 +706,8 @@ const Profile = () => {
           <GuestNav />
         )}
 
-        <Flex gap="20px" className="StudentProfile">
-          <Heading>{privilege}</Heading>
-          {console.log(privilege)}
-          <Box width="300vw">
+        <Flex gap="20px" className="StudentProfile" id="sp">
+          <Box width="100%">
             <Flex
               p="20px"
               direction="column"
@@ -705,24 +721,26 @@ const Profile = () => {
                 <Avatar
                   size="2xl"
                   src={user.profilePicture}
-                  className="original"
+                  className={privilege ? "original" : null}
                 />
-                <Flex
-                  onClick={selectImage}
-                  align="center"
-                  justify="center"
-                  cursor="pointer"
-                  width="100%"
-                  height="100%"
-                  borderRadius="50%"
-                  className="overlay"
-                  bg="black"
-                >
-                  <i
-                    className="fa-solid fa-pen"
-                    style={{ fontSize: "20px", color: "white" }}
-                  ></i>
-                </Flex>
+                {privilege ? (
+                  <Flex
+                    onClick={selectImage}
+                    align="center"
+                    justify="center"
+                    cursor="pointer"
+                    width="100%"
+                    height="100%"
+                    borderRadius="50%"
+                    className={privilege ? "overlay" : null}
+                    bg="black"
+                  >
+                    <i
+                      className="fa-solid fa-pen"
+                      style={{ fontSize: "20px", color: "white" }}
+                    ></i>
+                  </Flex>
+                ) : null}
               </Box>
               <Input
                 type="file"
@@ -732,22 +750,48 @@ const Profile = () => {
                 onChange={openInAvatarEditor}
               />
 
-              <Text>
-                {user?.fname} {user?.lname}
-              </Text>
-              <Text>{user?.mid}</Text>
+              {exportPrivilege ? (
+                <>
+                  <Flex gap="5px">
+                    <Text>
+                      {user?.fname} {user?.lname}
+                    </Text>
+                    -<Text>{user?.mid}</Text>
+                  </Flex>
+                  <Button
+                    opacity="1"
+                    _hover={{
+                      scale: "1.1",
+                      bg: "#38A169",
+                      opacity: 1,
+                      color: "white",
+                    }}
+                    onClick={generateReport}
+                  >
+                    Generate Report
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <Text>
+                    {user?.fname} {user?.lname}
+                  </Text>
+                  <Text>{user?.mid}</Text>
+                </>
+              )}
 
               <Flex gap="20px">
                 <Box>
                   <Flex direction="column" align="center" justify="center">
-                    <Text>{user?.certificates?.internal}</Text>
+                    <Text>{user?.certificates?.internal ?? 0}</Text>
                     <Text fontSize="13px">Internal Certificates</Text>
                   </Flex>
                 </Box>
 
                 <Box>
                   <Flex direction="column" align="center" justify="center">
-                    <Text>{user?.certificates?.external}</Text>
+                    <Text>{user?.certificates?.external ?? 0}</Text>
                     <Text fontSize="13px">External Certificates</Text>
                   </Flex>
                 </Box>
@@ -755,7 +799,7 @@ const Profile = () => {
 
               <Box>
                 <Flex direction="column" align="center" justify="center">
-                  <Text>{user?.certificates?.event}</Text>
+                  <Text>{user?.certificates?.event ?? 0}</Text>
                   <Text fontSize="13px">Events Certificates</Text>
                 </Flex>
               </Box>
@@ -785,6 +829,9 @@ const Profile = () => {
                     borderRadius="5px"
                     defaultValue={user?.email}
                     onKeyUp={changeEmail}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
                   />
                 </InputGroup>
 
@@ -802,6 +849,9 @@ const Profile = () => {
                     borderRadius="5px"
                     defaultValue={user?.linkedin}
                     onKeyUp={changeLinkedin}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
                   />
                 </InputGroup>
 
@@ -819,6 +869,9 @@ const Profile = () => {
                     borderRadius="5px"
                     defaultValue={user?.github}
                     onKeyUp={changeGithub}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
                   />
                 </InputGroup>
               </Flex>
@@ -841,7 +894,13 @@ const Profile = () => {
                   borderRadius="5px"
                 >
                   <i className="fa-solid fa-envelopes"></i>
-                  <Link href={"mailto:" + user?.email} target="_blank">
+                  <Link
+                    href={"mailto:" + user?.email}
+                    target="_blank"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
                     {user?.email}
                   </Link>
                 </Flex>
@@ -855,7 +914,14 @@ const Profile = () => {
                   borderRadius="5px"
                 >
                   <i className="fa-brands fa-linkedin"></i>
-                  <Link href={user?.linkedin} target="_blank">
+                  <Link
+                    href={user?.linkedin}
+                    target="_blank"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    width="300px"
+                  >
                     {user?.linkedin}
                   </Link>
                 </Flex>
@@ -868,7 +934,14 @@ const Profile = () => {
                   borderRadius="5px"
                 >
                   <i className="fa-brands fa-github"></i>
-                  <Link target="_blank" href={user?.github}>
+                  <Link
+                    target="_blank"
+                    href={user?.github}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    width="300px"
+                  >
                     {user?.github}
                   </Link>
                 </Flex>
@@ -898,15 +971,11 @@ const Profile = () => {
                     gap="20px"
                     direction="column"
                   >
-                    {totalPoints > 0 ? (
-                      <canvas
-                        id="contribution"
-                        width="10px"
-                        height="10px"
-                      ></canvas>
-                    ) : (
-                      <Text>No points yet</Text>
-                    )}
+                    <canvas
+                      id="contribution"
+                      width="10px"
+                      height="10px"
+                    ></canvas>
                   </Flex>
                 </Box>
 

@@ -1,3 +1,4 @@
+0;
 import React, { useEffect } from "react";
 import Navbar from "../../../components/student/Navbar/";
 import {
@@ -24,6 +25,10 @@ import {
   Alert,
   FormControl,
   Select,
+  Checkbox,
+  InputGroup,
+  InputRightAddon,
+  Flex,
 } from "@chakra-ui/react";
 import Breadcrumb from "../../../components/Breadcrumb";
 import "./Certificates.css";
@@ -40,13 +45,20 @@ const Certificates = () => {
 
   const [certificateName, setCertificateName] = React.useState("");
   const [issuingOrg, setIssuingOrg] = React.useState("");
-  const [issueMonth, setIssueMonth] = React.useState("");
-  const [issueYear, setIssueYear] = React.useState("");
+  const [issueMonth, setIssueMonth] = React.useState("null");
+  const [issueYear, setIssueYear] = React.useState("null");
+  const [expiry, setExpiry] = React.useState(false);
+  const [expiryMonth, setExpiryMonth] = React.useState("null");
+  const [expiryYear, setExpiryYear] = React.useState("null");
   const [certificateType, setCertificateType] = React.useState("");
   const [certificateLevel, setCertificateLevel] = React.useState("");
   const [certificateUrl, setCertificateUrl] = React.useState("");
   const [file, setFile] = React.useState("");
   const [fileName, setFileName] = React.useState("No File Selected");
+
+  useEffect(() => {
+    console.log(expiry);
+  }, [expiry]);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates`, {
@@ -98,6 +110,8 @@ const Certificates = () => {
       issuingOrg === "" ||
       issueMonth === "" ||
       issueYear === "" ||
+      expiryMonth === "" ||
+      expiryYear === "" ||
       certificateType === "" ||
       certificateLevel === ""
     ) {
@@ -121,6 +135,9 @@ const Certificates = () => {
         formData.append("issuingOrg", issuingOrg);
         formData.append("issueMonth", issueMonth);
         formData.append("issueYear", issueYear);
+        formData.append("expires", expiry);
+        formData.append("expiryMonth", expiryMonth);
+        formData.append("expiryYear", expiryYear);
         formData.append("certificateType", certificateType);
         formData.append("certificateLevel", certificateLevel);
         formData.append("certificateURL", certificateUrl);
@@ -238,7 +255,7 @@ const Certificates = () => {
               </Tbody>
             </Table>
           </Box>
-          <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+          <Modal isOpen={isOpen} onClose={onClose} size="4xl">
             <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
             <ModalContent>
               <ModalHeader>Upload Certificate</ModalHeader>
@@ -250,38 +267,39 @@ const Certificates = () => {
                     coordinator.
                   </Alert>
 
-                  <FormControl>
-                    <FormLabel>Certificate Name</FormLabel>
-                    <Input
-                      type="text"
-                      placeholder=""
-                      onChange={(e) => {
-                        setCertificateName(e?.target?.value);
-                      }}
-                      value={certificateName}
-                    />
-                  </FormControl>
+                  <Box className="flex">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Certificate Name"
+                        onChange={(e) => {
+                          setCertificateName(e?.target?.value);
+                        }}
+                        value={certificateName}
+                      />
+                    </FormControl>
+
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Issuing Organization"
+                        onChange={(e) => {
+                          setIssuingOrg(e?.target?.value);
+                        }}
+                        value={issuingOrg}
+                      />
+                    </FormControl>
+                  </Box>
 
                   <FormControl>
-                    <FormLabel>Issuing Organization</FormLabel>
-                    <Input
-                      type="text"
-                      placeholder=""
-                      onChange={(e) => {
-                        setIssuingOrg(e?.target?.value);
-                      }}
-                      value={issuingOrg}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel>Certification Date</FormLabel>
                     <Box className="flex">
                       <Select
-                        placeholder="Select Month"
                         onChange={(e) => setIssueMonth(e?.target?.value)}
                         value={issueMonth}
                       >
+                        <option value="null" disabled>
+                          Certification Issue Month
+                        </option>
                         <option value="jan">January</option>
                         <option value="feb">February</option>
                         <option value="mar">March</option>
@@ -297,10 +315,12 @@ const Certificates = () => {
                       </Select>
 
                       <Select
-                        placeholder="Select Year"
                         onChange={(e) => setIssueYear(e?.target?.value)}
                         value={issueYear}
                       >
+                        <option value="null" disabled>
+                          Certification Issue Year
+                        </option>
                         <option value={prevPrevPrevYear}>
                           {prevPrevPrevYear}
                         </option>
@@ -309,6 +329,67 @@ const Certificates = () => {
                         <option value={year}>{year}</option>
                       </Select>
                     </Box>
+                  </FormControl>
+
+                  <FormControl>
+                    <Flex
+                      alignSelf="flex-start"
+                      justifySelf="flex-start"
+                      gap="20px"
+                      height="40px"
+                    >
+                      <Flex width="500px" align="center" gap="10px">
+                        <Text>Certificate Expires?</Text>
+                        <Checkbox
+                          border="lightgray"
+                          colorScheme="green"
+                          onChange={(e) => setExpiry(e.target.checked)}
+                        />
+                      </Flex>
+
+                      {expiry ? (
+                        <>
+                          <Select
+                            onChange={(e) => setExpiryMonth(e?.target?.value)}
+                            value={expiryMonth}
+                          >
+                            <option value="null" disabled>
+                              Certification Expiry Month
+                            </option>
+                            <option value="jan">January</option>
+                            <option value="feb">February</option>
+                            <option value="mar">March</option>
+                            <option value="apr">April</option>
+                            <option value="may">May</option>
+                            <option value="jun">June</option>
+                            <option value="jul">July</option>
+                            <option value="aug">August</option>
+                            <option value="sep">September</option>
+                            <option value="oct">October</option>
+                            <option value="nov">November</option>
+                            <option value="dec">December</option>
+                          </Select>
+
+                          <Select
+                            onChange={(e) => setExpiryYear(e?.target?.value)}
+                            value={expiryYear}
+                          >
+                            <option
+                              value="null"
+                              className="disabledOpt"
+                              disabled
+                            >
+                              Certification Expiry Year
+                            </option>
+                            <option value={year}>{year}</option>
+                            <option value={year + 1}>{year + 1}</option>
+                            <option value={year + 2}>{year + 2}</option>
+                            <option value={year + 3}>{year + 3}</option>
+                            
+                          </Select>
+                        </>
+                      ) : null}
+                    </Flex>
                   </FormControl>
 
                   <Box className="flex">
@@ -365,10 +446,7 @@ const Certificates = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant="ghost" onClick={handleUpload}>
+                <Button colorScheme="green" onClick={handleUpload}>
                   Submit for Approval
                 </Button>
               </ModalFooter>

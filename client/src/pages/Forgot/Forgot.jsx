@@ -72,7 +72,7 @@ const Forgot = () => {
     }).then((res) => {
       setLoading(false);
       if (res.status === 200) {
-        setStep(1);
+        setStep(2);
         toast({
           title: "OTP Verified",
           description: "OTP has been verified",
@@ -123,7 +123,7 @@ const Forgot = () => {
       } else if (res.status === 400) {
         toast({
           title: "Error",
-          description: "OTP is incorrect",
+          description: "Session Expired",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -178,7 +178,7 @@ const Forgot = () => {
             Send Email
           </Button>
         </Flex>
-      ) : step === 2 ? (
+      ) : step === 1 ? (
         <Flex
           align="center"
           justify="center"

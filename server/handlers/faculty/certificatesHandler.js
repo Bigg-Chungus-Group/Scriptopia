@@ -19,7 +19,9 @@ const monthNames = [
   "december",
 ];
 
-router.post("/", verifyToken, async (req, res) => {
+import { verifyPerms } from "../verifyPermissions.js";
+
+router.post("/", async (req, res) => {
   try {
     let hno;
     if (req.user.role !== "F") {
@@ -42,6 +44,7 @@ router.post("/", verifyToken, async (req, res) => {
     const certs = await certificationsDB
       .find({ house: house._id.toString(), status: "pending" })
       .toArray();
+
     res.status(200).json({ certs });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -52,6 +55,10 @@ router.post("/", verifyToken, async (req, res) => {
 router.post("/update", verifyToken, async (req, res) => {
   let { id, action, xp, comments } = req.body;
   xp = parseInt(xp);
+
+  if(action === "rejected") {
+    xp = 0;
+  }
 
   try {
     if (req.user.role !== "F") {
@@ -64,10 +71,14 @@ router.post("/update", verifyToken, async (req, res) => {
       { $set: { status: action, xp, comments } }
     );
 
+    console.log(xp);
+
     const year = new Date().getFullYear();
     const currentMonthIndex = new Date().getMonth();
     const month = monthNames[currentMonthIndex];
     const certType = cert.certificateType;
+
+    console.log(month)
 
     await userDB.updateOne(
       { mid: cert.mid },

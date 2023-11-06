@@ -45,6 +45,9 @@ router.post(
         issuingOrg,
         issueMonth,
         issueYear,
+        expires,
+        expiryMonth,
+        expiryYear,
         certificateType,
         certificateURL,
         certificateLevel,
@@ -58,6 +61,7 @@ router.post(
       }
 
       const _id = new ObjectId();
+      const user = await userDB.findOne({ mid });
 
       if (certificateURL) {
         await certificationsDB.insertOne({
@@ -66,16 +70,23 @@ router.post(
           issuingOrg: issuingOrg.toString(),
           issueMonth: issueMonth.toString(),
           issueYear: parseInt(issueYear),
+          expires: expires,
+          expiryMonth: expiryMonth.toString(),
+          expiryYear: expiryYear.toString(),
           certificateType: certificateType.toString(),
           certificateLevel: certificateLevel.toString(),
           uploadType: "url",
           certificateURL: certificateURL.toString(),
           status: "pending",
+
+          house: user.house.id,
+          name: user.fname + " " + user.lname,
+          submittedYear: new Date().getFullYear(),
+          submittedMonth: new Date().getMonth(),
         });
         return res.status(200).send("Certificate uploaded");
       }
 
-      const user = await userDB.findOne({ mid });
       const originalFileName = certificate.originalname;
       const certificateName = `certificates/${mid}/${_id}`;
       const file = fbstorage.file(certificateName);
@@ -89,7 +100,7 @@ router.post(
         .update(certificate.buffer)
         .digest("hex");
 
-        console.log(sha256, md5);
+      console.log(sha256, md5);
 
       file.save(certificate.buffer, {
         metadata: {
@@ -104,6 +115,9 @@ router.post(
         issuingOrg: issuingOrg.toString(),
         issueMonth: issueMonth.toString(),
         issueYear: parseInt(issueYear),
+        expires: expires,
+        expiryMonth: expiryMonth.toString(),
+        expiryYear: expiryYear.toString(),
         certificateType: certificateType.toString(),
         certificateLevel: certificateLevel.toString(),
         uploadType: "file",

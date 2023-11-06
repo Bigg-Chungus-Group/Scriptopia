@@ -181,16 +181,29 @@ const Certificate = () => {
     })
       .then((res) => res.blob())
       .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
+        // Assuming 'blob' contains the raw PDF data
+
+        // Create a Blob from the raw PDF data
+        const pdfBlob = new Blob([blob], { type: "application/pdf" });
+
+        // Generate a URL for the Blob
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        // Create an anchor element to download the PDF
         const link = document.createElement("a");
-        link.href = url;
+        link.href = pdfUrl;
         link.setAttribute(
-          "download",
+          "inline",
           `${certificate?.certificateName}.${certificate?.ext}`
         );
-        document.body.appendChild(link);
+
+        // Trigger a click event to initiate the download
         link.click();
+
+        // Clean up by removing the anchor element and revoking the URL
         link.remove();
+        URL.revokeObjectURL(pdfUrl);
+
         setLoader3(false);
       })
       .catch((err) => {
@@ -223,8 +236,8 @@ const Certificate = () => {
 
     if (certificate.status === "approved") {
       updatedSteps[2].description = "Approved";
-      updatedSteps[1].description = "Approved";
-      setActiveStep(2);
+      updatedSteps[1].description = "Reviewed";
+      setActiveStep(3);
       setColorStatus("green");
     }
 
@@ -329,6 +342,39 @@ const Certificate = () => {
     });
   };
 
+  const calculateExpiry = () => {
+    const monthNames = [
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec",
+    ];
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    if (certificate?.expires) {
+      if (certificate?.expiryYear < currentYear) return false;
+      if (certificate?.expiryYear > currentYear) return true;
+
+      if (monthNames.indexOf(certificate?.expiryMonth) < currentMonth)
+        return false;
+      if (monthNames.indexOf(certificate?.expiryMonth) > currentMonth)
+        return true;
+      if (monthNames.indexOf(certificate?.expiryMonth) === currentMonth)
+        return true;
+    }
+
+    return true;
+  };
+
   if (!loading) {
     return (
       <>
@@ -354,6 +400,23 @@ const Certificate = () => {
             <Text textAlign="center" mt="-17px">
               Uploaded By {certificate.name}
             </Text>
+            {certificate?.expires ? (
+              !calculateExpiry() ? (
+                <Text color="red" textAlign="center" mt="-17px">
+                  Certificate Expired On{" "}
+                  {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                    certificate?.expiryMonth.slice(1)}{" "}
+                  {certificate?.expiryYear}
+                </Text>
+              ) : (
+                <Text color="green" textAlign="center" mt="-17px">
+                  Certificate Expires On{" "}
+                  {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                    certificate?.expiryMonth.slice(1)}{" "}
+                  {certificate?.expiryYear}
+                </Text>
+              )
+            ) : null}
             <Heading textAlign="center">
               {certificate?.certificateName?.charAt(0).toUpperCase() +
                 certificate?.certificateName?.slice(1)}{" "}
@@ -624,7 +687,7 @@ const Certificate = () => {
               />
 
               <Text mt="20px">
-                <b>1.</b> Go to the directory containing the fle
+                <b>1.</b> Go to the directory containing the file
               </Text>
               <Text>
                 <b>2.</b> Open a Terminal in that Directory
@@ -637,8 +700,8 @@ const Certificate = () => {
                 {" "}
                 <Text mt="10px">On Windows</Text>
                 <Code>
-                  certUtil -hashfile{" "}
-                  '{certificate?.certificateName +
+                  certUtil -hashfile '
+                  {certificate?.certificateName +
                     "." +
                     certificate?.ext +
                     "' MD5"}
@@ -648,20 +711,29 @@ const Certificate = () => {
                   cursor="pointer"
                   onClick={() =>
                     copyText(
-                      `certUtil -hashfile '${certificate?.certificateName + "." + certificate?.ext + "' MD5"}`
+                      `certUtil -hashfile '${
+                        certificate?.certificateName +
+                        "." +
+                        certificate?.ext +
+                        "' MD5"
+                      }`
                     )
                   }
                 />
                 <Text mt="10px">On Linux</Text>
                 <Code>
-                  sha256sum{" "}
-                  '{certificate?.certificateName + "." + certificate?.ext}'
+                  sha256sum '
+                  {certificate?.certificateName + "." + certificate?.ext}'
                 </Code>
                 <CopyIcon
                   ml="10px"
                   cursor="pointer"
                   onClick={() =>
-                    copyText(`sha256sum '${certificate?.certificateName + "." + certificate?.ext}'`)
+                    copyText(
+                      `sha256sum '${
+                        certificate?.certificateName + "." + certificate?.ext
+                      }'`
+                    )
                   }
                 />
               </Box>

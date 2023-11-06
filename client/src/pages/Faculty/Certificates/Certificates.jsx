@@ -189,9 +189,9 @@ const Certificates = () => {
                   value={xp}
                   onChange={(e) => setXp(e.target.value)}
                 >
-                  <option value="30">30 XP</option>
-                  <option value="50">50 XP</option>
-                  <option value="60">60 XP</option>
+                  <option value="30">30 XP - Beginner Certificate</option>
+                  <option value="50">50 XP - Intermediate Certificate</option>
+                  <option value="60">60 XP - Advanced Certificate</option>
                 </Select>
               ) : null}
 

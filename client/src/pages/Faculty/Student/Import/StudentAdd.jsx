@@ -50,7 +50,7 @@ const StudentAdd = ({ setModal, houses }) => {
       gender: gender,
     };
 
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/add`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/students/add`, {
       method: "POST",
       credentials: "include",
       headers: {
