@@ -184,7 +184,12 @@ const Certificate = () => {
         // Assuming 'blob' contains the raw PDF data
 
         // Create a Blob from the raw PDF data
-        const pdfBlob = new Blob([blob], { type: "application/pdf" });
+        let pdfBlob;
+        if (certificate?.ext === "pdf") {
+          pdfBlob = new Blob([blob], { type: "application/pdf" });
+        } else {
+          pdfBlob = new Blob([blob]);
+        }
 
         // Generate a URL for the Blob
         const pdfUrl = URL.createObjectURL(pdfBlob);
@@ -192,10 +197,17 @@ const Certificate = () => {
         // Create an anchor element to download the PDF
         const link = document.createElement("a");
         link.href = pdfUrl;
-        link.setAttribute(
-          "inline",
-          `${certificate?.certificateName}.${certificate?.ext}`
-        );
+        if (certificate?.ext === "pdf") {
+          link.setAttribute(
+            "inline",
+            `${certificate?.certificateName}.${certificate?.ext}`
+          );
+        } else {
+          link.setAttribute(
+            "download",
+            `${certificate?.certificateName}.${certificate?.ext}`
+          );
+        }
 
         // Trigger a click event to initiate the download
         link.click();

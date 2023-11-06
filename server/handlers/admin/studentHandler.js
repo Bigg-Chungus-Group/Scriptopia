@@ -68,6 +68,11 @@ router.post("/import", async (req, res) => {
       const approved = true;
       const defaultPW = true;
 
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) {
+        continue;
+      }
+
       insertData.push({
         mid: mid.toString(),
         password: password.toString(),
@@ -122,14 +127,12 @@ router.post(
   body("gender").notEmpty().trim().escape(),
   async (req, res) => {
     const { fname, lname, moodleid: mid, email, house, gender } = req.body;
-    console.log("LOG");
-    console.log(house);
 
     const password = await bcrypt.hash(
       process.env.DEFAULT_STUDENT_PASSWORD,
       10
     );
-    const firstTime = true;
+    const firstTime = house !== "" ? false : true;
     const approved = true;
     const defaultPW = true;
     const ay = 20 + mid.slice(0, 2);
@@ -168,6 +171,11 @@ router.post(
     };
 
     try {
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) {
+        return res.status(409).send({ message: "User already exists" });
+      }
+
       await userDB.insertOne(userSchema);
       console.log(house.toString());
       if (house !== "") {

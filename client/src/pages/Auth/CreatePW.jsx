@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -29,6 +29,25 @@ const CreatePW = ({ isFirstTime, mid }) => {
   const [show2, setShow2] = React.useState(false);
   const handleClick2 = () => setShow2(!show2);
 
+  function isPasswordValid(password) {
+    if (password.length < 9) {
+      return false;
+    }
+    if (!/[A-Z]/.test(password)) {
+      return false;
+    }
+    if (!/[a-z]/.test(password)) {
+      return false;
+    }
+    if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
+      return false;
+    }
+    if (!/\d/.test(password)) {
+      return false;
+    }
+    return true;
+  }
+
   const [loading, setLoading] = React.useState(false);
   useEffect(() => {
     if (isFirstTime) {
@@ -39,6 +58,20 @@ const CreatePW = ({ isFirstTime, mid }) => {
   const toast = useToast();
   const submitPW = () => {
     setLoading(true);
+
+    if (!isPasswordValid(pw)) {
+      toast({
+        title: "Error",
+        description:
+          "Password must be at least 9 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       if (pw === pw2) {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/auth/firsttime`, {
@@ -56,7 +89,7 @@ const CreatePW = ({ isFirstTime, mid }) => {
           if (res.status === 200) {
             toast({
               title: "Password Created",
-              description: "Redirecting...",
+              description: "You may now log in!",
               status: "success",
               duration: 3000,
               isClosable: true,

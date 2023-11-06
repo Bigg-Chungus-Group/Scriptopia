@@ -9,6 +9,12 @@ router.post("/", async (req, res) => {
   const password = bcrypt.hashSync(defaultpw, 10); 
 
   try {
+    const user = await userDB.findOne({ mid });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
     await userDB.updateOne(
       { mid },
       {

@@ -71,14 +71,10 @@ router.post("/update", verifyToken, async (req, res) => {
       { $set: { status: action, xp, comments } }
     );
 
-    console.log(xp);
-
     const year = new Date().getFullYear();
     const currentMonthIndex = new Date().getMonth();
     const month = monthNames[currentMonthIndex];
     const certType = cert.certificateType;
-
-    console.log(month)
 
     await userDB.updateOne(
       { mid: cert.mid },

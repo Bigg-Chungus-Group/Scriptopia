@@ -76,7 +76,7 @@ const Enrollments = () => {
           isClosable: true,
         });
       });
-  }, []);
+  }, [update]);
 
   function truncateText(text, maxLines, maxLength) {
     const lines = text.split("\n");

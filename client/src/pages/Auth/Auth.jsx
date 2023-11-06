@@ -189,24 +189,25 @@ const Auth = () => {
             const response = await res.json();
             console.error(response);
             io.emit("onLogin", response.mid);
+            localStorage.setItem("chakra-ui-color-mode", response?.colorMode ?? "light");
 
             if (redirectURL !== "/") {
               navigate(redirectURL);
               return;
             } else {
               if (response.role === "A") {
-                navigate("/admin");
+                window.location.href = "/admin";
               } else if (response.role === "F") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
-                  navigate("/faculty");
+                  window.location.href = "/faculty";
                 }
               } else if (response.role === "S") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
-                  navigate("/");
+                 window.location.href = "/";
                 }
               }
             }

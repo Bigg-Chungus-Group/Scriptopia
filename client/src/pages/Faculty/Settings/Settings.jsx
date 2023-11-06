@@ -20,7 +20,7 @@ import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Settings = () => {
-  useAuthCheck("F")
+  useAuthCheck("F");
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -141,6 +141,28 @@ const Settings = () => {
     }
   }, [toastDispatched]);
 
+  const setDark = () => {
+    if (colorMode === "dark") {
+      toggleColorMode();
+    } else {
+      toggleColorMode();
+    }
+
+    fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/profile/updateTheme`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          theme: colorMode === "dark" ? "light" : "dark",
+        }),
+      }
+    );
+  };
+
   if (!loading) {
     return (
       <>
@@ -159,8 +181,7 @@ const Settings = () => {
               <Switch
                 id="email-alerts"
                 onChange={(e) => {
-                  toggleColorMode();
-                  window.location.reload();
+                  setDark();
                 }}
                 isChecked={colorMode === "dark" ? true : false}
               />

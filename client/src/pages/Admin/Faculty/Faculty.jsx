@@ -40,7 +40,7 @@ import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 
 const Faculty = () => {
   useAuthCheck("A");
@@ -182,6 +182,33 @@ const Faculty = () => {
   };
 
   const updateFaculty = () => {
+    function checkElements(arr) {
+      const elementsToCheck = ["HCO0", "HCO1", "HCO2", "HCO3"];
+      let count = 0;
+
+      for (const element of elementsToCheck) {
+        if (arr.includes(element)) {
+          count++;
+          if (count > 1) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    if (!checkElements(perms)) {
+      toast({
+        title: "Error",
+        description: "Please select only one house coordinator",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/update`, {
       method: "POST",
       credentials: "include",
@@ -234,6 +261,10 @@ const Faculty = () => {
         });
       });
   };
+
+  useEffect(() => {
+    console.log(perms);
+  }, [perms]);
 
   if (loading) return <Loader />;
   else
@@ -318,14 +349,7 @@ const Faculty = () => {
             <ModalCloseButton />
             <ModalBody>
               <Box className="form">
-                <Box className="ipgroup">
-                  <FormLabel>Faculty Moodle ID</FormLabel>
-                  <Input
-                    placeholder="Faculty ID"
-                    value={mid}
-                    onChange={(e) => setMid(e.target.value)}
-                  />
-                </Box>
+
                 <Flex gap="20px" mt="10px">
                   <Box className="ipgroup">
                     <FormLabel>First Name</FormLabel>
@@ -441,6 +465,28 @@ const Faculty = () => {
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
                       <Tr>
                         <Td>
+                          <Checkbox value="UFC" readOnly checked>
+                            Upload Faculty Certificates
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon as={WarningIcon} color="yellow.500" />
+                              Default permission - Cannot be changed
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add their own certifications to the system
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>
                           <Checkbox value="MHI">Manage Events</Checkbox>
                         </Td>
                         <Td>
@@ -472,7 +518,9 @@ const Faculty = () => {
                       {houses.map((house, index) => (
                         <Tr key={index}>
                           <Td>
-                            <Checkbox value={`HCO${index}`}>House Coordinator - {house}</Checkbox>
+                            <Checkbox value={`HCO${index}`}>
+                              House Coordinator - {house}
+                            </Checkbox>
                           </Td>
                           <Td>
                             <List>

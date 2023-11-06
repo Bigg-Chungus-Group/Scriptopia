@@ -64,6 +64,14 @@ const StudentImport = () => {
             duration: 3000,
             isClosable: true,
           });
+        } else if (res.status === 409) {
+          toast({
+            title: "Error",
+            description: "Moodle ID already exists",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
         } else {
           toast({
             title: "Error",
@@ -194,7 +202,11 @@ const StudentImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <StudentAdd setModal={handleModal} houses={houses} /> : <></>}
+      {addIndividual ? (
+        <StudentAdd setModal={handleModal} houses={houses} />
+      ) : (
+        <></>
+      )}
     </>
   );
 };
