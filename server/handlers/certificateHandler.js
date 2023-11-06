@@ -63,7 +63,7 @@ router.post("/download", validationRules, async (req, res) => {
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${certificate.certificateName}.${certificate.ext}"`
+      `download; filename="${certificate.certificateName}.${certificate.ext}"`
     );
     res.setHeader("Content-Type", "application/pdf"); // Set the appropriate content type
 

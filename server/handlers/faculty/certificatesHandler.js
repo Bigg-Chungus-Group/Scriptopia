@@ -44,6 +44,7 @@ router.post("/", async (req, res) => {
     const certs = await certificationsDB
       .find({ house: house._id.toString(), status: "pending" })
       .toArray();
+
     res.status(200).json({ certs });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -54,6 +55,10 @@ router.post("/", async (req, res) => {
 router.post("/update", verifyToken, async (req, res) => {
   let { id, action, xp, comments } = req.body;
   xp = parseInt(xp);
+
+  if(action === "rejected") {
+    xp = 0;
+  }
 
   try {
     if (req.user.role !== "F") {

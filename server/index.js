@@ -30,6 +30,7 @@ import profileHandler from "./handlers/profileHandler.js";
 import notificationHandler from "./handlers/notificationHandler.js";
 import forgotHandler from "./handlers/forgotHandler.js";
 import feedbackHandler from "./handlers/feedbackHandler.js";
+import generatorHandler from "./handlers/generatorHandler.js";
 
 import { v2 as cloudinary } from "cloudinary";
 
@@ -86,6 +87,7 @@ app.use("/profile", profileHandler);
 app.use("/notifications", notificationHandler)
 app.use("/forgot", forgotHandler);
 app.use("/feedback", feedbackHandler);
+app.use("/generator", generatorHandler);
 
 app.use("/admin", verifyToken, verifyAdminPrivilges, mainAdmin);
 app.use("/student", verifyToken, verifyStudentPriviliges, mainStudent);

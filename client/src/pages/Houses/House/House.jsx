@@ -59,6 +59,7 @@ import GuestNavbar from "../../../components/guest/Navbar";
 import Chart from "chart.js/auto";
 import AvatarEditor from "react-avatar-editor";
 import { ArrowRightIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -68,6 +69,7 @@ const House = () => {
   const houseID = window.location.pathname.split("/")[2];
   const [totalpoints, setTotalPoints] = useState(0);
   const [role, setRole] = useState(null);
+  const navigate = useNavigate()
   const toast = useToast();
 
   const [internalPoints, setInternalPoints] = useState(0);
@@ -657,7 +659,7 @@ const House = () => {
                             {members.slice(0, 2).map((member, index) => (
                               <Tr key={member?.mid}>
                                 <Td>{index + 1}</Td>
-                                <Td>
+                                <Td onClick={() => navigate(`/profile/${member?.mid}`)} textDecor="underline" cursor="pointer">
                                   {member?.fname} {member?.lname}
                                 </Td>
                                 <Td>{member?.mid}</Td>
@@ -702,7 +704,7 @@ const House = () => {
                   {members.map((member, index) => (
                     <Tr key={member?.mid}>
                       <Td>{index + 1}</Td>
-                      <Td>
+                      <Td onClick={() => navigate(`/profile/${member?.mid}`)} textDecor="underline" cursor="pointer">
                         {member?.fname} {member?.lname}
                       </Td>
                       <Td>{member?.mid}</Td>
