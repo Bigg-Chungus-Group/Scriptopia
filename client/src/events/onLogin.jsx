@@ -13,7 +13,7 @@ const logout = () => {
 };
 
 const onLogin = (data) => {
-  logout();
+ // logout();
 };
 
 export default onLogin;
