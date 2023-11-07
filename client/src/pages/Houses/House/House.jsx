@@ -69,7 +69,7 @@ const House = () => {
   const houseID = window.location.pathname.split("/")[2];
   const [totalpoints, setTotalPoints] = useState(0);
   const [role, setRole] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const toast = useToast();
 
   const [internalPoints, setInternalPoints] = useState(0);
@@ -521,7 +521,7 @@ const House = () => {
                         <>
                           <Flex
                             height="150px"
-                            width="150px"
+                            width="100%"
                             position="absolute"
                             bg="black"
                             transform="translate(-50%, -50%)"
@@ -580,7 +580,13 @@ const House = () => {
                         </Heading>
                         <Flex align="center" gap="10px">
                           <a>
-                            <Text fontSize="15px">
+                            <Text
+                              fontSize="15px"
+                              _hover={{
+                                textDecor: "underline",
+                                cursor: "pointer",
+                              }}
+                            >
                               @{facCord?.fname} {facCord?.lname}
                             </Text>
                           </a>
@@ -598,17 +604,8 @@ const House = () => {
                       </Flex>
                       <Box height="180px" mt="50px">
                         <Heading fontSize="20px">{houses?.abstract}</Heading>
-                        <Text overflowY="auto" mt="5px" pr="20px">
-                          {houses?.desc} Lorem ipsum dolor sit amet, consectetur
-                          adipisicing elit. Architecto, alias aut. Temporibus
-                          dolorum, corrupti voluptate maiores iusto, cupiditate
-                          numquam facilis ipsam at itaque nesciunt, omnis alias
-                          delectus corporis perspiciatis? Perferendis? Amet
-                          maiores magnam repudiandae deleniti dolorem. Eligendi
-                          expedita eum fugiat maxime quo molestiae, ad aliquid.
-                          Dignissimos eum quae obcaecati quisquam minus
-                          doloremque totam laboriosam, nesciunt eius enim sint
-                          quasi? Dolore.
+                        <Text overflowY="auto" mt="5px" pr="20px" width="50vw">
+                          {houses?.desc}
                         </Text>
                       </Box>
                     </Box>
@@ -659,7 +656,13 @@ const House = () => {
                             {members.slice(0, 2).map((member, index) => (
                               <Tr key={member?.mid}>
                                 <Td>{index + 1}</Td>
-                                <Td onClick={() => navigate(`/profile/${member?.mid}`)} textDecor="underline" cursor="pointer">
+                                <Td
+                                  onClick={() =>
+                                    navigate(`/profile/${member?.mid}`)
+                                  }
+                                  textDecor="underline"
+                                  cursor="pointer"
+                                >
                                   {member?.fname} {member?.lname}
                                 </Td>
                                 <Td>{member?.mid}</Td>
@@ -704,7 +707,11 @@ const House = () => {
                   {members.map((member, index) => (
                     <Tr key={member?.mid}>
                       <Td>{index + 1}</Td>
-                      <Td onClick={() => navigate(`/profile/${member?.mid}`)} textDecor="underline" cursor="pointer">
+                      <Td
+                        onClick={() => navigate(`/profile/${member?.mid}`)}
+                        textDecor="underline"
+                        cursor="pointer"
+                      >
                         {member?.fname} {member?.lname}
                       </Td>
                       <Td>{member?.mid}</Td>

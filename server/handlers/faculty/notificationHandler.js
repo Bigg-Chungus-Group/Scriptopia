@@ -1,27 +1,37 @@
 import express from "express";
 const router = express.Router();
-import { notificationDB } from "../../configs/mongo.js";
+import { houseDB, notificationDB } from "../../configs/mongo.js";
 import { ObjectId } from "mongodb";
-import { io } from "../../index.js";
 import logger from "../../configs/logger.js";
 
 router.post("/add", async (req, res) => {
   try {
+    let hno;
+    if (req.user.perms.includes("HCO0")) {
+      hno = 0;
+    } else if (req.user.perms.includes("HCO1")) {
+      hno = 1;
+    } else if (req.user.perms.includes("HCO2")) {
+      hno = 2;
+    } else if (req.user.perms.includes("HCO3")) {
+      hno = 3;
+    }
+
     const { notificationBody, notificationExpiry } = req.body;
+    const house = await houseDB.findOne({ no: hno });
     await notificationDB.insertOne({
       body: notificationBody.toString(),
       expiry: new Date(notificationExpiry),
-      scope: "all",
+      scope: house._id.toString(),
     });
-
-    io.emit("onNotification");
 
     res
       .status(200)
       .send({ status: "success", message: "Notification created" });
   } catch (err) {
+    console.log(err);
     logger.error({
-      code: "ADM-NTH-100",
+      code: "FAC-NTH-100",
       message: "Failed to create notification",
       err: err.message,
       mid: req.user.mid,
@@ -36,6 +46,23 @@ router.get("/receive", async (req, res) => {
     const notifications = await notificationDB
       .find({ expiry: { $gte: dateToday } })
       .toArray();
+
+    let hno;
+    if (req.user.perms.includes("HCO0")) {
+      hno = 0;
+    } else if (req.user.perms.includes("HCO1")) {
+      hno = 1;
+    } else if (req.user.perms.includes("HCO2")) {
+      hno = 2;
+    } else if (req.user.perms.includes("HCO3")) {
+      hno = 3;
+    }
+
+    const house = await houseDB.findOne({ no: hno });
+    const houseNotification = await notificationDB
+      .find({ expiry: { $gte: dateToday }, scope: house._id.toString() })
+      .toArray();
+
     res.status(200).send({ status: "success", notifications });
   } catch (err) {
     logger.error({
@@ -56,12 +83,10 @@ router.post("/update", async (req, res) => {
       { $set: { body: notificationBody, expiry: new Date(notificationExpiry) } }
     );
 
-    io.emit("onNotification");
-
     res.send({ status: "success", message: "Notification updated" });
   } catch (err) {
     logger.error({
-      code: "ADM-NTH-101",
+      code: "FAC-NTH-101",
       message: "Failed to update notification",
       err: err.message,
       mid: req.user.mid,
@@ -74,9 +99,6 @@ router.post("/delete", async (req, res) => {
   const { notificationId } = req.body;
   try {
     await notificationDB.deleteOne({ _id: new ObjectId(notificationId) });
-
-    io.emit("onNotification");
-
     res.send({ status: "success", message: "Notification deleted" });
   } catch (err) {
     logger.error({

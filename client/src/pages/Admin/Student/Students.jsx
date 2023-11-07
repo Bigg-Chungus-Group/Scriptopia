@@ -36,6 +36,7 @@ import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { useNavigate } from "react-router-dom";
 
 const Students = () => {
   useAuthCheck("A");
@@ -47,6 +48,8 @@ const Students = () => {
   const [selectedYear, setSelectedYear] = useState("all");
   const [selectedHouse, setSelectedHouse] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState([]);
+
+  const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -394,7 +397,7 @@ const Students = () => {
                         }
                       />
                     </Td>
-                    <Td>{student.mid}</Td>
+                    <Td textDecor="underline" cursor="pointer" onClick={() => navigate(`/profile/${student.mid}`)}>{student.mid}</Td>
                     <Td>{student.name}</Td>
                     <Td>{student.year}</Td>
                     <Td>{student.academicYear}</Td>

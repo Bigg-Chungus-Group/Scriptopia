@@ -57,8 +57,8 @@ const Home = () => {
           totalInternalPoints += internal;
           totalExternalPoints += external;
           totalEventsPoints += events;
-          console.log("TOTALS")
-          console.log(totalInternalPoints)
+          console.log("TOTALS");
+          console.log(totalInternalPoints);
         }
       }
     }
@@ -185,7 +185,7 @@ const Home = () => {
             x: {
               grid: {
                 color: "#f2f2f2",
-                display: false
+                display: false,
               },
               ticks: {
                 display: false,
@@ -198,7 +198,7 @@ const Home = () => {
             y: {
               grid: {
                 color: "#f2f2f2",
-                display: false
+                display: false,
               },
             },
           },
@@ -216,14 +216,14 @@ const Home = () => {
   useEffect(() => {
     function hexToRgba(hex, opacity) {
       // Remove the hash character (#) if present
-      hex = hex.replace(/^#/, '');
-    
+      hex = hex.replace(/^#/, "");
+
       // Parse the hex color into RGB components
       const bigint = parseInt(hex, 16);
       const r = (bigint >> 16) & 255;
       const g = (bigint >> 8) & 255;
       const b = bigint & 255;
-    
+
       // Create and return the RGBA color
       return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
@@ -324,7 +324,6 @@ const Home = () => {
               borderColor: houses[0].color,
               fill: true, // Enable the fill area
               backgroundColor: hexToRgba(houses[1].color, 0.25), // Fill color
-              
             },
           ],
         },
@@ -434,9 +433,24 @@ const Home = () => {
   useEffect(() => {
     if (!loading) {
       setHp(calculateTotalPoints());
-      console.log(calculateTotalPoints())
+      console.log(calculateTotalPoints());
     }
   }, [loading]);
+
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   if (!loading) {
     return (
@@ -506,9 +520,47 @@ const Home = () => {
                               </Td>
                               <Td className="hideOnPhone">{cert?.xp || "0"}</Td>
                               <Td className="hideOnPhone">
-                                {cert?.submissionDate || null}
+                                {months[cert?.submittedMonth]}{" "}
+                                {cert?.submittedYear}
                               </Td>
-                              <Td>{cert?.status}</Td>
+                              <Td>
+                                {cert?.status.slice(0, 1).toUpperCase() +
+                                  cert?.status.slice(1)}
+                              </Td>
+                            </Tr>
+                          ))}
+                      </Tbody>
+                    </Table>
+                  </TabPanel>
+                  <TabPanel>
+                    <Table>
+                      <Thead>
+                        <Tr>
+                          <Th>Certification Details</Th>
+                          <Th>Points</Th>
+                          <Th>Submitted On</Th>
+                          <Th>Status</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {certifications
+                          .slice(0, 3)
+                          .filter((cert) => cert.certificateType === "events")
+                          .map((cert) => (
+                            <Tr key={cert._id}>
+                              <Td>
+                                <Text>{cert?.certificateName}</Text>
+                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
+                              </Td>
+                              <Td>{cert?.points || "0"}</Td>
+                              <Td>
+                                {months[cert?.submittedMonth]}{" "}
+                                {cert?.submittedYear}
+                              </Td>
+                              <Td>
+                                {cert?.status.slice(0, 1).toUpperCase() +
+                                  cert?.status.slice(1)}
+                              </Td>
                             </Tr>
                           ))}
                       </Tbody>
@@ -535,36 +587,14 @@ const Home = () => {
                                 <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
                               <Td>{cert?.points || "0"}</Td>
-                              <Td>{cert?.submissionDate || null}</Td>
-                              <Td>{cert?.status}</Td>
-                            </Tr>
-                          ))}
-                      </Tbody>
-                    </Table>
-                  </TabPanel>
-                  <TabPanel>
-                    <Table>
-                      <Thead>
-                        <Tr>
-                          <Th>Certification Details</Th>
-                          <Th>Points</Th>
-                          <Th>Submitted On</Th>
-                          <Th>Status</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {certifications
-                          .slice(0, 3)
-                          .filter((cert) => cert.certificateType === "event")
-                          .map((cert) => (
-                            <Tr key={cert._id}>
                               <Td>
-                                <Text>{cert?.certificateName}</Text>
-                                <Text fontSize="12px">{cert?.issuingOrg}</Text>
+                                {months[cert?.submittedMonth]}{" "}
+                                {cert?.submittedYear}
                               </Td>
-                              <Td>{cert?.points || "0"}</Td>
-                              <Td>{cert?.submissionDate || null}</Td>
-                              <Td>{cert?.status}</Td>
+                              <Td>
+                                {cert?.status.slice(0, 1).toUpperCase() +
+                                  cert?.status.slice(1)}
+                              </Td>
                             </Tr>
                           ))}
                       </Tbody>
@@ -592,7 +622,7 @@ const Home = () => {
               <Flex align="center" justify="center" height="100%" gap="20px">
                 <canvas id="contribution"></canvas>
                 <Box className="pointAnalysis__stats" marginTop="-20px">
-                 {/*} <Text fontSize="14px">
+                  {/*} <Text fontSize="14px">
                     Internal Certification Points: <b> {hp?.totalInternal}</b>
                   </Text>
                   <Text fontSize="14px">

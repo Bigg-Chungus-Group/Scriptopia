@@ -1,6 +1,6 @@
 0;
 import React, { useEffect } from "react";
-import Navbar from "../../../components/student/Navbar/";
+import Navbar from "../../../components/faculty/Navbar/";
 import {
   Box,
   Table,
@@ -32,20 +32,18 @@ import {
   CheckboxGroup,
 } from "@chakra-ui/react";
 import Breadcrumb from "../../../components/Breadcrumb";
-import "./Certificates.css";
+import "./Certifications.css";
 import Loader from "../../../components/Loader";
 import { Link } from "react-router-dom";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
-  useAuthCheck("S");
+  useAuthCheck("F");
   const [certificates, setCertificates] = React.useState([]);
   const [filteredCertificates, setFilteredCertificates] = React.useState([]); // eslint-disable-line no-unused-vars
   const [loading, setLoading] = React.useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-
-  const [btnLoading, setBtnLoading] = React.useState(false); // eslint-disable-line no-unused-vars
 
   const [certificateName, setCertificateName] = React.useState("");
   const [issuingOrg, setIssuingOrg] = React.useState("");
@@ -61,11 +59,7 @@ const Certificates = () => {
   const [fileName, setFileName] = React.useState("No File Selected");
 
   useEffect(() => {
-    console.log(expiry);
-  }, [expiry]);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certifications`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -76,7 +70,7 @@ const Certificates = () => {
         setLoading(false);
         if (res.status === 200) {
           const data = await res.json();
-          setCertificates(data);
+          setCertificates(data.certificates);
         } else {
           toast({
             title: "Error",
@@ -105,7 +99,6 @@ const Certificates = () => {
   const prevPrevPrevYear = year - 3;
 
   const handleUpload = () => {
-    setBtnLoading(true);
     const uploadedCertificate = document.querySelector("#upload").files[0];
 
     const formData = new FormData();
@@ -120,7 +113,6 @@ const Certificates = () => {
       certificateType === "" ||
       certificateLevel === ""
     ) {
-      setBtnLoading(false);
       toast({
         title: "Error",
         description: "Please fill all the fields",
@@ -150,7 +142,9 @@ const Certificates = () => {
         formData.append("certificate", file);
 
         fetch(
-          `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/upload`,
+          `${
+            import.meta.env.VITE_BACKEND_ADDRESS
+          }/faculty/certifications/upload`,
           {
             method: "POST",
             credentials: "include",
@@ -158,7 +152,6 @@ const Certificates = () => {
           }
         )
           .then(async (res) => {
-            setBtnLoading(false);
             if (res.status === 200) {
               window.location.reload();
               onClose();
@@ -171,6 +164,9 @@ const Certificates = () => {
                 isClosable: true,
               });
             } else {
+              const resp = await res.json();
+              console.log(res.status);
+              console.log(resp);
               toast({
                 title: "Error",
                 description: "Something went wrong",
@@ -274,7 +270,7 @@ const Certificates = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredCertificates.map((certificate, index) => (
+                {filteredCertificates?.map((certificate, index) => (
                   /* ! CHANGE TARGET*/
                   <Tr key={certificate?._id}>
                     <Td>{index + 1}</Td>
@@ -313,8 +309,7 @@ const Certificates = () => {
               <ModalBody>
                 <Box className="upload-main-StudentCertificates">
                   <Alert status="info" marginBottom="20px">
-                    Your Certificate will be verified and approved by the house
-                    coordinator.
+                    Your Certificate will be verified and approved by the Admin
                   </Alert>
 
                   <Box className="flex">
@@ -495,7 +490,7 @@ const Certificates = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="green" onClick={handleUpload} isLoading={btnLoading} >
+                <Button colorScheme="green" onClick={handleUpload}>
                   Submit for Approval
                 </Button>
               </ModalFooter>

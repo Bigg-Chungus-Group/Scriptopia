@@ -299,7 +299,10 @@ const Navbar = () => {
               <MenuItem className="menuitem">Events</MenuItem>
             </RouterLink>
             <RouterLink to="/admin/certificates">
-              <MenuItem className="menuitem">Certificates</MenuItem>
+              <MenuItem className="menuitem">Student Certificates</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/faculty/certificates">
+              <MenuItem className="menuitem">Faculty Certificates</MenuItem>
             </RouterLink>
             <MenuItem onClick={onResetOpen} className="menuitem">
               Reset User Password
@@ -313,9 +316,14 @@ const Navbar = () => {
           <Link onClick={() => navigate("/houses")}>Houses</Link>
           <Link onClick={() => navigate("/events")}>Events</Link>
           <Link onClick={() => navigate("/admin/certificates")}>
-            Certificates
+            Student Certificates
           </Link>
-          <Link onClick={() => navigate("/admin/feedback")}>Platform Feedback</Link>
+          <Link onClick={() => navigate("/admin/faculty/certificates")}>
+            Faculty Certificates
+          </Link>
+          <Link onClick={() => navigate("/admin/feedback")}>
+            Platform Feedback
+          </Link>
           <Link onClick={onResetOpen}>Reset User Password</Link>
         </div>
       </div>

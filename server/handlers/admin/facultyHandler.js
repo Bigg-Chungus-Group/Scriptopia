@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { ObjectId } from "mongodb";
 const router = express.Router();
+import { certificationsDB } from "../../configs/mongo.js";
 
 router.post("/", async (req, res) => {
   try {
@@ -194,6 +195,54 @@ router.post("/update", async (req, res) => {
       mid: req.user.mid,
     });
     return res.status(500).send({ success: false });
+  }
+});
+
+router.post("/certificates", async (req, res) => {
+  try {
+    const apprcerts = await certificationsDB
+      .find({ role: "F", status: "approved" })
+      .toArray();
+    const rejcerts = await certificationsDB
+      .find({ role: "F", status: "rejected" })
+      .toArray();
+    const pendcerts = await certificationsDB
+      .find({ role: "F", status: "pending" })
+      .toArray();
+
+    const certs = [...apprcerts, ...rejcerts];
+
+    res.status(200).json({ certs, pendcerts });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
+  }
+});
+
+router.post("/certificates/update", async (req, res) => {
+  let { id, action, comments } = req.body;
+  try {
+    const cert = await certificationsDB.findOne({ _id: new ObjectId(id) });
+    await certificationsDB.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status: action, comments } }
+    );
+
+    const certType = cert.certificateType;
+
+    await userDB.updateOne(
+      { mid: cert.mid },
+      {
+        $inc: {
+          [`certificates.${certType}`]: 1,
+        },
+      }
+    );
+
+    res.status(200).json({ success: "Certification Updated Successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
   }
 });
 

@@ -38,7 +38,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   return (
     <div className="navAdmin">
       <div className="left-link">
@@ -46,7 +46,7 @@ const Navbar = () => {
           <img
             src={Logo}
             onClick={() => {
-              navigate("/auth")
+              navigate("/auth");
             }}
           />
         </div>
@@ -54,7 +54,14 @@ const Navbar = () => {
         <i className="fa-solid fa-magnifying-glass" id="searchIcon"></i>
       </div>
       <Box className="rightmost">
-        <Button onClick={() => navigate('/auth')}>Sign In</Button>
+        <Button
+          onClick={() => {
+            navigate("/feedback");
+          }}
+        >
+          Feedback
+        </Button>
+        <Button onClick={() => navigate("/auth")}>Sign In</Button>
       </Box>
     </div>
   );

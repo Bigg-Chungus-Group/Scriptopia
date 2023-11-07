@@ -4,6 +4,7 @@
   padding: 20px 70px;
   gap: 30px;
   justify-content: center;
+  align-items: center;
 }
 
 .StudentCertificate .track-wrapper {

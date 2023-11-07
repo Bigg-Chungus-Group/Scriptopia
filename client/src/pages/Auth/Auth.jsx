@@ -50,7 +50,7 @@ const Auth = () => {
       setErr("Too Many Attempts");
       setDisabled(true);
       const now = new Date();
-      const expirationTime = new Date(now.getTime() + 5000); // 2 minutes in milliseconds2 * 60 *
+      const expirationTime = new Date(now.getTime() + 1000 * 60 * 2); // 2 minutes in milliseconds2 * 60 *
       document.cookie =
         "blocked=true; expires=" + expirationTime.toUTCString() + "; path=/";
 

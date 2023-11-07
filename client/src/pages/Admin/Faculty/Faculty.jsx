@@ -41,12 +41,14 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const Faculty = () => {
   useAuthCheck("A");
   const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [faculty, setFaculty] = useState([]);
+  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredFaculty, seFilteredFaculty] = useState([]);
@@ -312,7 +314,16 @@ const Faculty = () => {
               <Tbody>
                 {filteredFaculty.map((faculty) => (
                   <Tr key={faculty.mid}>
-                    <Td>{faculty.mid}</Td>
+                    <Td
+                      onClick={() =>
+                        navigate(`/profile/faculty/${faculty.mid}`)
+                      }
+
+                      textDecor="underline"
+                      cursor="pointer"
+                    >
+                      {faculty.mid}
+                    </Td>
                     <Td>
                       {faculty.fname} {faculty.lname}
                     </Td>
@@ -349,7 +360,6 @@ const Faculty = () => {
             <ModalCloseButton />
             <ModalBody>
               <Box className="form">
-
                 <Flex gap="20px" mt="10px">
                   <Box className="ipgroup">
                     <FormLabel>First Name</FormLabel>
