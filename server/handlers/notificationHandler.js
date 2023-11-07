@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { notificationDB, userDB } from "../configs/mongo.js";
+import { houseDB, notificationDB, userDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import { io } from "../index.js";
 import logger from "../configs/logger.js";
@@ -11,25 +11,25 @@ router.post("/receive", verifyToken, async (req, res) => {
   const { mid } = req.user;
 
   try {
-    const readNotifications = await userDB.findOne(
-      { mid: mid },
-      { projection: { readNotifications: 1, _id: 0 } }
-    );
+    const readNotifications = [];
 
     const notifications = await notificationDB
-      .find({ expiry: { $gte: dateToday } })
+      .find({ expiry: { $gte: dateToday }, scope: "all" })
       .toArray();
 
-    const unreadNotifications = notifications.filter((notification) => {
-      return !readNotifications.readNotifications.includes(
-        notification._id.toString()
-      );
-    });
+    const user = await userDB.findOne({ mid });
+    const houseNotification = await notificationDB
+      .find({ expiry: { $gte: dateToday }, scope: user.house.id })
+      .toArray();
 
-    res.send({ status: "success", notifications: unreadNotifications });
+    const notificationsArr = [...notifications, ...houseNotification];
+    console.log(notificationsArr);
+
+    res.send({ status: "success", notifications: notificationsArr });
   } catch (err) {
+    console.log(err);
     logger.error({
-      code: "ADM-NTH-100",
+      code: "NOT-NTH-100",
       message: "Failed to receive notifications",
       err: err.message,
       mid: req.user.mid,
@@ -50,7 +50,7 @@ router.post("/clear", verifyToken, async (req, res) => {
     res.send({ status: "success" });
   } catch (err) {
     logger.error({
-      code: "ADM-NTH-101",
+      code: "NOT-NTH-101",
       message: "Failed to clear notifications",
       err: err.message,
       mid: req.user.mid,

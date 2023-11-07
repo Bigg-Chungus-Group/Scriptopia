@@ -1,0 +1,14 @@
+.FacultyCertificates {
+  padding: 30px 70px;
+}
+
+@media screen and (max-width: 1090px) {
+  .FacultyCertificates {
+    padding: 30px 20px;
+    width: 100vw;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 960px) {
+}

@@ -302,23 +302,23 @@ const Profile = () => {
     let myHouseChart;
     let myHouse;
 
-    if (!loading && userHouse) {
+    if (!loading && userHouse && userHouse.points) {
       const jan =
-        (userHouse.points[currentYear?.toString()]?.["january"]?.internal ??
+        (userHouse?.points[currentYear?.toString()]?.["january"]?.internal ??
           0) +
-        (userHouse.points[currentYear?.toString()]?.["january"]?.external ??
+        (userHouse?.points[currentYear?.toString()]?.["january"]?.external ??
           0) +
-        (userHouse.points[currentYear?.toString()]?.["january"]?.events ?? 0);
+        (userHouse?.points[currentYear?.toString()]?.["january"]?.events ?? 0);
       const feb =
-        (userHouse.points[currentYear?.toString()]?.["february"]?.internal ??
+        (userHouse?.points[currentYear?.toString()]?.["february"]?.internal ??
           0) +
-        (userHouse.points[currentYear?.toString()]?.["february"]?.external ??
+        (userHouse?.points[currentYear?.toString()]?.["february"]?.external ??
           0) +
-        (userHouse.points[currentYear?.toString()]?.["february"]?.events ?? 0);
+        (userHouse?.points[currentYear?.toString()]?.["february"]?.events ?? 0);
       const mar =
-        (userHouse.points[currentYear?.toString()]?.["march"]?.internal ?? 0) +
-        (userHouse.points[currentYear?.toString()]?.["march"]?.external ?? 0) +
-        (userHouse.points[currentYear?.toString()]?.["march"]?.events ?? 0);
+        (userHouse?.points[currentYear?.toString()]?.["march"]?.internal ?? 0) +
+        (userHouse?.points[currentYear?.toString()]?.["march"]?.external ?? 0) +
+        (userHouse?.points[currentYear?.toString()]?.["march"]?.events ?? 0);
       const apr =
         (userHouse.points[currentYear?.toString()]?.["april"]?.internal ?? 0) +
         (userHouse.points[currentYear?.toString()]?.["april"]?.external ?? 0) +

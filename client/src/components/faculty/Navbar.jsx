@@ -81,7 +81,7 @@ const Navbar = () => {
 
   useEffect(() => {
     try {
-      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/receive`, {
         method: "GET",
         credentials: "include",
       }).then((res) => {
@@ -116,7 +116,7 @@ const Navbar = () => {
 
   const addNotification = () => {
     onAlertClose();
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/add`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/add`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -280,6 +280,9 @@ const Navbar = () => {
             <MenuButton>Pages</MenuButton>
           </Box>
           <MenuList className="menu">
+            <Link to="/faculty/certifications">
+              <MenuItem className="menuitem">My Certifications</MenuItem>
+            </Link>
             <Link to="/houses">
               <MenuItem className="menuitem">Houses</MenuItem>
             </Link>
@@ -322,6 +325,9 @@ const Navbar = () => {
         </Menu>
 
         <div className="links">
+          <ChakraLink onClick={() => navigate("/faculty/certifications")}>
+            My Certifications
+          </ChakraLink>
           <ChakraLink onClick={() => navigate("/houses")}>Houses</ChakraLink>
           <ChakraLink onClick={() => navigate("/events")}>Events</ChakraLink>
           {decoded.perms.includes("HCO0") ||
@@ -395,7 +401,7 @@ const Navbar = () => {
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert status="info" key={notification._id} marginBottom="5px">
+                <Alert status={notification.scope == "all" ? "info" : "warning"} key={notification._id} marginBottom="5px">
                   <AlertIcon />
 
                   <AlertDialogBody width="100%">
@@ -407,9 +413,17 @@ const Navbar = () => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            {/*}  <Button variant="outline" mr={3} onClick={onClose}>
               Clear All
-            </Button>
+              </Button>{*/}
+            {decoded.perms.includes("HCO0") ||
+            decoded.perms.includes("HCO1") ||
+            decoded.perms.includes("HCO2") ||
+            decoded.perms.includes("HCO3") ? (
+              <Button colorScheme="blue" mr={3} onClick={onAlertOpen}>
+                Add House Wide Notification
+              </Button>
+            ) : null}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -422,7 +436,7 @@ const Navbar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Add Site Wide Notification
+              Add House Wide Notification
             </AlertDialogHeader>
 
             <AlertDialogBody>
@@ -465,7 +479,7 @@ const Navbar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Update Site Wide Notification
+              Update House Wide Notification
             </AlertDialogHeader>
 
             <AlertDialogBody>

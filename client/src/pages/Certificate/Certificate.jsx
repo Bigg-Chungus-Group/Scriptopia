@@ -105,7 +105,7 @@ const Certificate = () => {
       jwt = jwtDecode(token);
       if (jwt?.role) {
         setRole(jwt.role);
-        if (jwt.role === "S") {
+        if (jwt.role === "S" || jwt.role === "F") {
           setMid(jwt.mid);
         }
       } else {
@@ -264,25 +264,33 @@ const Certificate = () => {
 
   const handleUpdate = () => {
     setLoader2(true);
-    fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/update`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          certificateName,
-          issuingOrg,
-          issueMonth,
-          issueYear,
-          certificateType,
-          certificateLevel,
-          id: certificate._id,
-        }),
-      }
-    )
+    let url;
+    if (certificate?.role === "F") {
+      url = `${
+        import.meta.env.VITE_BACKEND_ADDRESS
+      }/faculty/certifications/update`;
+    } else {
+      url = `${
+        import.meta.env.VITE_BACKEND_ADDRESS
+      }/student/certificates/update`;
+    }
+
+    fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        certificateName,
+        issuingOrg,
+        issueMonth,
+        issueYear,
+        certificateType,
+        certificateLevel,
+        id: certificate._id,
+      }),
+    })
       .then((res) => res.json())
       .then((data) => {
         setLoader2(false);
@@ -304,19 +312,27 @@ const Certificate = () => {
 
   const handleDelete = () => {
     setLoader1(true);
-    fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/student/certificates/delete`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: certificate._id,
-        }),
-      }
-    )
+    let url;
+    if (certificate?.role === "F") {
+      url = `${
+        import.meta.env.VITE_BACKEND_ADDRESS
+      }/faculty/certifications/delete`;
+    } else {
+      url = `${
+        import.meta.env.VITE_BACKEND_ADDRESS
+      }/student/certificates/delete`;
+    }
+
+    fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: certificate._id,
+      }),
+    })
       .then((res) => res.json())
       .then(() => {
         setLoader1(false);
@@ -328,7 +344,11 @@ const Certificate = () => {
           isClosable: true,
         });
         onClose();
-        navigate("/certificates");
+        if (certificate.role === "F") {
+          navigate("/faculty/certifications");
+        } else {
+          navigate("/certificates");
+        }
       })
       .catch((err) => {
         setLoader1(false);
@@ -388,378 +408,717 @@ const Certificate = () => {
   };
 
   if (!loading) {
-    return (
-      <>
-        {role === "S" ? (
-          <Navbar />
-        ) : role === "A" ? (
-          <AdminNavbar />
-        ) : role === "F" ? (
-          <FacultyNavbar />
-        ) : (
-          <GuestNavbar />
-        )}
-        <Box className="StudentCertificate">
-          <Box className="info" display="flex" flexDir="column" gap="15px">
-            <Text textAlign="center">
-              {certificate?.certificateType?.charAt(0).toUpperCase() +
-                certificate?.certificateType?.slice(1)}{" "}
-              Certification -{" "}
-              {certificate?.certificateLevel?.charAt(0).toUpperCase() +
-                certificate?.certificateLevel?.slice(1)}{" "}
-              Level
-            </Text>
-            <Text textAlign="center" mt="-17px">
-              Uploaded By {certificate.name}
-            </Text>
-            {certificate?.expires ? (
-              !calculateExpiry() ? (
-                <Text color="red" textAlign="center" mt="-17px">
-                  Certificate Expired On{" "}
-                  {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
-                    certificate?.expiryMonth.slice(1)}{" "}
-                  {certificate?.expiryYear}
-                </Text>
-              ) : (
-                <Text color="green" textAlign="center" mt="-17px">
-                  Certificate Expires On{" "}
-                  {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
-                    certificate?.expiryMonth.slice(1)}{" "}
-                  {certificate?.expiryYear}
-                </Text>
-              )
-            ) : null}
-            <Heading textAlign="center">
-              {certificate?.certificateName?.charAt(0).toUpperCase() +
-                certificate?.certificateName?.slice(1)}{" "}
-            </Heading>
-            <Text textAlign="center">
-              By{" "}
-              {certificate?.issuingOrg?.charAt(0).toUpperCase() +
-                certificate?.issuingOrg?.slice(1)}
-            </Text>
-
-            <Button
-              colorScheme="green"
-              onClick={handleDownload}
-              isLoading={loader3}
-              width="fit-content"
-              alignSelf="center"
+    if (certificate.role === "F") {
+      return (
+        <>
+          {role === "S" ? (
+            <Navbar />
+          ) : role === "A" ? (
+            <AdminNavbar />
+          ) : role === "F" ? (
+            <FacultyNavbar />
+          ) : (
+            <GuestNavbar />
+          )}
+          <Box className="StudentCertificate">
+            <Box
+              className="info"
+              display="flex"
+              flexDir="column"
+              gap="15px"
+              alignItems="center"
+              justifyContent="center"
+              height="50vh"
             >
-              Download / View Certificate
-            </Button>
-            <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
-              Verify Hashes
-            </Link>
+              <Text textAlign="center">
+                {certificate?.certificateType?.charAt(0).toUpperCase() +
+                  certificate?.certificateType?.slice(1)}{" "}
+                Certification -{" "}
+                {certificate?.certificateLevel?.charAt(0).toUpperCase() +
+                  certificate?.certificateLevel?.slice(1)}{" "}
+                Level
+              </Text>
+              <Text textAlign="center" mt="-17px">
+                Uploaded By {certificate.name}
+              </Text>
+              {certificate?.expires === "true" ? (
+                !calculateExpiry() ? (
+                  <Text color="red" textAlign="center" mt="-17px">
+                    Certificate Expired On{" "}
+                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                      certificate?.expiryMonth.slice(1)}{" "}
+                    {certificate?.expiryYear}
+                  </Text>
+                ) : (
+                  <Text color="green" textAlign="center" mt="-17px">
+                    Certificate Expires On{" "}
+                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                      certificate?.expiryMonth.slice(1)}{" "}
+                    {certificate?.expiryYear}
+                  </Text>
+                )
+              ) : null}
+              <Heading textAlign="center">
+                {certificate?.certificateName?.charAt(0).toUpperCase() +
+                  certificate?.certificateName?.slice(1)}{" "}
+              </Heading>
+              <Text textAlign="center">
+                By{" "}
+                {certificate?.issuingOrg?.charAt(0).toUpperCase() +
+                  certificate?.issuingOrg?.slice(1)}
+              </Text>
 
-            <Text textAlign="center">
-              Issued On{" "}
-              {certificate?.issueMonth?.charAt(0).toUpperCase() +
-                certificate?.issueMonth?.slice(1)}{" "}
-              {certificate?.issueYear}
-            </Text>
-          </Box>
-
-          <Box className="track-wrapper">
-            <Flex align="center" justify="center" mt="20px">
-              <Stepper
-                index={activeStep}
-                width="50vw"
+              <Button
+                colorScheme="green"
+                onClick={handleDownload}
+                isLoading={loader3}
+                width="fit-content"
                 alignSelf="center"
-                colorScheme={colorStatus}
-                mb="20px"
               >
-                {steps?.map((step, index) => (
-                  <Step key={index}>
-                    <StepIndicator>
-                      <StepStatus
-                        complete={<StepIcon />}
-                        incomplete={<StepNumber />}
-                        active={<StepNumber />}
+                Download / View Certificate
+              </Button>
+              {certificate.uploadType === "file" ? (
+                <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
+                  Verify Hashes
+                </Link>
+              ) : null}
+              <Text textAlign="center">
+                Issued On{" "}
+                {certificate?.issueMonth?.charAt(0).toUpperCase() +
+                  certificate?.issueMonth?.slice(1)}{" "}
+                {certificate?.issueYear}
+              </Text>
+            </Box>
+
+            <Box className="comments" mb="20px" mt="20px">
+              <Textarea
+                readOnly
+                resize="none"
+                value={
+                  certificate?.comments
+                    ? certificate?.comments
+                    : "No Comments Yet"
+                }
+              />
+            </Box>
+
+            <Box className="buttons">
+              {certificate?.status !== "approved" && editPrivilege ? (
+                <Button colorScheme="blue" onClick={onEditOpen}>
+                  Edit Certificate
+                </Button>
+              ) : editPrivilege ? null : null}{" "}
+              {editPrivilege ? (
+                <Button colorScheme="red" onClick={onOpen}>
+                  Delete Certificate
+                </Button>
+              ) : null}
+            </Box>
+
+            <AlertDialog
+              isOpen={isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                    Delete Certificate?
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    Are you sure? You will lose all the XP associated with this
+                    certificate.
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={handleDelete}
+                      ml={3}
+                      isLoading={loader1}
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
+
+            <Modal isOpen={isEditOpen} onClose={onEditClose} size="3xl">
+              <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+              <ModalContent>
+                <ModalHeader>Edit Certificate</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Box className="upload-main-StudentCertificates">
+                    <Alert status="info" marginBottom="20px">
+                      Your Certificate will be verified and approved by the
+                      house coordinator.
+                    </Alert>
+
+                    <FormControl>
+                      <FormLabel>Certificate Name</FormLabel>
+                      <Input
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setCertificateName(e?.target?.value);
+                        }}
+                        value={certificateName}
                       />
-                    </StepIndicator>
+                    </FormControl>
 
-                    <Box flexShrink="0">
-                      <StepTitle>{step?.title}</StepTitle>
-                      <StepDescription>{step?.description}</StepDescription>
-                    </Box>
+                    <FormControl>
+                      <FormLabel>Issuing Organization</FormLabel>
+                      <Input
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setIssuingOrg(e?.target?.value);
+                        }}
+                        value={issuingOrg}
+                      />
+                    </FormControl>
 
-                    <StepSeparator />
-                  </Step>
-                ))}
-              </Stepper>
-            </Flex>
-          </Box>
+                    <FormControl>
+                      <FormLabel>Certification Date</FormLabel>
+                      <Box className="flex">
+                        <Select
+                          placeholder="Select Month"
+                          onChange={(e) => setIssueMonth(e?.target?.value)}
+                          value={issueMonth}
+                        >
+                          <option value="jan">January</option>
+                          <option value="feb">February</option>
+                          <option value="mar">March</option>
+                          <option value="apr">April</option>
+                          <option value="may">May</option>
+                          <option value="jun">June</option>
+                          <option value="jul">July</option>
+                          <option value="aug">August</option>
+                          <option value="sep">September</option>
+                          <option value="oct">October</option>
+                          <option value="nov">November</option>
+                          <option value="dec">December</option>
+                        </Select>
 
-          <Box className="comments" mb="20px">
-            <Textarea
-              readOnly
-              resize="none"
-              value={
-                certificate?.comments
-                  ? certificate?.comments
-                  : "No Comments Yet"
-              }
-            />
-          </Box>
+                        <Select
+                          placeholder="Select Year"
+                          onChange={(e) => setIssueYear(e?.target?.value)}
+                          value={issueYear}
+                        >
+                          <option value={prevPrevPrevYear}>
+                            {prevPrevPrevYear}
+                          </option>
+                          <option value={prevPrevYear}>{prevPrevYear}</option>
+                          <option value={prevYear}>{prevYear}</option>
+                          <option value={year}>{year}</option>
+                        </Select>
+                      </Box>
+                    </FormControl>
 
-          <Box className="buttons">
-            {certificate?.status !== "approved" && editPrivilege ? (
-              <Button colorScheme="blue" onClick={onEditOpen}>
-                Edit Certificate
-              </Button>
-            ) : editPrivilege ? (
-              <>
-                <Text color="green" fontWeight="500">
-                  Your House Earned{" "}
-                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from this
-                  Certificate
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text color="green" fontWeight="500">
-                  {certificate.name} Earned{" "}
-                  {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from this
-                  Certificate
-                </Text>
-              </>
-            )}{" "}
-            {editPrivilege ? (
-              <Button colorScheme="red" onClick={onOpen}>
-                Delete Certificate
-              </Button>
-            ) : null}
-          </Box>
-
-          <AlertDialog
-            isOpen={isOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete Certificate?
-                </AlertDialogHeader>
-
-                <AlertDialogBody>
-                  Are you sure? You will lose all the XP associated with this
-                  certificate.
-                </AlertDialogBody>
-
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={handleDelete}
-                    ml={3}
-                    isLoading={loader1}
-                  >
-                    Delete
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
-
-          <Modal isOpen={isEditOpen} onClose={onEditClose} size="3xl">
-            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
-            <ModalContent>
-              <ModalHeader>Edit Certificate</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Box className="upload-main-StudentCertificates">
-                  <Alert status="info" marginBottom="20px">
-                    Your Certificate will be verified and approved by the house
-                    coordinator.
-                  </Alert>
-
-                  <FormControl>
-                    <FormLabel>Certificate Name</FormLabel>
-                    <Input
-                      type="text"
-                      placeholder=""
-                      onChange={(e) => {
-                        setCertificateName(e?.target?.value);
-                      }}
-                      value={certificateName}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel>Issuing Organization</FormLabel>
-                    <Input
-                      type="text"
-                      placeholder=""
-                      onChange={(e) => {
-                        setIssuingOrg(e?.target?.value);
-                      }}
-                      value={issuingOrg}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel>Certification Date</FormLabel>
                     <Box className="flex">
                       <Select
-                        placeholder="Select Month"
-                        onChange={(e) => setIssueMonth(e?.target?.value)}
-                        value={issueMonth}
+                        placeholder="Select Type"
+                        onChange={(e) => setCertificateType(e?.target?.value)}
+                        value={certificateType}
                       >
-                        <option value="jan">January</option>
-                        <option value="feb">February</option>
-                        <option value="mar">March</option>
-                        <option value="apr">April</option>
-                        <option value="may">May</option>
-                        <option value="jun">June</option>
-                        <option value="jul">July</option>
-                        <option value="aug">August</option>
-                        <option value="sep">September</option>
-                        <option value="oct">October</option>
-                        <option value="nov">November</option>
-                        <option value="dec">December</option>
+                        <option value="internal">Internal Certification</option>
+                        <option value="external">External Certification</option>
                       </Select>
 
                       <Select
-                        placeholder="Select Year"
-                        onChange={(e) => setIssueYear(e?.target?.value)}
-                        value={issueYear}
+                        placeholder="Select Level"
+                        onChange={(e) => setCertificateLevel(e?.target?.value)}
+                        value={certificateLevel}
                       >
-                        <option value={prevPrevPrevYear}>
-                          {prevPrevPrevYear}
-                        </option>
-                        <option value={prevPrevYear}>{prevPrevYear}</option>
-                        <option value={prevYear}>{prevYear}</option>
-                        <option value={year}>{year}</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
                       </Select>
                     </Box>
-                  </FormControl>
-
-                  <Box className="flex">
-                    <Select
-                      placeholder="Select Type"
-                      onChange={(e) => setCertificateType(e?.target?.value)}
-                      value={certificateType}
-                    >
-                      <option value="internal">Internal Certification</option>
-                      <option value="external">External Certification</option>
-                    </Select>
-
-                    <Select
-                      placeholder="Select Level"
-                      onChange={(e) => setCertificateLevel(e?.target?.value)}
-                      value={certificateLevel}
-                    >
-                      <option value="beginner">Beginner</option>
-                      <option value="intermediate">Intermediate</option>
-                      <option value="advanced">Advanced</option>
-                    </Select>
                   </Box>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+                    Close
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleUpdate}
+                    isLoading={loader2}
+                  >
+                    Submit for Re-Approval
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </Box>
+
+          <Modal isOpen={isHashOpen} onClose={onHashClose} size="2xl">
+            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+            <ModalContent>
+              <ModalHeader>Verify Hashes</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text>SHA256 Hash:</Text>
+                <Code>{certificate?.sha256}</Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() => copyText(certificate?.sha256)}
+                />
+                <Text>MD5 Hash: </Text>
+                <Code>{certificate?.md5}</Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() => copyText(certificate?.md5)}
+                />
+
+                <Text mt="20px">
+                  <b>1.</b> Go to the directory containing the file
+                </Text>
+                <Text>
+                  <b>2.</b> Open a Terminal in that Directory
+                </Text>
+                <Text>
+                  <b>3.</b> Type the following command
+                </Text>
+
+                <Box ml="20px">
+                  {" "}
+                  <Text mt="10px">On Windows</Text>
+                  <Code>
+                    certUtil -hashfile '
+                    {certificate?.certificateName +
+                      "." +
+                      certificate?.ext +
+                      "' MD5"}
+                  </Code>
+                  <CopyIcon
+                    ml="10px"
+                    cursor="pointer"
+                    onClick={() =>
+                      copyText(
+                        `certUtil -hashfile '${
+                          certificate?.certificateName +
+                          "." +
+                          certificate?.ext +
+                          "' MD5"
+                        }`
+                      )
+                    }
+                  />
+                  <Text mt="10px">On Linux</Text>
+                  <Code>
+                    sha256sum '
+                    {certificate?.certificateName + "." + certificate?.ext}'
+                  </Code>
+                  <CopyIcon
+                    ml="10px"
+                    cursor="pointer"
+                    onClick={() =>
+                      copyText(
+                        `sha256sum '${
+                          certificate?.certificateName + "." + certificate?.ext
+                        }'`
+                      )
+                    }
+                  />
                 </Box>
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+                <Button colorScheme="blue" mr={3} onClick={onHashClose}>
                   Close
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleUpdate}
-                  isLoading={loader2}
-                >
-                  Submit for Re-Approval
                 </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
-        </Box>
-
-        <Modal isOpen={isHashOpen} onClose={onHashClose} size="2xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
-          <ModalContent>
-            <ModalHeader>Verify Hashes</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Text>SHA256 Hash:</Text>
-              <Code>{certificate?.sha256}</Code>
-              <CopyIcon
-                ml="10px"
-                cursor="pointer"
-                onClick={() => copyText(certificate?.sha256)}
-              />
-              <Text>MD5 Hash: </Text>
-              <Code>{certificate?.md5}</Code>
-              <CopyIcon
-                ml="10px"
-                cursor="pointer"
-                onClick={() => copyText(certificate?.md5)}
-              />
-
-              <Text mt="20px">
-                <b>1.</b> Go to the directory containing the file
+        </>
+      );
+    } else {
+      return (
+        <>
+          {role === "S" ? (
+            <Navbar />
+          ) : role === "A" ? (
+            <AdminNavbar />
+          ) : role === "F" ? (
+            <FacultyNavbar />
+          ) : (
+            <GuestNavbar />
+          )}
+          <Box className="StudentCertificate">
+            <Box className="info" display="flex" flexDir="column" gap="15px">
+              <Text textAlign="center">
+                {certificate?.certificateType?.charAt(0).toUpperCase() +
+                  certificate?.certificateType?.slice(1)}{" "}
+                Certification -{" "}
+                {certificate?.certificateLevel?.charAt(0).toUpperCase() +
+                  certificate?.certificateLevel?.slice(1)}{" "}
+                Level
               </Text>
-              <Text>
-                <b>2.</b> Open a Terminal in that Directory
+              <Text textAlign="center" mt="-17px">
+                Uploaded By {certificate.name}
               </Text>
-              <Text>
-                <b>3.</b> Type the following command
+              {certificate?.expires === "true" ? (
+                !calculateExpiry() ? (
+                  <Text color="red" textAlign="center" mt="-17px">
+                    Certificate Expired On{" "}
+                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                      certificate?.expiryMonth.slice(1)}{" "}
+                    {certificate?.expiryYear}
+                  </Text>
+                ) : (
+                  <Text color="green" textAlign="center" mt="-17px">
+                    Certificate Expires On{" "}
+                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                      certificate?.expiryMonth.slice(1)}{" "}
+                    {certificate?.expiryYear}
+                  </Text>
+                )
+              ) : null}
+              <Heading textAlign="center">
+                {certificate?.certificateName?.charAt(0).toUpperCase() +
+                  certificate?.certificateName?.slice(1)}{" "}
+              </Heading>
+              <Text textAlign="center">
+                By{" "}
+                {certificate?.issuingOrg?.charAt(0).toUpperCase() +
+                  certificate?.issuingOrg?.slice(1)}
               </Text>
 
-              <Box ml="20px">
-                {" "}
-                <Text mt="10px">On Windows</Text>
-                <Code>
-                  certUtil -hashfile '
-                  {certificate?.certificateName +
-                    "." +
-                    certificate?.ext +
-                    "' MD5"}
-                </Code>
-                <CopyIcon
-                  ml="10px"
-                  cursor="pointer"
-                  onClick={() =>
-                    copyText(
-                      `certUtil -hashfile '${
-                        certificate?.certificateName +
-                        "." +
-                        certificate?.ext +
-                        "' MD5"
-                      }`
-                    )
-                  }
-                />
-                <Text mt="10px">On Linux</Text>
-                <Code>
-                  sha256sum '
-                  {certificate?.certificateName + "." + certificate?.ext}'
-                </Code>
-                <CopyIcon
-                  ml="10px"
-                  cursor="pointer"
-                  onClick={() =>
-                    copyText(
-                      `sha256sum '${
-                        certificate?.certificateName + "." + certificate?.ext
-                      }'`
-                    )
-                  }
-                />
-              </Box>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onHashClose}>
-                Close
+              <Button
+                colorScheme="green"
+                onClick={handleDownload}
+                isLoading={loader3}
+                width="fit-content"
+                alignSelf="center"
+              >
+                Download / View Certificate
               </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>
-    );
+              {certificate.uploadType === "file" ? (
+                <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
+                  Verify Hashes
+                </Link>
+              ) : null}
+
+              <Text textAlign="center">
+                Issued On{" "}
+                {certificate?.issueMonth?.charAt(0).toUpperCase() +
+                  certificate?.issueMonth?.slice(1)}{" "}
+                {certificate?.issueYear}
+              </Text>
+            </Box>
+
+            <Box className="track-wrapper">
+              <Flex align="center" justify="center" mt="20px">
+                <Stepper
+                  index={activeStep}
+                  width="50vw"
+                  alignSelf="center"
+                  colorScheme={colorStatus}
+                  mb="20px"
+                >
+                  {steps?.map((step, index) => (
+                    <Step key={index}>
+                      <StepIndicator>
+                        <StepStatus
+                          complete={<StepIcon />}
+                          incomplete={<StepNumber />}
+                          active={<StepNumber />}
+                        />
+                      </StepIndicator>
+
+                      <Box flexShrink="0">
+                        <StepTitle>{step?.title}</StepTitle>
+                        <StepDescription>{step?.description}</StepDescription>
+                      </Box>
+
+                      <StepSeparator />
+                    </Step>
+                  ))}
+                </Stepper>
+              </Flex>
+            </Box>
+
+            <Box className="comments" mb="20px">
+              <Textarea
+                readOnly
+                resize="none"
+                value={
+                  certificate?.comments
+                    ? certificate?.comments
+                    : "No Comments Yet"
+                }
+              />
+            </Box>
+
+            <Box className="buttons">
+              {certificate?.status !== "approved" && editPrivilege ? (
+                <Button colorScheme="blue" onClick={onEditOpen}>
+                  Edit Certificate
+                </Button>
+              ) : editPrivilege ? (
+                <>
+                  <Text color="green" fontWeight="500">
+                    Your House Earned{" "}
+                    {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
+                    this Certificate
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text color="green" fontWeight="500">
+                    {certificate.name} Earned{" "}
+                    {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
+                    this Certificate
+                  </Text>
+                </>
+              )}{" "}
+              {editPrivilege ? (
+                <Button colorScheme="red" onClick={onOpen}>
+                  Delete Certificate
+                </Button>
+              ) : null}
+            </Box>
+
+            <AlertDialog
+              isOpen={isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                    Delete Certificate?
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    Are you sure? You will lose all the XP associated with this
+                    certificate.
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={handleDelete}
+                      ml={3}
+                      isLoading={loader1}
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
+
+            <Modal isOpen={isEditOpen} onClose={onEditClose} size="3xl">
+              <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+              <ModalContent>
+                <ModalHeader>Edit Certificate</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Box className="upload-main-StudentCertificates">
+                    <Alert status="info" marginBottom="20px">
+                      Your Certificate will be verified and approved by the
+                      house coordinator.
+                    </Alert>
+
+                    <FormControl>
+                      <FormLabel>Certificate Name</FormLabel>
+                      <Input
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setCertificateName(e?.target?.value);
+                        }}
+                        value={certificateName}
+                      />
+                    </FormControl>
+
+                    <FormControl>
+                      <FormLabel>Issuing Organization</FormLabel>
+                      <Input
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setIssuingOrg(e?.target?.value);
+                        }}
+                        value={issuingOrg}
+                      />
+                    </FormControl>
+
+                    <FormControl>
+                      <FormLabel>Certification Date</FormLabel>
+                      <Box className="flex">
+                        <Select
+                          placeholder="Select Month"
+                          onChange={(e) => setIssueMonth(e?.target?.value)}
+                          value={issueMonth}
+                        >
+                          <option value="jan">January</option>
+                          <option value="feb">February</option>
+                          <option value="mar">March</option>
+                          <option value="apr">April</option>
+                          <option value="may">May</option>
+                          <option value="jun">June</option>
+                          <option value="jul">July</option>
+                          <option value="aug">August</option>
+                          <option value="sep">September</option>
+                          <option value="oct">October</option>
+                          <option value="nov">November</option>
+                          <option value="dec">December</option>
+                        </Select>
+
+                        <Select
+                          placeholder="Select Year"
+                          onChange={(e) => setIssueYear(e?.target?.value)}
+                          value={issueYear}
+                        >
+                          <option value={prevPrevPrevYear}>
+                            {prevPrevPrevYear}
+                          </option>
+                          <option value={prevPrevYear}>{prevPrevYear}</option>
+                          <option value={prevYear}>{prevYear}</option>
+                          <option value={year}>{year}</option>
+                        </Select>
+                      </Box>
+                    </FormControl>
+
+                    <Box className="flex">
+                      <Select
+                        placeholder="Select Type"
+                        onChange={(e) => setCertificateType(e?.target?.value)}
+                        value={certificateType}
+                      >
+                        <option value="internal">Internal Certification</option>
+                        <option value="external">External Certification</option>
+                      </Select>
+
+                      <Select
+                        placeholder="Select Level"
+                        onChange={(e) => setCertificateLevel(e?.target?.value)}
+                        value={certificateLevel}
+                      >
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                      </Select>
+                    </Box>
+                  </Box>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+                    Close
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleUpdate}
+                    isLoading={loader2}
+                  >
+                    Submit for Re-Approval
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </Box>
+
+          <Modal isOpen={isHashOpen} onClose={onHashClose} size="2xl">
+            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+            <ModalContent>
+              <ModalHeader>Verify Hashes</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text>SHA256 Hash:</Text>
+                <Code>{certificate?.sha256}</Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() => copyText(certificate?.sha256)}
+                />
+                <Text>MD5 Hash: </Text>
+                <Code>{certificate?.md5}</Code>
+                <CopyIcon
+                  ml="10px"
+                  cursor="pointer"
+                  onClick={() => copyText(certificate?.md5)}
+                />
+
+                <Text mt="20px">
+                  <b>1.</b> Go to the directory containing the file
+                </Text>
+                <Text>
+                  <b>2.</b> Open a Terminal in that Directory
+                </Text>
+                <Text>
+                  <b>3.</b> Type the following command
+                </Text>
+
+                <Box ml="20px">
+                  {" "}
+                  <Text mt="10px">On Windows</Text>
+                  <Code>
+                    certUtil -hashfile '
+                    {certificate?.certificateName +
+                      "." +
+                      certificate?.ext +
+                      "' MD5"}
+                  </Code>
+                  <CopyIcon
+                    ml="10px"
+                    cursor="pointer"
+                    onClick={() =>
+                      copyText(
+                        `certUtil -hashfile '${
+                          certificate?.certificateName +
+                          "." +
+                          certificate?.ext +
+                          "' MD5"
+                        }`
+                      )
+                    }
+                  />
+                  <Text mt="10px">On Linux</Text>
+                  <Code>
+                    sha256sum '
+                    {certificate?.certificateName + "." + certificate?.ext}'
+                  </Code>
+                  <CopyIcon
+                    ml="10px"
+                    cursor="pointer"
+                    onClick={() =>
+                      copyText(
+                        `sha256sum '${
+                          certificate?.certificateName + "." + certificate?.ext
+                        }'`
+                      )
+                    }
+                  />
+                </Box>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={onHashClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
+      );
+    }
   } else {
     return <Loader />;
   }

@@ -99,15 +99,15 @@ const Profile = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setUser(data.user);
-        setHouses(data.allHouses);
-        setUserHouse(data.userHouse);
-        setCertifications(data.certifications);
+        setUser(data?.user);
+        setHouses(data?.allHouses);
+        setUserHouse(data?.userHouse);
+        setCertifications(data?.certifications);
         setLoading(false);
-        setEmail(data.user.email);
-        setLinkedin(data.user.linkedin);
-        setGithub(data.user.github);
-        setEvents(data.events);
+        setEmail(data?.user?.email);
+        setLinkedin(data?.user?.linkedin);
+        setGithub(data?.user?.github);
+        setEvents(data?.events);
       })
       .catch((err) => {
         console.error(err);
@@ -196,31 +196,31 @@ const Profile = () => {
           <Heading fontSize="25px">Scriptopia Student Report</Heading>
           <Flex alignSelf="flex-start" pl="20px" gap="20px">
             <Flex>
-              <Avatar size="2xl" name={user.name} src={user.profilePicture} />
+              <Avatar size="2xl" name={user?.name} src={user?.profilePicture} />
               <Avatar
                 size="md"
                 ml="-40px"
                 alignSelf="flex-end"
                 mb="-10px"
-                name={userHouse.name}
-                src={userHouse.logo}
+                name={userHouse?.name}
+                src={userHouse?.logo}
               />
             </Flex>
             <Flex direction="column" gap="1px">
               <Text fontSize="20px" fontWeight="bold">
-                {user.fname} {user.lname}
+                {user?.fname} {user?.lname}
               </Text>
               <Text fontSize="15px">
-                {user.mid} - {user.dse ? "DSE" : null}
+                {user?.mid} - {user?.dse ? "DSE" : null}
               </Text>
               <Text fontSize="15px">
-                {user.gender.slice(0, 1).toUpperCase() + user.gender.slice(1)}
+                {user?.gender ? user?.gender.slice(0, 1).toUpperCase() + user?.gender.slice(1) : null}
               </Text>
-              <Text>Member of {userHouse.name} House</Text>
+              <Text>{userHouse ? (`Member of ${userHouse?.name} House`) : null}</Text>
 
               <Flex direction="row" align="center" gap="10px">
                 <Text fontSize="15px" fontWeight="bold">
-                  {userHouse.houseName}
+                  {userHouse?.houseName}
                 </Text>
               </Flex>
             </Flex>
@@ -236,15 +236,15 @@ const Profile = () => {
               <Tbody>
                 <Tr>
                   <Td>Internal Certifications</Td>
-                  <Td isNumeric>{user.certificates?.internal}</Td>
+                  <Td isNumeric>{user?.certificates?.internal}</Td>
                 </Tr>
                 <Tr>
                   <Td>External Certifications</Td>
-                  <Td isNumeric>{user.certificates?.external}</Td>
+                  <Td isNumeric>{user?.certificates?.external}</Td>
                 </Tr>
                 <Tr>
                   <Td>Events</Td>
-                  <Td isNumeric>{user.certificates?.event}</Td>
+                  <Td isNumeric>{user?.certificates?.event}</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -280,35 +280,35 @@ const Profile = () => {
 
           <Text className="headings">Scriptopia Events Participated In</Text>
           <Box className="events">
-            {events.map((event) => (
-              <Box className="event" key={event._id}>
-                <Text fontWeight="500">{event.name}</Text>
-                <Text mb="15px">ID: {event._id}</Text>
-                <Text className="stopOverflow">{event.desc}</Text>
+            {events?.map((event) => (
+              <Box className="event" key={event?._id}>
+                <Text fontWeight="500">{event?.name}</Text>
+                <Text mb="15px">ID: {event?._id}</Text>
+                <Text className="stopOverflow">{event?.desc}</Text>
               </Box>
             ))}
           </Box>
 
           <Text className="headings">Certificates</Text>
           <Box className="events">
-            {certifications.map((certificate) => (
-              <Box className="event" key={certificate._id}>
-                <Text fontWeight="500">{certificate.certificateName}</Text>
+            {certifications?.map((certificate) => (
+              <Box className="event" key={certificate?._id}>
+                <Text fontWeight="500">{certificate?.certificateName}</Text>
                 <Text fontSize="13px">
                   Status:{" "}
-                  {certificate.status.slice(0, 1).toUpperCase() +
-                    certificate.status.slice(1)}
+                  {certificate?.status.slice(0, 1).toUpperCase() +
+                    certificate?.status.slice(1)}
                 </Text>
                 <Text mb="15px" fontSize="13px">
-                  ID: {certificate._id}
+                  ID: {certificate?._id}
                 </Text>
 
-                <Text fontSize="14px">Issued By {certificate.issuingOrg}</Text>
+                <Text fontSize="14px">Issued By {certificate?.issuingOrg}</Text>
                 <Text fontSize="14px">
                   Issued On{" "}
-                  {certificate.issueMonth.slice(0, 1).toUpperCase() +
-                    certificate.issueMonth.slice(1)}{" "}
-                  {certificate.issueYear}
+                  {certificate?.issueMonth.slice(0, 1).toUpperCase() +
+                    certificate?.issueMonth.slice(1)}{" "}
+                  {certificate?.issueYear}
                 </Text>
               </Box>
             ))}
