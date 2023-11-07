@@ -378,6 +378,9 @@ const Navbar = () => {
           <ChakraLink onClick={() => navigate("/faculty/settings")}>
             <MenuItem>Settings</MenuItem>
           </ChakraLink>
+          <ChakraLink onClick={() => navigate("/feedback")}>
+            <MenuItem>Feedback</MenuItem>
+          </ChakraLink>
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>

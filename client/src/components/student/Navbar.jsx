@@ -227,6 +227,9 @@ const Navbar = () => {
           <Link to="/profile">
             <MenuItem className="menuitem">Profile</MenuItem>
           </Link>
+          <Link to="/feedback">
+            <MenuItem className="menuitem">Feedback</MenuItem>
+          </Link>
           <MenuDivider />
           <MenuItem className="menuitem" onClick={logout}>
             Logout
@@ -253,7 +256,11 @@ const Navbar = () => {
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert status={notification.scope == "all" ? "info" : "warning"}  key={notification._id} marginBottom="5px">
+                <Alert
+                  status={notification.scope == "all" ? "info" : "warning"}
+                  key={notification._id}
+                  marginBottom="5px"
+                >
                   <AlertIcon />
 
                   <AlertDialogBody width="100%">

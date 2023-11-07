@@ -45,6 +45,8 @@ const Certificates = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
+  const [btnLoading, setBtnLoading] = React.useState(false); // eslint-disable-line no-unused-vars
+
   const [certificateName, setCertificateName] = React.useState("");
   const [issuingOrg, setIssuingOrg] = React.useState("");
   const [issueMonth, setIssueMonth] = React.useState("null");
@@ -103,6 +105,7 @@ const Certificates = () => {
   const prevPrevPrevYear = year - 3;
 
   const handleUpload = () => {
+    setBtnLoading(true);
     const uploadedCertificate = document.querySelector("#upload").files[0];
 
     const formData = new FormData();
@@ -117,6 +120,7 @@ const Certificates = () => {
       certificateType === "" ||
       certificateLevel === ""
     ) {
+      setBtnLoading(false);
       toast({
         title: "Error",
         description: "Please fill all the fields",
@@ -154,6 +158,7 @@ const Certificates = () => {
           }
         )
           .then(async (res) => {
+            setBtnLoading(false);
             if (res.status === 200) {
               window.location.reload();
               onClose();
@@ -490,7 +495,7 @@ const Certificates = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="green" onClick={handleUpload}>
+                <Button colorScheme="green" onClick={handleUpload} isLoading={btnLoading} >
                   Submit for Approval
                 </Button>
               </ModalFooter>
