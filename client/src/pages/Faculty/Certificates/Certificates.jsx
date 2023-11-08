@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/faculty/Navbar";
-import { useToast } from "@chakra-ui/react"
+import { useToast } from "@chakra-ui/react";
 import "./Certificates.css";
 import {
   Box,
@@ -44,7 +44,7 @@ const Certificates = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates`, {
@@ -81,6 +81,19 @@ const Certificates = () => {
   };
 
   const updateCert = () => {
+    if (action == "") {
+      console.log(action)
+      toast({
+        title: "Error",
+        description: "Please select a valid action",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      return
+    }
+
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates/update`,
       {

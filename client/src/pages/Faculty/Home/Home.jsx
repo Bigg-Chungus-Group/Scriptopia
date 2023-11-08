@@ -53,9 +53,23 @@ const Home = () => {
           const { internal, external, events } = monthlyPoints[month];
 
           // Add them to their respective totals
-          totalInternalPoints += internal;
-          totalExternalPoints += external;
-          totalEventsPoints += events;
+          if (internal) {
+            totalInternalPoints += internal;
+          } else {
+            totalInternalPoints += 0;
+          }
+
+          if (external) {
+            totalExternalPoints += external;
+          } else {
+            totalExternalPoints += 0;
+          }
+
+          if (events) {
+            totalEventsPoints += events;
+          } else {
+            totalEventsPoints += 0;
+          }
         }
       }
     }
@@ -127,15 +141,31 @@ const Home = () => {
         let currentYear = currentDate?.getFullYear();
         currentYear = currentYear?.toString();
 
-        house1 = houses[0]?.points[2023][selectedMonth];
-        house2 = houses[1]?.points[2023][selectedMonth];
-        house3 = houses[2]?.points[2023][selectedMonth];
-        house4 = houses[3]?.points[2023][selectedMonth];
+        house1 = houses[0]?.points[2023]
+          ? houses[0]?.points[2023][selectedMonth]
+          : 0;
+        house2 = houses[1]?.points[2023]
+          ? houses[1]?.points[2023][selectedMonth]
+          : 0;
+        house3 = houses[2]?.points[2023]
+          ? houses[2]?.points[2023][selectedMonth]
+          : 0;
+        house4 = houses[3]?.points[2023]
+          ? houses[3]?.points[2023][selectedMonth]
+          : 0;
 
-        house1 = house1?.internal + house1?.external + house1?.events;
-        house2 = house2?.internal + house2?.external + house2?.events;
-        house3 = house3?.internal + house3?.external + house3?.events;
-        house4 = house4?.internal + house4?.external + house4?.events;
+        console.log(house1, house2, house3, house4);
+
+        house1 =
+          house1?.internal ?? 0 + house1?.external ?? 0 + house1?.events ?? 0;
+        house2 =
+          house2?.internal ?? 0 + house2?.external ?? 0 + house2?.events ?? 0;
+        house3 =
+          house3?.internal ?? 0 + house3?.external ?? 0 + house3?.events ?? 0;
+        house4 =
+          house4?.internal ?? 0 + house4?.external ?? 0 + house4?.events ?? 0;
+
+        console.log(house1, house2, house3, house4);
       }
 
       const houseLeaderboard = document?.getElementById("houseLeaderboard");
@@ -475,7 +505,9 @@ const Home = () => {
                       <Tbody>
                         {certifications
                           ?.slice(0, 3)
-                          ?.filter((cert) => cert?.certificateType === "internal")
+                          ?.filter(
+                            (cert) => cert?.certificateType === "internal"
+                          )
                           ?.map((cert) => (
                             <Tr key={cert?._id}>
                               <Td>
@@ -505,7 +537,9 @@ const Home = () => {
                       <Tbody>
                         {certifications
                           ?.slice(0, 3)
-                          ?.filter((cert) => cert?.certificateType === "external")
+                          ?.filter(
+                            (cert) => cert?.certificateType === "events"
+                          )
                           ?.map((cert) => (
                             <Tr key={cert?._id}>
                               <Td>
@@ -533,7 +567,7 @@ const Home = () => {
                       <Tbody>
                         {certifications
                           ?.slice(0, 3)
-                          ?.filter((cert) => cert?.certificateType === "event")
+                          ?.filter((cert) => cert?.certificateType === "external")
                           ?.map((cert) => (
                             <Tr key={cert?._id}>
                               <Td>

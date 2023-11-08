@@ -128,6 +128,7 @@ const Events = () => {
     hour12: true,
   };
 
+  const [createLoading, setCreateLoading] = useState(false);
   const createEvent = () => {
     if (eventStarts > eventEnds) {
       toast({
@@ -194,6 +195,7 @@ const Events = () => {
       return;
     }
 */
+    setCreateLoading(true);
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/events/create`, {
       method: "POST",
       credentials: "include",
@@ -255,7 +257,7 @@ const Events = () => {
           duration: 5000,
           isClosable: true,
         });
-      });
+      }).finally(() => setCreateLoading(false));
   };
 
   useEffect(() => {
@@ -702,7 +704,11 @@ const Events = () => {
               <Button colorScheme="blue" mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button variant="ghost" onClick={createEvent}>
+              <Button
+                variant="ghost"
+                onClick={createEvent}
+                loading={createLoading}
+              >
                 Create
               </Button>
             </ModalFooter>

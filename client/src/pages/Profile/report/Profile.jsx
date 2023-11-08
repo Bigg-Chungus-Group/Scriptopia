@@ -40,6 +40,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Portal,
+  useColorMode,
 } from "@chakra-ui/react";
 
 import Chart from "chart.js/auto";
@@ -60,6 +61,7 @@ const Profile = () => {
   const [events, setEvents] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
   const [pointsObj, setPointsObj] = useState({});
+  const { toggleColorMode } = useColorMode();
   const toast = useToast();
 
   useEffect(() => {
@@ -168,7 +170,7 @@ const Profile = () => {
       setTimeout(() => {
         window.print();
         const originalProfile = window.location.href.split("/").slice(0, 5);
-        window.location.href = originalProfile.join("/")
+        window.location.href = originalProfile.join("/");
       }, 1000);
     }
   }, [loading]);
@@ -214,9 +216,14 @@ const Profile = () => {
                 {user?.mid} - {user?.dse ? "DSE" : null}
               </Text>
               <Text fontSize="15px">
-                {user?.gender ? user?.gender.slice(0, 1).toUpperCase() + user?.gender.slice(1) : null}
+                {user?.gender
+                  ? user?.gender.slice(0, 1).toUpperCase() +
+                    user?.gender.slice(1)
+                  : null}
               </Text>
-              <Text>{userHouse ? (`Member of ${userHouse?.name} House`) : null}</Text>
+              <Text>
+                {userHouse ? `Member of ${userHouse?.name} House` : null}
+              </Text>
 
               <Flex direction="row" align="center" gap="10px">
                 <Text fontSize="15px" fontWeight="bold">

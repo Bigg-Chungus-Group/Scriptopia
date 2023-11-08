@@ -186,9 +186,11 @@ const House = () => {
 
       for (const month in houses.points[currentYear]) {
         const points =
-          houses.points[currentYear][month].internal ?? 0 +
-          houses.points[currentYear][month].external ?? 0 +
-          houses.points[currentYear][month].events ?? 0;
+          (houses.points[currentYear][month].internal ?? 0) +
+          (houses.points[currentYear][month].external ?? 0) +
+          (houses.points[currentYear][month].events ?? 0);
+
+        console.log(points);
         setTotalPoints((prev) => prev + points);
         setInternalPoints(
           (prev) => prev + houses.points[currentYear][month].internal

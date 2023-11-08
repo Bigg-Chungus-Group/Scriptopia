@@ -505,8 +505,8 @@ const Houses = () => {
                 <Text
                   fontSize="25px"
                   mb="50px"
-                  alignSelf="flex-end"
-                  textAlign="end"
+                  alignSelf="flex-start"
+                  textAlign="start"
                   width="100%"
                 >
                   Leaderboard - Yearly
