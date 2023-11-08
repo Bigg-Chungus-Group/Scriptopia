@@ -148,9 +148,27 @@
   .Auth .right {
     width: 100%;
     gap: 20px;
+    padding: 0 50px;
   }
 
   .Auth .left {
+    display: none;
+  }
+
+  .Auth .right input,
+  .Auth .right .btn,
+  .Auth .right p,
+  .Auth .right .title,
+  .Auth .right .logos  {
+    width: 80vw;
+  }
+
+  .Auth .right .logos .img:first-child {
+    justify-self: flex-start;
+    margin-left: 0px;
+  }
+
+  .Auth .right .logos .img:nth-child(2) {
     display: none;
   }
 }

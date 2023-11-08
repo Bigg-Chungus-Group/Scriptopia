@@ -1,4 +1,4 @@
-.navAdmin {
+.navFaculty {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -8,23 +8,37 @@
   color: #59616f;
 }
 
-.navAdmin .image {
+.navFaculty .image {
   width: 30px;
   cursor: pointer;
 }
 
-.navAdmin i {
+.navFaculty .darker {
+  background-color: var(--name-bg);
+  color: var(--text);
+  margin-right: -20px;
+  padding-right: 35px;
+  padding-left: 15px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+
+.navFaculty i {
   font-size: 1.5rem;
   cursor: pointer;
   margin-right: 20px;
   color: var(--accent-color);
 }
 
-.navAdmin .links a {
+.navFaculty .links a {
   transition: 0.2s;
 }
 
-.navAdmin .links a:hover {
+.navFaculty .links a:hover {
   color: var(--accent-color);
 }
 
@@ -40,7 +54,7 @@
   margin-right: 20px;
 }
 
-.navAdmin input {
+.navFaculty input {
   background-color: #e8e8e8;
   border: none;
   outline: none;
@@ -52,7 +66,7 @@
   transition: 0.2s;
 }
 
-.navAdmin .profile {
+.navFaculty .profile {
   background-size: cover;
   background-position: center;
   width: 40px;
@@ -62,49 +76,43 @@
   margin-right: 20px;
 }
 
-.navAdmin .rightmost {
+.navFaculty .rightmost {
   display: flex;
   align-items: center;
 }
 
-.navAdmin .rightmost i {
+.navFaculty .rightmost i {
   font-size: 20px;
   margin-right: 30px;
   cursor: pointer;
 }
 
-.navAdmin #searchIcon {
+.navFaculty .hidden {
+  display: none;
+}
+
+.navFaculty #searchIcon {
   display: none;
   font-size: 1rem;
 }
 
-.alert-navAdmin-notification {
+.alert-navFaculty-notification {
   display: flex;
   gap: 20px;
   flex-direction: column;
 }
 
-.navAdmin .notificationBody {
+.navFaculty .notificationBody {
   display: flex;
   justify-content: space-between;
 }
 
-@media (max-width: 960px) {
-  .navAdmin input {
-    width: 300px;
-  }
-}
-
 @media (max-width: 768px) {
-  .navAdmin {
-    padding: 10px 20px;
-  }
-
-  .navAdmin input {
+  .navFaculty .links {
     display: none;
   }
 
-  .navAdmin #searchIcon {
+  .navFaculty .hidden {
     display: block;
   }
 }

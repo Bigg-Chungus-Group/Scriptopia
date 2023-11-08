@@ -40,13 +40,15 @@ import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const Faculty = () => {
   useAuthCheck("A");
   const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [faculty, setFaculty] = useState([]);
+  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredFaculty, seFilteredFaculty] = useState([]);
@@ -61,6 +63,12 @@ const Faculty = () => {
     onClose: onPermsClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isAlertDeleteOpen,
+    onOpen: onAlertDeleteOpen,
+    onClose: onAlertDeleteClose,
+  } = useDisclosure();
+
   const [delItem, setDelItem] = useState({});
   const [mid, setMid] = useState("");
   const [fname, setFname] = useState("");
@@ -69,7 +77,7 @@ const Faculty = () => {
   const [gender, setGender] = useState("");
   const [facOID, setFacOID] = useState("");
 
-  const [perms, setPerms] = React.useState([]);
+  const [perms, setPerms] = React.useState(["UFC"]);
 
   const {
     isOpen: isDeleteOpen,
@@ -97,7 +105,7 @@ const Faculty = () => {
         setHouses(data.houses);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching faculty",
@@ -120,6 +128,27 @@ const Faculty = () => {
   const deleteCustomer = (id) => {
     setDelItem(id);
     onDeleteOpen();
+  };
+
+  const alertDelete = (id) => {
+    let fac;
+    faculty.filter((faculty) => {
+      if (faculty.mid === delItem) {
+        fac = faculty;
+      }
+    });
+
+    console.log(fac);
+   if (
+      fac?.perms?.includes("HCO0") ||
+      fac?.perms?.includes("HCO1") ||
+      fac?.perms?.includes("HCO2") ||
+      fac?.perms?.includes("HCO3")
+    ) {
+      onAlertDeleteOpen();
+    } else {
+      confirmDelete();
+    }
   };
 
   const confirmDelete = () => {
@@ -158,7 +187,7 @@ const Faculty = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -182,6 +211,33 @@ const Faculty = () => {
   };
 
   const updateFaculty = () => {
+    function checkElements(arr) {
+      const elementsToCheck = ["HCO0", "HCO1", "HCO2", "HCO3"];
+      let count = 0;
+
+      for (const element of elementsToCheck) {
+        if (arr.includes(element)) {
+          count++;
+          if (count > 1) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    if (!checkElements(perms)) {
+      toast({
+        title: "Error",
+        description: "Please select only one house coordinator",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/update`, {
       method: "POST",
       credentials: "include",
@@ -223,7 +279,7 @@ const Faculty = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         onClose();
         toast({
           title: "Error",
@@ -234,6 +290,10 @@ const Faculty = () => {
         });
       });
   };
+
+  useEffect(() => {
+    console.log(perms);
+  }, [perms]);
 
   if (loading) return <Loader />;
   else
@@ -281,11 +341,19 @@ const Faculty = () => {
               <Tbody>
                 {filteredFaculty.map((faculty) => (
                   <Tr key={faculty.mid}>
-                    <Td>{faculty.mid}</Td>
+                    <Td
+                      onClick={() =>
+                        navigate(`/profile/faculty/${faculty.mid}`)
+                      }
+                      textDecor="underline"
+                      cursor="pointer"
+                    >
+                      {faculty.mid}
+                    </Td>
                     <Td>
                       {faculty.fname} {faculty.lname}
                     </Td>
-                    <Td>{faculty.branch}</Td>
+                    <Td>IT</Td>
                     <Td>
                       <Box className="actions">
                         <Box
@@ -312,20 +380,12 @@ const Faculty = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Edit Faculty</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <Box className="form">
-                <Box className="ipgroup">
-                  <FormLabel>Faculty Moodle ID</FormLabel>
-                  <Input
-                    placeholder="Faculty ID"
-                    value={mid}
-                    onChange={(e) => setMid(e.target.value)}
-                  />
-                </Box>
                 <Flex gap="20px" mt="10px">
                   <Box className="ipgroup">
                     <FormLabel>First Name</FormLabel>
@@ -390,7 +450,7 @@ const Faculty = () => {
               >
                 Configure Permissions
               </Button>
-              <Button variant="ghost" onClick={() => updateFaculty(facOID)}>
+              <Button variant="ghost" onClick={() => updateFaculty()}>
                 Update
               </Button>
             </ModalFooter>
@@ -416,6 +476,35 @@ const Faculty = () => {
                 <Button ref={cancelRef} onClick={onDeleteClose}>
                   Cancel
                 </Button>
+                <Button colorScheme="red" onClick={alertDelete} ml={3}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
+        <AlertDialog
+          isOpen={isAlertDeleteOpen}
+          leastDestructiveRef={cancelDeleteRef}
+          onClose={onAlertDeleteClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Delete House Coordinator
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                This faculty is a house coordinator. Please assign another house
+                coordinator immediately or before deleting to avoid
+                crashes.
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onAlertDeleteClose}>
+                  Cancel
+                </Button>
                 <Button colorScheme="red" onClick={confirmDelete} ml={3}>
                   Delete
                 </Button>
@@ -430,7 +519,7 @@ const Faculty = () => {
           size="3xl"
           scrollBehavior="inside"
         >
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Faculty Permissions</ModalHeader>
             <ModalCloseButton />
@@ -439,6 +528,28 @@ const Faculty = () => {
                 <Table>
                   <Tbody>
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
+                      <Tr>
+                        <Td>
+                          <Checkbox value="UFC" readOnly>
+                            Upload Faculty Certificates
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon as={WarningIcon} color="yellow.500" />
+                              Default permission - Cannot be changed
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add their own certifications to the system
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
                       <Tr>
                         <Td>
                           <Checkbox value="MHI">Manage Events</Checkbox>
@@ -472,7 +583,9 @@ const Faculty = () => {
                       {houses.map((house, index) => (
                         <Tr key={index}>
                           <Td>
-                            <Checkbox value={`HCO${index}`}>House Coordinator - {house}</Checkbox>
+                            <Checkbox value={`HCO${index}`}>
+                              House Coordinator - {house}
+                            </Checkbox>
                           </Td>
                           <Td>
                             <List>

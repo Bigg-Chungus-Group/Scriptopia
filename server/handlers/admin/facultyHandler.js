@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { ObjectId } from "mongodb";
 const router = express.Router();
+import { certificationsDB } from "../../configs/mongo.js";
 
 router.post("/", async (req, res) => {
   try {
@@ -71,6 +72,9 @@ router.post("/import", async (req, res) => {
       const defaultPW = true;
       const perms = ["VSP", "VFI"];
 
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) continue;
+
       insertData.push({
         mid: mid.toString(),
         password: password.toString(),
@@ -86,6 +90,7 @@ router.post("/import", async (req, res) => {
         perms: perms,
       });
     }
+
     const result = await userDB.insertMany(insertData);
     if (result) {
       return res.status(200).send({ message: "Data inserted successfully" });
@@ -127,6 +132,36 @@ router.post("/add", async (req, res) => {
   };
 
   try {
+    const user = await userDB.findOne({ mid: mid.toString() });
+
+    if (
+      perms.includes("HCO0") ||
+      perms.includes("HCO1") ||
+      perms.includes("HCO2") ||
+      perms.includes("HCO3")
+    ) {
+      let hno;
+      if (perms.includes("HCO0")) {
+        hno = 0;
+      } else if (perms.includes("HCO1")) {
+        hno = 1;
+      } else if (perms.includes("HCO2")) {
+        hno = 2;
+      } else if (perms.includes("HCO3")) {
+        hno = 3;
+      }
+
+      await houseDB.updateOne(
+        { no: hno },
+        { $push: { fc: mid.toString() } },
+        { upsert: false }
+      );
+    }
+
+    if (user) {
+      return res.status(409).send({ message: "User already exists" });
+    }
+
     await userDB.insertOne(userSchema);
     return res.status(200).send({ message: "Data inserted successfully" });
   } catch {
@@ -143,7 +178,16 @@ router.post("/add", async (req, res) => {
 router.post("/delete", async (req, res) => {
   const { mid } = req.body;
   try {
+    const house = await houseDB.findOne({ fc: mid.toString() });
+    if (house) {
+      await houseDB.updateOne(
+        { fc: mid.toString() },
+        { $pull: { fc: mid.toString() } }
+      );
+    }
+
     await userDB.deleteOne({ mid: mid.toString() });
+
     return res.status(200).send({ success: true });
   } catch (error) {
     logger.error({
@@ -175,6 +219,40 @@ router.post("/update", async (req, res) => {
         },
       }
     );
+
+    if (
+      perms.includes("HCO0") ||
+      perms.includes("HCO1") ||
+      perms.includes("HCO2") ||
+      perms.includes("HCO3")
+    ) {
+      let hno;
+      if (perms.includes("HCO0")) {
+        hno = 0;
+      } else if (perms.includes("HCO1")) {
+        hno = 1;
+      } else if (perms.includes("HCO2")) {
+        hno = 2;
+      } else if (perms.includes("HCO3")) {
+        hno = 3;
+      }
+
+      const house = await houseDB.findOne({ fc: mid.toString() });
+      if (house) {
+        await houseDB.updateOne(
+          { fc: mid.toString() },
+          { $pull: { fc: mid.toString() } }
+        );
+      }
+
+      await houseDB.updateOne(
+        { no: hno },
+        { $push: { fc: mid.toString() } },
+        { upsert: false }
+      );
+      
+    }
+
     return res.status(200).send({ success: true });
   } catch (error) {
     console.log(error);
@@ -185,6 +263,54 @@ router.post("/update", async (req, res) => {
       mid: req.user.mid,
     });
     return res.status(500).send({ success: false });
+  }
+});
+
+router.post("/certificates", async (req, res) => {
+  try {
+    const apprcerts = await certificationsDB
+      .find({ role: "F", status: "approved" })
+      .toArray();
+    const rejcerts = await certificationsDB
+      .find({ role: "F", status: "rejected" })
+      .toArray();
+    const pendcerts = await certificationsDB
+      .find({ role: "F", status: "pending" })
+      .toArray();
+
+    const certs = [...apprcerts, ...rejcerts];
+
+    res.status(200).json({ certs, pendcerts });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
+  }
+});
+
+router.post("/certificates/update", async (req, res) => {
+  let { id, action, comments } = req.body;
+  try {
+    const cert = await certificationsDB.findOne({ _id: new ObjectId(id) });
+    await certificationsDB.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status: action, comments } }
+    );
+
+    const certType = cert.certificateType;
+
+    await userDB.updateOne(
+      { mid: cert.mid },
+      {
+        $inc: {
+          [`certificates.${certType}`]: 1,
+        },
+      }
+    );
+
+    res.status(200).json({ success: "Certification Updated Successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
   }
 });
 

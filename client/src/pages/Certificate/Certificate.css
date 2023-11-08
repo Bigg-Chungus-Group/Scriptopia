@@ -1,9 +1,10 @@
 .StudentCertificate {
-  height: 85vh;
+  height: fit-content;
   box-sizing: border-box;
-  padding: 30px 70px;
+  padding: 20px 70px;
   gap: 30px;
   justify-content: center;
+  align-items: center;
 }
 
 .StudentCertificate .track-wrapper {
@@ -59,6 +60,7 @@
   gap: 20px;
   justify-content: flex-end;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .StudentCertificate .green {
@@ -68,7 +70,24 @@
 }
 
 .StudentCertificate .red {
-    background-color: #f44336;
-    color: aliceblue;
-    font-weight: bold;
+  background-color: #f44336;
+  color: aliceblue;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 1250px) {
+  .StudentCertificate {
+    padding: 30px 20px;
+  }
+
+  .StudentCertificate .track-wrapper {
+    display: none;
+  }
+
+  .StudentCertificate textarea {
+    margin-top: 20px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/faculty/Navbar";
+import { useToast } from "@chakra-ui/react";
+import "./Certificates.css";
 import {
   Box,
   Button,
@@ -23,8 +25,12 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../components/Loader";
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Certificates = () => {
+  const decoded = useAuthCheck("F");
+
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);
@@ -37,6 +43,8 @@ const Certificates = () => {
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const toast = useToast();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates`, {
@@ -54,8 +62,16 @@ const Certificates = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setLoading(false);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, [update]);
 
@@ -65,6 +81,19 @@ const Certificates = () => {
   };
 
   const updateCert = () => {
+    if (action == undefined) {
+      console.log(action)
+      toast({
+        title: "Error",
+        description: "Please select a valid action",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      return
+    }
+
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/certificates/update`,
       {
@@ -85,12 +114,19 @@ const Certificates = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setUpdate(!update);
         onClose();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 
@@ -98,7 +134,7 @@ const Certificates = () => {
     return (
       <>
         <Navbar />
-        <Box p="30px 70px">
+        <Box className="FacultyCertificates">
           <Heading fontSize="20px">Pending Certificates</Heading>
           <Table mt="50px" variant="striped">
             <Thead>
@@ -144,7 +180,7 @@ const Certificates = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Modal Title</ModalHeader>
             <ModalCloseButton />
@@ -165,9 +201,9 @@ const Certificates = () => {
                   value={xp}
                   onChange={(e) => setXp(e.target.value)}
                 >
-                  <option value="30">30 XP</option>
-                  <option value="50">50 XP</option>
-                  <option value="60">60 XP</option>
+                  <option value="30">30 XP - Beginner Certificate</option>
+                  <option value="50">50 XP - Intermediate Certificate</option>
+                  <option value="60">60 XP - Advanced Certificate</option>
                 </Select>
               ) : null}
 
@@ -191,6 +227,8 @@ const Certificates = () => {
         </Modal>
       </>
     );
+  } else {
+    return <Loader />;
   }
 };
 

@@ -34,15 +34,19 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  CheckboxGroup,
+  Checkbox,
 } from "@chakra-ui/react";
 import "./Events.css";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
+import Loader from "../../components/Loader";
 
 const Events = () => {
   const toast = useToast();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]); // For Search Bar
   const [role, setRole] = useState("G");
   const [editPrivilege, setEditPrivilege] = useState(false);
 
@@ -68,6 +72,7 @@ const Events = () => {
 
   const [update, setUpdate] = useState(false);
 
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
@@ -97,6 +102,7 @@ const Events = () => {
       .then((res) => res.json())
       .then((data) => {
         setEvents(data);
+        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
@@ -122,6 +128,7 @@ const Events = () => {
     hour12: true,
   };
 
+  const [createLoading, setCreateLoading] = useState(false);
   const createEvent = () => {
     if (eventStarts > eventEnds) {
       toast({
@@ -145,7 +152,7 @@ const Events = () => {
       return;
     }
     if (registerationStarts > eventStarts) {
-      console.log(registerationStarts, eventStarts);
+      console.error(registerationStarts, eventStarts);
       toast({
         title: "Error",
         description:
@@ -166,11 +173,11 @@ const Events = () => {
       });
       return;
     }
-    if (eventStarts < date) {
+    /* if (eventStarts < date) {
       toast({
         title: "Error",
         description: "Event Start Date cannot be before today",
-        status: "error",
+        status: "error  ",
         duration: 5000,
         isClosable: true,
       });
@@ -187,7 +194,8 @@ const Events = () => {
 
       return;
     }
-
+*/
+    setCreateLoading(true);
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/events/create`, {
       method: "POST",
       credentials: "include",
@@ -241,7 +249,7 @@ const Events = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Some error occured",
@@ -249,380 +257,468 @@ const Events = () => {
           duration: 5000,
           isClosable: true,
         });
-      });
+      }).finally(() => setCreateLoading(false));
   };
 
-  return (
-    <>
-      {role === "A" ? (
-        <Navbar />
-      ) : role === "F" ? (
-        <FacultyNavbar />
-      ) : role === "S" ? (
-        <StudentNavbar />
-      ) : (
-        <GuestNavbar />
-      )}
-      <Box className="AdminEvents">
-        <Heading>Events </Heading>
-        <Box className="events">
-          {editPrivilege ? (
-            <Card
-              w="320px"
-              maxW="sm"
-              maxH="md"
-              overflow="hidden"
-              cursor="pointer"
-              onClick={onOpen}
-            >
-              <Flex
-                justify="center"
-                align="center"
-                height="100%"
-                direction="column"
-              >
-                <Text fontSize="100px" color="lightgray">
-                  +
-                </Text>{" "}
-                <Text color="lightgray">Add Event</Text>
-              </Flex>
-            </Card>
-          ) : null}
-          {events.map((event) => (
-            <Card
-              w="320px"
-              maxW="sm"
-              maxH="md"
-              overflow="hidden"
-              key={event._id}
-            >
-              <CardBody>
-                <Image
-                  fallback={<Skeleton height="150px" />}
-                  src={event.image}
-                  borderRadius="lg"
-                  height="150px"
-                  objectFit="cover"
-                  width="100%"
-                />
+  useEffect(() => {
+    setFilteredEvents(events.reverse());
+  }, [events]);
 
-                <Stack mt="6" spacing="3">
-                  <Divider />
-                  <Heading size="md">{event.name}</Heading>
-                  <Text>
-                    {new Date(event.eventStarts).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </Text>
-                  <Text>{event.location}</Text>
-                  <Text color="blue.600">
-                    {event.mode.charAt(0).toUpperCase() + event.mode.slice(1)}
-                    <Badge
-                      color={event.eventStarts > date ? "green" : event.eventEnds > date ? "blue" : "red"}
-                      ml="15px"
-                      fontSize="13px"
-                    >
-                      {event.eventStarts > date ? "Upcoming" : event.eventEnds > date ? "Ongoing" : "Expired"}
-                    </Badge>
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <ButtonGroup spacing="2">
-                  <Link to={`/events/${event._id}`}>
-                    <Button variant="solid" colorScheme="blue">
-                      View Event
-                    </Button>
-                  </Link>
-                </ButtonGroup>
+  const search = (e) => {
+    const query = e?.target?.value;
 
+    if (query === "") {
+      setFilteredEvents(events); // Reset the events to their original state
+      return;
+    }
+
+    const fe = filteredEvents.filter((event) => {
+      return event?.name?.toLowerCase().includes(query.toLowerCase());
+    });
+    setFilteredEvents(fe);
+  };
+
+  const filterEvents = (e) => {
+    const query = e;
+    if (query.length === 3) {
+      setFilteredEvents(events); // Reset the events to their original state
+      return;
+    }
+
+    let fe = [];
+
+    events.filter((event) => {
+      if (query.includes("active")) {
+        if (event?.eventStarts < date && event?.eventEnds > date) {
+          fe.push(event);
+        }
+      }
+      if (query.includes("upcoming")) {
+        if (event?.eventStarts > date) {
+          fe.push(event);
+        }
+      }
+      if (query.includes("expired")) {
+        if (event?.eventEnds < date) {
+          fe.push(event);
+        }
+      }
+    });
+    setFilteredEvents(fe);
+  };
+
+  if (!loading) {
+    return (
+      <>
+        {role === "A" ? (
+          <Navbar />
+        ) : role === "F" ? (
+          <FacultyNavbar />
+        ) : role === "S" ? (
+          <StudentNavbar />
+        ) : (
+          <GuestNavbar />
+        )}
+        <Box className="AdminEvents">
+          <Heading textAlign="center">Events </Heading>
+          <Flex align="center" justify="center" gap="20px">
+            <Input
+              placeholder="Search Events"
+              mb="10px"
+              onChange={search}
+              width="50%"
+            />
+            <Text>Type: </Text>
+            <CheckboxGroup
+              colorScheme="green"
+              onChange={(e) => filterEvents(e)}
+              defaultValue={["active", "upcoming", "expired"]}
+            >
+              <Checkbox value="active">Active</Checkbox>
+              <Checkbox value="upcoming">Upcoming</Checkbox>
+              <Checkbox value="expired">Expired</Checkbox>
+            </CheckboxGroup>
+          </Flex>
+          <Box className="events">
+            {editPrivilege ? (
+              <Card
+                w="320px"
+                maxW="sm"
+                maxH="md"
+                overflow="hidden"
+                cursor="pointer"
+                onClick={onOpen}
+              >
                 <Flex
-                  justifySelf="flex-end"
+                  justify="center"
                   align="center"
-                  justifyContent="flex-end"
+                  height="100%"
+                  direction="column"
                 >
-                  {event.registerationType === "internal" ? (
-                    <i
-                      className="fa-regular fa-users"
-                      style={{ marginRight: "10px" }}
-                    ></i>
-                  ) : null}
-                  <Text justifySelf="flex-end">
-                    {event.registerationType === "internal"
-                      ? event.registered.length
-                      : null}
-                  </Text>
+                  <Text fontSize="100px" color="lightgray">
+                    +
+                  </Text>{" "}
+                  <Text color="lightgray">Add Event</Text>
                 </Flex>
-              </CardFooter>
-            </Card>
-          ))}
+              </Card>
+            ) : null}
+            {filteredEvents?.map((event) => (
+              <Card
+                w="320px"
+                maxW="sm"
+                maxH="md"
+                overflow="hidden"
+                key={event?._id}
+              >
+                <CardBody>
+                  <Image
+                    fallback={<Skeleton height="150px" />}
+                    src={event?.image}
+                    borderRadius="lg"
+                    height="150px"
+                    objectFit="cover"
+                    width="100%"
+                  />
+
+                  <Stack mt="6" spacing="3">
+                    <Divider />
+                    <Heading size="md">{event?.name}</Heading>
+                    <Text>
+                      {new Date(event?.eventStarts).toLocaleDateString(
+                        "en-US",
+                        dateOptions
+                      )}
+                    </Text>
+                    <Text>{event?.location}</Text>
+                    <Text color="blue.600">
+                      {event?.mode?.charAt(0).toUpperCase() +
+                        event?.mode?.slice(1)}
+                      <Badge
+                        color={
+                          event?.eventStarts > date
+                            ? "green"
+                            : event?.eventEnds > date
+                            ? "blue"
+                            : "red"
+                        }
+                        ml="15px"
+                        fontSize="13px"
+                      >
+                        {event?.eventStarts > date
+                          ? "Upcoming"
+                          : event?.eventEnds > date
+                          ? "Ongoing"
+                          : "Expired"}
+                      </Badge>
+                    </Text>
+                  </Stack>
+                </CardBody>
+                <Divider />
+                <CardFooter
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <ButtonGroup spacing="2">
+                    <Link to={`/events/${event?._id}`}>
+                      <Button variant="solid" colorScheme="blue">
+                        View Event
+                      </Button>
+                    </Link>
+                  </ButtonGroup>
+
+                  <Flex
+                    justifySelf="flex-end"
+                    align="center"
+                    justifyContent="flex-end"
+                  >
+                    {event.registerationType === "internal" ? (
+                      <i
+                        className="fa-regular fa-users"
+                        style={{ marginRight: "10px" }}
+                      ></i>
+                    ) : null}
+                    <Text justifySelf="flex-end">
+                      {event?.registerationType === "internal"
+                        ? event?.registered?.length
+                        : null}
+                    </Text>
+                  </Flex>
+                </CardFooter>
+              </Card>
+            ))}
+          </Box>
         </Box>
-      </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Event</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex gap="10px">
-              <FormControl>
-                <InputGroup>
-                  <InputLeftAddon>
-                    <i className="fa-solid fa-input-text"></i>
-                  </InputLeftAddon>
-                  <Input
-                    placeholder="Event Name"
-                    mb="10px"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-
-              <FormControl>
-                <InputGroup>
-                  <InputLeftAddon>
-                    <i className="fa-solid fa-image"></i>
-                  </InputLeftAddon>
-                  <Input
-                    placeholder="Event Image URL"
-                    mb="10px"
-                    value={eventImage}
-                    onChange={(e) => setEventImage(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-            </Flex>
-
-            <FormControl>
-              {" "}
-              <InputGroup>
-                <Textarea
-                  placeholder="Event Description"
-                  mb="10px"
-                  rows={2}
-                  value={eventDesc}
-                  onChange={(e) => setEventDesc(e.target.value)}
-                />
-              </InputGroup>
-            </FormControl>
-
-            <Flex gap="20px">
-              <FormControl>
-                <InputGroup>
-                  <InputLeftAddon>
-                    <i className="fa-solid fa-location-dot"></i>
-                  </InputLeftAddon>
-                  <Input
-                    placeholder="Event Location"
-                    mb="10px"
-                    value={eventLocation}
-                    onChange={(e) => setEventLocation(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-
-              <FormControl>
-                {" "}
-                <InputGroup>
-                  <Select
-                    placeholder="Event Mode"
-                    mb="10px"
-                    value={eventMode}
-                    onChange={(e) => setEventMode(e.target.value)}
-                  >
-                    <option value="online">Online</option>
-                    <option value="offline">Offline</option>
-                  </Select>
-                </InputGroup>
-              </FormControl>
-            </Flex>
-
-            <Flex gap="20px">
-              <FormControl width="200px">
-                {" "}
-                <InputGroup>
-                  <Select
-                    placeholder="Registeration Mode"
-                    mb="10px"
-                    value={registerationMode}
-                    onChange={(e) => setRegisterationMode(e.target.value)}
-                  >
-                    <option value="internal">From Scriptopia</option>
-                    <option value="external">External</option>
-                  </Select>
-                </InputGroup>
-              </FormControl>
-
-              {registerationMode === "external" ? (
+        <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalContent>
+            <ModalHeader>Add Event</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Flex gap="10px">
                 <FormControl>
                   <InputGroup>
                     <InputLeftAddon>
-                      <i className="fa-solid fa-link"></i>
+                      <i className="fa-solid fa-input-text"></i>
                     </InputLeftAddon>
                     <Input
-                      placeholder="Registeration Link"
+                      placeholder="Event Name"
                       mb="10px"
-                      value={eventLink}
-                      onChange={(e) => setEventLink(e.target.value)}
+                      value={eventName}
+                      onChange={(e) => setEventName(e?.target?.value)}
                     />
                   </InputGroup>
                 </FormControl>
-              ) : null}
-            </Flex>
 
-            <Flex gap="20px">
-              <FormControl>
-                <InputGroup>
-                  <InputLeftAddon>
-                    <i className="fa-solid fa-envelope"></i>
-                  </InputLeftAddon>
-                  <Input
-                    placeholder="Event Email"
-                    mb="10px"
-                    value={eventEmail}
-                    onChange={(e) => setEventEmail(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <i className="fa-solid fa-image"></i>
+                    </InputLeftAddon>
+                    <Input
+                      placeholder="Event Image URL"
+                      mb="10px"
+                      value={eventImage}
+                      onChange={(e) => setEventImage(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Flex>
 
               <FormControl>
                 {" "}
                 <InputGroup>
-                  <InputLeftAddon>
-                    <i className="fa-solid fa-phone"></i>
-                  </InputLeftAddon>
-                  <Input
-                    placeholder="Event Phone"
+                  <Textarea
+                    placeholder="Event Description"
                     mb="10px"
-                    value={eventPhone}
-                    onChange={(e) => setEventPhone(e.target.value)}
+                    rows={2}
+                    value={eventDesc}
+                    onChange={(e) => setEventDesc(e?.target?.value)}
                   />
                 </InputGroup>
               </FormControl>
-            </Flex>
 
-            <Text mb="5px">Event Registeration</Text>
-            <Flex gap="20px" align="center">
-              <FormControl>
-                {" "}
-                <InputGroup>
-                  <Input
-                    type="date"
-                    placeholder="Event Start Date"
-                    mb="10px"
-                    value={registerationStarts}
-                    onChange={(e) => setRegisterationStarts(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl>
-                <InputGroup>
-                  <Input
-                    type="time"
-                    placeholder="Event Start Time"
-                    mb="10px"
-                    value={registerationStartTime}
-                    onChange={(e) => setRegisterationStartTime(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-              <p>To</p>
-              <FormControl>
-                {" "}
-                <InputGroup>
-                  <Input
-                    type="date"
-                    placeholder="Event End Date"
-                    mb="10px"
-                    value={registerationEnds}
-                    onChange={(e) => setRegisterationEnds(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>{" "}
-              <FormControl>
-                <InputGroup>
-                  <Input
-                    type="time"
-                    placeholder="Event End Time"
-                    mb="10px"
-                    value={registerationEndTime}
-                    onChange={(e) => setRegisterationEndTime(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-            </Flex>
+              <Flex gap="20px">
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <i className="fa-solid fa-location-dot"></i>
+                    </InputLeftAddon>
+                    <Input
+                      placeholder="Event Location"
+                      mb="10px"
+                      value={eventLocation}
+                      onChange={(e) => setEventLocation(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
 
-            <Text mb="5px">Event Schedule</Text>
-            <Flex gap="20px" align="center">
-              <FormControl>
-                {" "}
-                <InputGroup>
-                  <Input
-                    type="date"
-                    placeholder="Event Registeration Start Date"
-                    mb="10px"
-                    value={eventStarts}
-                    onChange={(e) => setEventStarts(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>{" "}
-              <FormControl>
-                <InputGroup>
-                  <Input
-                    type="time"
-                    placeholder="Event Registeration End Time"
-                    mb="10px"
-                    value={eventStartTime}
-                    onChange={(e) => setEventStartTime(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-              <p>To</p>
-              <FormControl>
-                <InputGroup>
-                  <Input
-                    type="date"
-                    placeholder="Event Registeration End Date"
-                    mb="10px"
-                    value={eventEnds}
-                    onChange={(e) => setEventEnds(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>{" "}
-              <FormControl>
-                <InputGroup>
-                  <Input
-                    type="time"
-                    placeholder="Event Registeration End Time"
-                    mb="10px"
-                    value={eventEndTime}
-                    onChange={(e) => setEventEndTime(e.target.value)}
-                  />
-                </InputGroup>
-              </FormControl>
-            </Flex>
-          </ModalBody>
+                <FormControl>
+                  {" "}
+                  <InputGroup>
+                    <Select
+                      placeholder="Event Mode"
+                      mb="10px"
+                      value={eventMode}
+                      onChange={(e) => setEventMode(e?.target?.value)}
+                    >
+                      <option value="online">Online</option>
+                      <option value="offline">Offline</option>
+                    </Select>
+                  </InputGroup>
+                </FormControl>
+              </Flex>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost" onClick={createEvent}>
-              Create
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
+              <Flex gap="20px">
+                <FormControl width="200px">
+                  {" "}
+                  <InputGroup>
+                    <Select
+                      placeholder="Registeration Mode"
+                      mb="10px"
+                      value={registerationMode}
+                      onChange={(e) => setRegisterationMode(e?.target?.value)}
+                    >
+                      <option value="internal">From Scriptopia</option>
+                      <option value="external">External</option>
+                    </Select>
+                  </InputGroup>
+                </FormControl>
+
+                {registerationMode === "external" ? (
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftAddon>
+                        <i className="fa-solid fa-link"></i>
+                      </InputLeftAddon>
+                      <Input
+                        placeholder="Registeration Link"
+                        mb="10px"
+                        value={eventLink}
+                        onChange={(e) => setEventLink(e?.target?.value)}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                ) : null}
+              </Flex>
+
+              <Flex gap="20px">
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <i className="fa-solid fa-envelope"></i>
+                    </InputLeftAddon>
+                    <Input
+                      placeholder="Event Email"
+                      mb="10px"
+                      value={eventEmail}
+                      onChange={(e) => setEventEmail(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+
+                <FormControl>
+                  {" "}
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <i className="fa-solid fa-phone"></i>
+                    </InputLeftAddon>
+                    <Input
+                      placeholder="Event Phone"
+                      mb="10px"
+                      value={eventPhone}
+                      onChange={(e) => setEventPhone(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Flex>
+
+              <Text mb="5px">Event Registeration</Text>
+              <Flex gap="20px" align="center">
+                <FormControl>
+                  {" "}
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      placeholder="Event Start Date"
+                      mb="10px"
+                      value={registerationStarts}
+                      onChange={(e) => setRegisterationStarts(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type="time"
+                      placeholder="Event Start Time"
+                      mb="10px"
+                      value={registerationStartTime}
+                      onChange={(e) =>
+                        setRegisterationStartTime(e?.target?.value)
+                      }
+                    />
+                  </InputGroup>
+                </FormControl>
+                <p>To</p>
+                <FormControl>
+                  {" "}
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      placeholder="Event End Date"
+                      mb="10px"
+                      value={registerationEnds}
+                      onChange={(e) => setRegisterationEnds(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>{" "}
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type="time"
+                      placeholder="Event End Time"
+                      mb="10px"
+                      value={registerationEndTime}
+                      onChange={(e) =>
+                        setRegisterationEndTime(e?.target?.value)
+                      }
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Flex>
+
+              <Text mb="5px">Event Schedule</Text>
+              <Flex gap="20px" align="center">
+                <FormControl>
+                  {" "}
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      placeholder="Event Registeration Start Date"
+                      mb="10px"
+                      value={eventStarts}
+                      onChange={(e) => setEventStarts(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>{" "}
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type="time"
+                      placeholder="Event Registeration End Time"
+                      mb="10px"
+                      value={eventStartTime}
+                      onChange={(e) => setEventStartTime(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <p>To</p>
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      placeholder="Event Registeration End Date"
+                      mb="10px"
+                      value={eventEnds}
+                      onChange={(e) => setEventEnds(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>{" "}
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type="time"
+                      placeholder="Event Registeration End Time"
+                      mb="10px"
+                      value={eventEndTime}
+                      onChange={(e) => setEventEndTime(e?.target?.value)}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Flex>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={createEvent}
+                loading={createLoading}
+              >
+                Create
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+    );
+  } else {
+    return <Loader />;
+  }
 };
 
 export default Events;

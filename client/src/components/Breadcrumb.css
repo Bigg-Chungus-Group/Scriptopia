@@ -14,15 +14,24 @@
 }
 
 .Breadcrumb .link {
-    transition: .2s;
-    cursor: pointer;
+  transition: 0.2s;
+  cursor: pointer;
 }
 
 .Breadcrumb .right {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .Breadcrumb .link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 1250px) {
+  .Breadcrumb {
+    padding: 20px 20px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
 }

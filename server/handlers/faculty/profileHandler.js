@@ -41,4 +41,22 @@ router.post("/updatePW", verifyToken, async (req, res) => {
   }
 });
 
+router.post("/updateTheme", async (req, res) => {
+  const { theme } = req.body;
+  try {
+    await userDB.updateOne(
+      { mid: req.user.mid },
+      { $set: { colorMode: theme } }
+    );
+  } catch (error) {
+    logger.error({
+      code: "FAC-PRF-102",
+      message: "Error updating theme",
+      err: err.message,
+      mid: req.user.mid,
+    });
+    res.status(401).send("Invalid Token");
+  }
+})
+
 export default router;

@@ -1,0 +1,61 @@
+.StudentCertificates {
+    box-sizing: border-box;
+    padding: 30px 70px;
+    height: fit-content;
+  }
+  
+  .StudentCertificates .table {
+    overflow-y: auto;
+  }
+  
+  .upload-main-StudentCertificates {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .upload-main-StudentCertificates .flex {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+  
+  .disabledOpt {
+    background-color: #31322F !important;
+    color: white !important;
+    padding: 20px !important;
+  }
+  
+  .upload-main-StudentCertificates .flex .upload-btn {
+    background-color: #EDF2F7;
+    border: 1px solid #EDF2F7;
+    color: black;
+    font-weight: bold;
+    box-sizing: border-box;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 150px;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  .red-required {
+    color: red;
+  }
+  
+  @media screen and (max-width: 1250px) {
+    .StudentCertificates {
+      padding: 20px;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+  }
+  

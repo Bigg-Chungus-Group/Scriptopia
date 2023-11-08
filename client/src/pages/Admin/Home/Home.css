@@ -2,13 +2,14 @@
   display: flex;
   gap: 20px;
   padding: 30px 70px;
+  flex-wrap: wrap;
 }
 
 .AdminHome .left {
   background-color: var(--darker);
   height: 83vh;
   padding: 20px;
-  width: 60%;
+  width: 58%;
   border-radius: 15px;
 }
 
@@ -29,7 +30,7 @@
 
 .AdminHome .housePoints,
 .AdminHome .certifications {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   width: 50%;
@@ -38,14 +39,14 @@
 
 .AdminHome .left .bottom {
   margin-top: 20px;
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 45%;
 }
 
 .AdminHome .right .houseAssesment {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 40vh;
@@ -55,7 +56,7 @@
 }
 
 .AdminHome .right .currentEvents {
-  background-color: #ffffff;
+  background-color: var(--container);
   padding: 20px;
   border-radius: 15px;
   height: 35vh;
@@ -64,4 +65,97 @@
   flex-direction: column;
   justify-content: center;
   margin-top: 20px;
+}
+
+@media (max-width: 1250px) {
+  .AdminHome .left .top {
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .housePoints,
+  .AdminHome .certifications {
+    width: 48%;
+    height: fit-content;
+  }
+
+  .AdminHome .left .bottom {
+    width: 100%;
+  }
+
+  .AdminHome .left .bottom {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .AdminHome .left {
+    width: 90vw;
+    flex-direction: row;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .right {
+    width: 100vw;
+    margin-top: 20px;
+    height: fit-content;
+  }
+
+  .AdminHome .right .top {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .AdminHome .right .houseAssesment {
+    width: 47%;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .right .currentEvents {
+    width: 47%;
+    overflow-x: auto;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 768px) {
+  .AdminHome {
+    padding: 30px 20px;
+    flex-direction: row;
+  }
+
+  .AdminHome .housePoints,
+  .AdminHome .certifications {
+    width: 80vw;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .right .houseAssesment {
+    width: 80vw;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .right .currentEvents {
+    width: 80vw;
+    overflow-x: auto;
+  }
+
+  .AdminHome .left .top {
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: auto;
+    height: fit-content;
+  }
+
+  .AdminHome .right .top {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }

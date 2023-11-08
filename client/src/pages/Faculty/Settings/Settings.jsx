@@ -20,7 +20,7 @@ import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Settings = () => {
-  useAuthCheck("F")
+  useAuthCheck("F");
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
@@ -111,7 +111,7 @@ const Settings = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           toast({
             title: "Password Change Failed!",
             status: "error",
@@ -141,6 +141,29 @@ const Settings = () => {
     }
   }, [toastDispatched]);
 
+  const setDark = () => {
+    if (colorMode === "dark") {
+      toggleColorMode();
+    } else {
+      toggleColorMode();
+    }
+
+    fetch(
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/profile/updateTheme`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          theme: colorMode === "dark" ? "light" : "dark",
+        }),
+      }
+    ).then((res) => {});
+    window.location.reload();
+  };
+
   if (!loading) {
     return (
       <>
@@ -159,8 +182,7 @@ const Settings = () => {
               <Switch
                 id="email-alerts"
                 onChange={(e) => {
-                  toggleColorMode();
-                  setToastDispatched(true);
+                  setDark();
                 }}
                 isChecked={colorMode === "dark" ? true : false}
               />
@@ -173,7 +195,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show1 ? "text" : "password"}
                   placeholder="Enter Old Password"
-                  onChange={(e) => setOldPass(e.target.value)}
+                  onChange={(e) => setOldPass(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick1}>
@@ -186,7 +208,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show2 ? "text" : "password"}
                   placeholder="Enter New Password"
-                  onChange={(e) => setNewPass(e.target.value)}
+                  onChange={(e) => setNewPass(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick2}>
@@ -199,7 +221,7 @@ const Settings = () => {
                   pr="4.5rem"
                   type={show3 ? "text" : "password"}
                   placeholder="Confirm New Password"
-                  onChange={(e) => validatePassMatch(e.target.value)}
+                  onChange={(e) => validatePassMatch(e?.target?.value)}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleClick3}>

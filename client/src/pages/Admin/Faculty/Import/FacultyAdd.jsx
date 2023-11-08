@@ -26,7 +26,7 @@ import {
   Tr,
   Td,
 } from "@chakra-ui/react";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
 
 const FacultyAdd = ({ setModal, h }) => {
@@ -43,7 +43,7 @@ const FacultyAdd = ({ setModal, h }) => {
   const [lname, setLname] = React.useState("");
   const [moodleid, setMoodleid] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [perms, setPerms] = React.useState([]);
+  const [perms, setPerms] = React.useState(["UFC"]);
   const [houses, setHouses] = React.useState([]);
 
   const toast = useToast();
@@ -54,7 +54,7 @@ const FacultyAdd = ({ setModal, h }) => {
   }, []);
 
   useEffect(() => {
-    console.log(perms);
+    console.error(perms);
   }, [perms]);
 
   const setClose = () => {
@@ -71,6 +71,33 @@ const FacultyAdd = ({ setModal, h }) => {
       gender: gender,
       perms: perms,
     };
+
+    function checkElements(arr) {
+      const elementsToCheck = ["HCO0", "HCO1", "HCO2", "HCO3"];
+      let count = 0;
+
+      for (const element of elementsToCheck) {
+        if (arr.includes(element)) {
+          count++;
+          if (count > 1) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    if (!checkElements(perms)) {
+      toast({
+        title: "Error",
+        description: "Please select only one house coordinator",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
 
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/add`, {
       method: "POST",
@@ -89,6 +116,14 @@ const FacultyAdd = ({ setModal, h }) => {
           duration: 3000,
           isClosable: true,
         });
+      } else if(res.status === 409) {
+        toast({
+          title: "Error",
+          description: "Moodle ID already exists",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       } else {
         toast({
           title: "Error",
@@ -101,10 +136,15 @@ const FacultyAdd = ({ setModal, h }) => {
     });
   };
 
+  const closePerms = () => {
+    setPermClose();
+    onOpen();
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
         <ModalContent>
           <ModalHeader>Add Faculty</ModalHeader>
           <ModalCloseButton />
@@ -116,27 +156,27 @@ const FacultyAdd = ({ setModal, h }) => {
                   placeholder="First Name"
                   value={fname}
                   onChange={(e) => {
-                    setFname(e.target.value);
+                    setFname(e?.target?.value);
                   }}
                 />
                 <Input
                   type="text"
                   placeholder="Last Name"
                   value={lname}
-                  onChange={(e) => setLname(e.target.value)}
+                  onChange={(e) => setLname(e?.target?.value)}
                 />
               </Box>
               <Input
                 type="text"
                 placeholder="Moodle ID"
                 value={moodleid}
-                onChange={(e) => setMoodleid(e.target.value)}
+                onChange={(e) => setMoodleid(e?.target?.value)}
               />
               <Input
                 type="text"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e?.target?.value)}
               />
 
               <RadioGroup onChange={setGender} value={gender}>
@@ -172,11 +212,11 @@ const FacultyAdd = ({ setModal, h }) => {
 
       <Modal
         isOpen={isPermOpen}
-        onClose={setPermClose}
+        onClose={closePerms}
         size="3xl"
         scrollBehavior="inside"
       >
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
         <ModalContent>
           <ModalHeader>Faculty Permissions</ModalHeader>
           <ModalCloseButton />
@@ -186,6 +226,28 @@ const FacultyAdd = ({ setModal, h }) => {
                 <Table>
                   <Tbody>
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
+                      <Tr>
+                        <Td>
+                          <Checkbox value="UFC" readOnly>
+                            Upload Faculty Certificates
+                          </Checkbox>
+                        </Td>
+                        <Td>
+                          <List>
+                            <ListItem mb={2}>
+                              <ListIcon as={WarningIcon} color="yellow.500" />
+                              Default permission - Cannot be changed
+                            </ListItem>
+                            <ListItem mb={2}>
+                              <ListIcon
+                                as={CheckCircleIcon}
+                                color="green.500"
+                              />
+                              Add their own certifications to the system
+                            </ListItem>
+                          </List>
+                        </Td>
+                      </Tr>
                       <Tr>
                         <Td>
                           <Checkbox value="MHI">Manage Events</Checkbox>

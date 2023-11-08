@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import {io as socket} from "../../events/socketConnection";
+import { io as socket } from "../../events/socketConnection";
 
 import {
   Menu,
@@ -28,7 +28,10 @@ import {
   AlertDialogBody,
   useToast,
   Avatar,
+  Text,
 } from "@chakra-ui/react";
+
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,7 +39,9 @@ const Navbar = () => {
   const token = Cookies.get("token");
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
+  const decoded = jwt_decode(token);
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let dec;
@@ -45,7 +50,7 @@ const Navbar = () => {
       const p = dec.picture;
       setPicture(p);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "An error occurred.",
         description: "Please try again later.",
@@ -59,12 +64,10 @@ const Navbar = () => {
   useEffect(() => {
     socket.on("onNotification", async () => {
       try {
-        await fetch(
-          `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
-          {
-            method: "GET",
-          }
-        ).then(async (res) => {
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+          method: "POST",
+          credentials: "include",
+        }).then(async (res) => {
           if (res.status === 200) {
             await res.json().then((data) => {
               setNotifications(data.notifications);
@@ -72,7 +75,7 @@ const Navbar = () => {
           }
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast({
           title: "An error occurred.",
           description: "Please try again later.",
@@ -82,6 +85,30 @@ const Navbar = () => {
         });
       }
     });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          await res.json().then((data) => {
+            setNotifications(data.notifications);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast({
+          title: "An error occurred.",
+          description: "Please try again later.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
   }, []);
 
   const showSearch = () => {
@@ -109,23 +136,72 @@ const Navbar = () => {
     window.location.href = "/auth";
   };
 
+  const clearNotifications = () => {
+    const notificationIDs = notifications.map((notification) => {
+      return notification._id;
+    });
+    onClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/clear`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({ notificationIDs }),
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          await res.json().then((data) => {
+            setNotifications([]);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast({
+          title: "An error occurred.",
+          description: "Please try again later.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
-    <div className="nav">
+    <div className="navStudent">
       <div className="left-link">
         <div className="image">
           <img
             src={Logo}
             onClick={() => {
-              window.location.href = "/";
+              navigate("/");
             }}
           />
         </div>
+        <Menu>
+          <Box className="hidden">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <Link to="/certificates">
+              <MenuItem className="menuitem">Certificates</MenuItem>
+            </Link>
+            <Link to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </Link>
+            <Link to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </Link>
+          </MenuList>
+        </Menu>
         <div className="links">
-          <a href="/certificates">Certificates</a>
-          <a href="/houses">Houses</a>
-          <a href="/events">Events</a>
+          <a onClick={() => navigate("/certificates")}>Certificates</a>
+          <a onClick={() => navigate("/houses")}>Houses</a>
+          <a onClick={() => navigate("/events")}>Events</a>
         </div>
-</div>
+      </div>
 
       <Menu>
         <Box className="rightmost">
@@ -135,12 +211,17 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+          <Text className="darker">
+            {decoded.fname} {decoded.lname}
+          </Text>
           {picture ? (
             <MenuButton>
               <Avatar src={picture} size="sm" />{" "}
             </MenuButton>
           ) : (
-            <Link to="/auth"> Sign In </Link>
+            <MenuButton>
+              <Avatar size="sm" />{" "}
+            </MenuButton>
           )}
         </Box>
         <MenuList className="menu">
@@ -151,8 +232,10 @@ const Navbar = () => {
           <Link to="/profile">
             <MenuItem className="menuitem">Profile</MenuItem>
           </Link>
+          <Link to="/feedback">
+            <MenuItem className="menuitem">Feedback</MenuItem>
+          </Link>
           <MenuDivider />
-          <MenuItem className="menuitem">Change Theme</MenuItem>
           <MenuItem className="menuitem" onClick={logout}>
             Logout
           </MenuItem>
@@ -178,7 +261,11 @@ const Navbar = () => {
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert status="info" key={notification._id} marginBottom="5px">
+                <Alert
+                  status={notification.scope == "all" ? "info" : "warning"}
+                  key={notification._id}
+                  marginBottom="5px"
+                >
                   <AlertIcon />
 
                   <AlertDialogBody width="100%">
@@ -190,9 +277,10 @@ const Navbar = () => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            {/*}
+            <Button variant="outline" mr={3} onClick={clearNotifications}>
               Clear All
-            </Button>
+            </Button>{*/}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

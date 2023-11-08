@@ -3,6 +3,7 @@ import { houseDB, userDB } from "../../configs/mongo.js";
 import bcrypt from "bcrypt";
 import logger from "../../configs/logger.js";
 import { body } from "express-validator";
+import { ObjectId } from "mongodb";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -67,6 +68,11 @@ router.post("/import", async (req, res) => {
       const approved = true;
       const defaultPW = true;
 
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) {
+        continue;
+      }
+
       insertData.push({
         mid: mid.toString(),
         password: password.toString(),
@@ -78,19 +84,12 @@ router.post("/import", async (req, res) => {
         gender: gender.toString(),
         AY: parseInt(20 + mid.slice(0, 2)),
         dse: dse,
+        createdOn: new Date(),
         branch: branch.toString(),
         house: {
           id: "64eb6fe4826e49f72ada177f",
-          contribution: 0,
+          points: {},
         },
-        rank: {
-          alltime: 0,
-          monthly: 0,
-        },
-        badges: [],
-        activity: [],
-        courses: [],
-
         firstTime,
         approved,
         defaultPW,
@@ -122,14 +121,16 @@ router.post(
   async (req, res) => {
     const { fname, lname, moodleid: mid, email, house, gender } = req.body;
 
-    const password = await bcrypt.hash(process.env.DEFAULT_STUDENT_PASSWORD, 10);
-    const firstTime = true;
+    const password = await bcrypt.hash(
+      process.env.DEFAULT_STUDENT_PASSWORD,
+      10
+    );
+    const firstTime = house !== "" ? false : true;
     const approved = true;
     const defaultPW = true;
     const ay = 20 + mid.slice(0, 2);
     const branch = "IT";
     const dse = mid.slice(2, 3) == 1 ? false : true; //22204016
-    const houseContr = 0;
 
     const userSchema = {
       mid: mid.toString(),
@@ -141,20 +142,13 @@ router.post(
       gender: gender.toString(),
       role: "S",
       XP: 0,
-      lastOnline: new Date(),
+      createdOn: new Date(),
       AY: parseInt(ay),
       dse,
       branch: branch.toString(),
-      rank: {
-        alltime: 0,
-        monthly: 0,
-      },
-      badges: [],
-      activity: [],
-      courses: [],
       house: {
         id: house,
-        contribution: houseContr,
+        points: {},
       },
       firstTime,
       approved,
@@ -162,9 +156,27 @@ router.post(
     };
 
     try {
+      const user = await userDB.findOne({ mid: mid.toString() });
+      if (user) {
+        return res.status(409).send({ message: "User already exists" });
+      }
+
       await userDB.insertOne(userSchema);
+      console.log(house.toString());
+      if (house !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(house.toString()) },
+          {
+            $push: {
+              members: mid.toString(),
+            },
+          }
+        );
+      }
+
       return res.status(200).send({ message: "Data inserted successfully" });
-    } catch {
+    } catch (error) {
+      console.log(error);
       logger.error({
         code: "ADM-STH-102",
         message: "Failed to add student",
@@ -185,6 +197,7 @@ router.post(
   body("gender").notEmpty().trim().escape(),
   async (req, res) => {
     const { fName, lName, mid, email, house, gender } = req.body;
+    const todaysYear = new Date().getFullYear();
 
     try {
       await userDB.updateOne(
@@ -196,15 +209,44 @@ router.post(
             email: email.toString(),
             house: {
               id: house.toString(),
-              contribution: 0,
+              points: {
+                [todaysYear]: 0,
+              },
             },
             gender: gender.toString(),
           },
         }
       );
 
+      const oldHouse = await userDB.findOne({ mid: mid.toString() });
+      console.log(house.toString());
+
+      if (oldHouse.house.id !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(oldHouse.house.id.toString()) },
+          {
+            $pull: {
+              members: mid.toString(),
+            },
+          }
+        );
+      }
+
+      if (house !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(house.toString()) },
+          {
+            $push: {
+              members: mid.toString(),
+            },
+          }
+        );
+
+      }
+     
       return res.status(200).send({ success: true });
     } catch (error) {
+      console.log(error);
       logger.error({
         code: "ADM-STH-103",
         message: "Failed to update student",
@@ -221,7 +263,21 @@ router.post(
   body("mid").notEmpty().withMessage("Moodle ID is required"),
   async (req, res) => {
     const { mid } = req.body;
+
+    console.log("OUTSIDE");
     try {
+      console.log("HELLO");
+      const user = await userDB.findOne({ mid: mid.toString() });
+
+      console.log(user.house.id.toString());
+      await houseDB.updateOne(
+        { _id: new ObjectId(user.house.id.toString()) },
+        {
+          $pull: {
+            members: mid.toString(),
+          },
+        }
+      );
       await userDB.deleteOne({ mid: mid.toString() });
       return res.status(200).send({ success: true });
     } catch (error) {
@@ -239,13 +295,28 @@ router.post(
 router.post("/bulkdelete", async (req, res) => {
   const { mids } = req.body;
   const midArr = [];
+  console.log(mids);
 
   mids.forEach((mid) => {
     mid.toString();
   });
 
   try {
-    await userDB.deleteMany({ mid: { $in: midArr } });
+    for (const mid of mids) {
+      const user = await userDB.findOne({ mid: mid.toString() });
+
+      if (user.house.id !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(user.house.id.toString()) },
+          {
+            $pull: {
+              members: mid.toString(),
+            },
+          }
+        );
+      }
+    }
+    await userDB.deleteMany({ mid: { $in: mids } });
     return res.status(200).send({ success: true });
   } catch (error) {
     logger.error({

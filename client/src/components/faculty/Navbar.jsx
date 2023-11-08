@@ -9,7 +9,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Link,
   MenuDivider,
   Box,
   useDisclosure,
@@ -35,9 +34,18 @@ import {
   Textarea,
   FormLabel,
   Text,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 
+import { Link } from "react-router-dom";
 const Navbar = () => {
+  const [moodle, setMoodle] = React.useState("");
+  const {
+    isOpen: isResetOpen,
+    onOpen: onResetOpen,
+    onClose: onResetClose,
+  } = useDisclosure();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isAlertOpen,
@@ -74,7 +82,7 @@ const Navbar = () => {
   useEffect(() => {
     try {
       fetch(
-        `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/receive`,
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/receive`,
         {
           method: "GET",
           credentials: "include",
@@ -87,7 +95,7 @@ const Navbar = () => {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "Error Fetching Notifications",
         status: "error",
@@ -111,7 +119,7 @@ const Navbar = () => {
 
   const addNotification = () => {
     onAlertClose();
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/add`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/add`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -139,7 +147,7 @@ const Navbar = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error Adding Notification",
           status: "error",
@@ -165,7 +173,7 @@ const Navbar = () => {
   const updateNotification = () => {
     onEditClose();
     fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/update`,
+      `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/update`,
       {
         method: "POST",
         credentials: "include",
@@ -202,17 +210,14 @@ const Navbar = () => {
 
   const deleteNotification = () => {
     onEditClose();
-    fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/admin/notifications/delete`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ notificationId: updateNotificationId }),
-      }
-    )
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}  /notifications/delete`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notificationId: updateNotificationId }),
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -234,21 +239,127 @@ const Navbar = () => {
       });
   };
 
+  const resetPassword = () => {
+    onResetClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/resetUser`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mid: moodle }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          toast({
+            title:
+              "Password Reset. Please Ask User to Login with Blank Password",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Password Not Reset",
+            description: data.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
+
   return (
-    <div className="navAdmin">
+    <div className="navFaculty">
       <div className="left-link">
         <div className="image">
           <img src={Logo} onClick={() => navigate("/faculty")} />
         </div>
+
+        <Menu>
+          <Box className="hidden">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <Link to="/faculty/certifications">
+              <MenuItem className="menuitem">My Certifications</MenuItem>
+            </Link>
+            <Link to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </Link>
+            <Link to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </Link>
+
+            {decoded.perms.includes("HCO0") ||
+            decoded.perms.includes("HCO1") ||
+            decoded.perms.includes("HCO2") ||
+            decoded.perms.includes("HCO3") ? (
+              <>
+                <Link to="/faculty/certificates">
+                  <MenuItem className="menuitem">Manage Certificates</MenuItem>
+                </Link>
+                <Link to="/faculty/enrollments">
+                  <MenuItem className="menuitem">Enrollment Requests</MenuItem>
+                </Link>
+              </>
+            ) : null}
+
+            {decoded.perms.includes("RSP") ? (
+              <>
+                <Link onClick={onResetOpen}>
+                  <MenuItem className="menuitem">
+                    Reset Student Password
+                  </MenuItem>
+                </Link>
+              </>
+            ) : null}
+
+            {decoded.perms.includes("AES") ? (
+              <>
+                <Link to="/faculty/students">
+                  <MenuItem className="menuitem">Manage Students</MenuItem>
+                </Link>
+              </>
+            ) : null}
+          </MenuList>
+        </Menu>
+
         <div className="links">
-          <Link onClick={() => navigate("/houses")}>Houses</Link>
-          <Link onClick={() => navigate("/events")}>Events</Link>
-          {decoded.perms.includes("HCO0" || "HCO1" || "HCO2" || "HCO3") ? (
+          <ChakraLink onClick={() => navigate("/faculty/certifications")}>
+            My Certifications
+          </ChakraLink>
+          <ChakraLink onClick={() => navigate("/houses")}>Houses</ChakraLink>
+          <ChakraLink onClick={() => navigate("/events")}>Events</ChakraLink>
+          {decoded.perms.includes("HCO0") ||
+          decoded.perms.includes("HCO1") ||
+          decoded.perms.includes("HCO2") ||
+          decoded.perms.includes("HCO3") ? (
             <>
-              <Link onClick={() => navigate("/faculty/certificates")}>
+              <ChakraLink onClick={() => navigate("/faculty/certificates")}>
                 Manage Certificates
-              </Link>
-              <Link onClick={() => navigate("/faculty/enrollments")}>Enrollment Requests</Link>
+              </ChakraLink>
+              <ChakraLink onClick={() => navigate("/faculty/enrollments")}>
+                Enrollment Requests
+              </ChakraLink>
+            </>
+          ) : null}
+
+          {decoded.perms.includes("RSP") ? (
+            <>
+              <ChakraLink onClick={onResetOpen}>
+                Reset Student Password
+              </ChakraLink>
+            </>
+          ) : null}
+
+          {decoded.perms.includes("AES") ? (
+            <>
+              <ChakraLink onClick={() => navigate("/faculty/students")}>
+                Manage Students
+              </ChakraLink>
             </>
           ) : null}
         </div>
@@ -262,14 +373,20 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+          <Text className="darker">
+            {decoded.fname} {decoded.lname}
+          </Text>
           <MenuButton>
             <Avatar src={picture} size="sm" />{" "}
           </MenuButton>
         </Box>
         <MenuList>
-          <Link onClick={() => navigate("/faculty/settings")}>
+          <ChakraLink onClick={() => navigate("/faculty/settings")}>
             <MenuItem>Settings</MenuItem>
-          </Link>
+          </ChakraLink>
+          <ChakraLink onClick={() => navigate("/feedback")}>
+            <MenuItem>Feedback</MenuItem>
+          </ChakraLink>
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>
@@ -281,52 +398,45 @@ const Navbar = () => {
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent className="drawer-studentNav">
           <DrawerCloseButton />
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
             {notifications.length === 0 ? (
-              <Alert status="info">
+              <Alert>
                 <AlertIcon />
                 No Notifications
               </Alert>
             ) : (
               notifications.map((notification) => (
                 <Alert
-                  status="info"
+                  status={notification.scope == "all" ? "info" : "warning"}
                   key={notification._id}
                   marginBottom="5px"
-                  className="notificationBody"
                 >
                   <AlertIcon />
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    width="100%"
-                  >
-                    <p>{notification.body}</p>
-                    <Text
-                      _hover={{
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                      }}
-                      onClick={() => {
-                        updateNotificationOpen(notification._id);
-                      }}
-                    >
-                      Manage
-                    </Text>
-                  </Box>
+
+                  <AlertDialogBody width="100%">
+                    {notification.body}
+                  </AlertDialogBody>
                 </Alert>
               ))
             )}
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onAlertOpen}>
-              Add Site Wide Notification
-            </Button>
+            {/*}  <Button variant="outline" mr={3} onClick={onClose}>
+              Clear All
+              </Button>{*/}
+            {decoded.perms.includes("HCO0") ||
+            decoded.perms.includes("HCO1") ||
+            decoded.perms.includes("HCO2") ||
+            decoded.perms.includes("HCO3") ? (
+              <Button colorScheme="blue" mr={3} onClick={onAlertOpen}>
+                Add House Wide Notification
+              </Button>
+            ) : null}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -339,11 +449,11 @@ const Navbar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Add Site Wide Notification
+              Add House Wide Notification
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Box className="alert-navAdmin-notification">
+              <Box className="alert-navFaculty-notification">
                 <Textarea
                   placeholder="Enter Notification Here"
                   resize="none"
@@ -382,11 +492,11 @@ const Navbar = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Update Site Wide Notification
+              Update House Wide Notification
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Box className="alert-navAdmin-notification">
+              <Box className="alert-navFaculty-notification">
                 <Textarea
                   placeholder="Enter Notification Here"
                   resize="none"
@@ -416,6 +526,42 @@ const Navbar = () => {
               </Button>
               <Button colorScheme="green" onClick={updateNotification} ml={3}>
                 Update
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isResetOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onResetClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Reset User Password
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              <Text mb="20px">
+                Enter Moodle ID of User to Reset Password Of
+              </Text>
+              <Input
+                type="text"
+                placeholder="Moodle ID"
+                width="20vw"
+                value={moodle}
+                onChange={(e) => setMoodle(e.target.value)}
+              />
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onResetClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={resetPassword} ml={3}>
+                Reset
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -1,0 +1,12 @@
+.FacultyEnrollments {
+  padding: 30px 70px;
+}
+
+@media screen and (max-width: 1090px) {
+  .FacultyEnrollments {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 960px) {
+}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Navbar.css";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Logo from "../../assets/img/logo-icon.png";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -10,7 +10,6 @@ import {
   MenuList,
   MenuItem,
   Link,
-  MenuDivider,
   Box,
   useDisclosure,
   Drawer,
@@ -35,6 +34,7 @@ import {
   Textarea,
   FormLabel,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 
 const Navbar = () => {
@@ -55,6 +55,7 @@ const Navbar = () => {
   const [notificationBody, setNotificationBody] = React.useState("");
   const [notificationExpiry, setNotificationExpiry] = React.useState("");
   const [update, setUpdate] = React.useState(false);
+  const [moodle, setMoodle] = React.useState("");
 
   const [updateNotificationBody, setUpdateNotificationBody] =
     React.useState("");
@@ -87,7 +88,7 @@ const Navbar = () => {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "Error Fetching Notifications",
         status: "error",
@@ -128,6 +129,8 @@ const Navbar = () => {
             duration: 3000,
             isClosable: true,
           });
+          setNotificationBody("");
+          setNotificationExpiry("");
           setUpdate(!update);
         } else {
           toast({
@@ -139,7 +142,7 @@ const Navbar = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error Adding Notification",
           status: "error",
@@ -234,20 +237,95 @@ const Navbar = () => {
       });
   };
 
+  const {
+    isOpen: isResetOpen,
+    onOpen: onResetOpen,
+    onClose: onResetClose,
+  } = useDisclosure();
+
+  const resetPassword = () => {
+    onResetClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/resetUser`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mid: moodle }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          toast({
+            title:
+              "Password Reset. Please Ask User to Login with Blank Password",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Password Not Reset",
+            description: data.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
+
   return (
     <div className="navAdmin">
       <div className="left-link">
         <div className="image">
           <img src={Logo} onClick={() => navigate("/admin")} />
         </div>
+
+        <Menu>
+          <Box className="mobile-menu">
+            <MenuButton>Pages</MenuButton>
+          </Box>
+          <MenuList className="menu">
+            <RouterLink to="/admin/students">
+              <MenuItem className="menuitem">Students</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/faculty">
+              <MenuItem className="menuitem">Faculty</MenuItem>
+            </RouterLink>
+            <RouterLink to="/houses">
+              <MenuItem className="menuitem">Houses</MenuItem>
+            </RouterLink>
+            <RouterLink to="/events">
+              <MenuItem className="menuitem">Events</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/certificates">
+              <MenuItem className="menuitem">Student Certificates</MenuItem>
+            </RouterLink>
+            <RouterLink to="/admin/faculty/certificates">
+              <MenuItem className="menuitem">Faculty Certificates</MenuItem>
+            </RouterLink>
+            <MenuItem onClick={onResetOpen} className="menuitem">
+              Reset User Password
+            </MenuItem>
+          </MenuList>
+        </Menu>
+
         <div className="links">
           <Link onClick={() => navigate("/admin/students")}>Students</Link>
           <Link onClick={() => navigate("/admin/faculty")}>Faculty</Link>
           <Link onClick={() => navigate("/houses")}>Houses</Link>
           <Link onClick={() => navigate("/events")}>Events</Link>
           <Link onClick={() => navigate("/admin/certificates")}>
-            Certificates
+            Student Certificates
           </Link>
+          <Link onClick={() => navigate("/admin/faculty/certificates")}>
+            Faculty Certificates
+          </Link>
+          <Link onClick={() => navigate("/admin/feedback")}>
+            Platform Feedback
+          </Link>
+          <Link onClick={onResetOpen}>Reset User Password</Link>
         </div>
       </div>
 
@@ -259,6 +337,7 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+            <Text className="darker">{decoded.fname} {decoded.lname}</Text>
           <MenuButton>
             <Avatar src={picture} size="sm" />{" "}
           </MenuButton>
@@ -289,13 +368,13 @@ const Navbar = () => {
           <DrawerHeader>Notifications</DrawerHeader>
 
           <DrawerBody className="drawerbody">
-            {notifications.length === 0 ? (
+            {notifications?.length === 0 ? (
               <Alert status="info">
                 <AlertIcon />
                 No Notifications
               </Alert>
             ) : (
-              notifications.map((notification) => (
+              notifications?.map((notification) => (
                 <Alert
                   status="info"
                   key={notification._id}
@@ -419,6 +498,42 @@ const Navbar = () => {
               </Button>
               <Button colorScheme="green" onClick={updateNotification} ml={3}>
                 Update
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isResetOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onResetClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Reset User Password
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              <Text mb="20px">
+                Enter Moodle ID of User to Reset Password Of
+              </Text>
+              <Input
+                type="text"
+                placeholder="Moodle ID"
+                width="20vw"
+                value={moodle}
+                onChange={(e) => setMoodle(e.target.value)}
+              />
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onResetClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={resetPassword} ml={3}>
+                Reset
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

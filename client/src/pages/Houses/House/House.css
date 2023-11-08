@@ -1,21 +1,33 @@
 .StudentHouse {
-  padding: 30px 12%;
+  padding: 30px 3%;
 }
 
 .StudentHouse .top {
   position: relative;
-  height: 370px;
+  height: 81vh;
+  background-color: var(--darker);
+  box-shadow: 0px 0px 10px 5px #8484843f;
+  border-radius: 20px;
 }
 
 .StudentHouse .cover {
   height: 200px;
   position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .StudentHouse .details {
   position: absolute;
-  margin-top: 90px;
+  margin-top: 100px;
   margin-left: 30px;
+  flex-direction: column;
+}
+
+.StudentHouse .details-inside {
+  flex-direction: row;
 }
 
 .StudentHouse .left {
@@ -24,26 +36,262 @@
 
 .StudentHouse .right {
   padding: 20px;
-  background-color: rgba(211, 211, 211, 0.068);
+  background-color: rgba(211, 211, 211, 0.426);
   box-shadow: 0px 0px 10px 0px #84848418;
 }
 
+.StudentHouse .table {
+  background: var(--darker);
+  box-shadow: 0px 0px 10px 5px #8484843f;
+}
+
 .StudentHouse .tableTitle {
-  background-color: #5800a040;
-  display: flex;
+  background-color: rgba(0, 0, 0, 0.359);
+  color: aliceblue;
   padding: 10px 20px;
 }
 
-/*
-.table-row {
-  margin-bottom: 10px; 
+.StudentHouse .logo {
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.StudentHouse td + td {
-  border-left: 1.5px solid #8484849c;
+.StudentHouse .logo:hover .logo-img {
+  filter: blur(20);
+  transition: 0.2s;
 }
 
-.StudentHouse tr {
-  border-bottom: 1.5px solid #8484849c;
+.StudentHouse .logo:hover .logo-overlay {
+  opacity: 0.5;
+  transition: 0.2s;
 }
-*/
+
+.StudentHouse .logo-overlay {
+  opacity: 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.StudentHouse .cover-wrapper {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.StudentHouse .cover-overlay {
+  opacity: 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.StudentHouse .cover-wrapper:hover .cover-overlay {
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 1250px) {
+  .StudentHouse {
+    padding: 30px 20px;
+  }
+
+  .StudentHouse .top {
+    position: relative;
+    height: 400px;
+  }
+
+  .StudentHouse .top img {
+    margin-top: 50px;
+  }
+
+  .StudentHouse .cover {
+    height: 120px;
+    position: relative;
+  }
+
+  .StudentHouse .details {
+    position: relative;
+    margin-top: 0px;
+    margin-left: 0px;
+    align-items: center;
+  }
+
+  .StudentHouse .details-inside {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .StudentHouse .name {
+    align-items: center;
+  }
+
+  .StudentHouse .details h2 {
+    text-align: center;
+    margin-bottom: 10px;
+
+    font-size: 32px;
+  }
+
+  .StudentHouse .desc {
+    flex-direction: column;
+  }
+
+  .StudentHouse .desc .left,
+  .StudentHouse .desc .right {
+    width: 100%;
+  }
+
+  .StudentHouse .table {
+    width: 90vw;
+    padding: 0;
+    margin: 0;
+    margin-top: 80px;
+    overflow-x: auto;
+  }
+}
+
+.StudentHouse .mychart {
+  background-color: var(--darker);
+  padding: 20px;
+  border-radius: 20px;
+  width: 37.5vw;
+  height: 37.5vh;
+  box-shadow: 0px 0px 10px 5px #8484843b;
+}
+
+@media screen and (max-width: 1024px) {
+}
+
+/*                 <Box>
+                        {editPrivilege ? (
+                          <Text cursor="pointer" onClick={onSettingsOpen}>
+                            <i className="fa-solid fa-pen"></i>
+                          </Text>
+                        ) : null}
+                        <Text fontSize="17.5px" fontWeight="500">
+                          {houses.members.length} Members
+                        </Text>
+                        <Text fontSize="17.5px" fontWeight="500">
+                          {totalpoints} Points
+                        </Text>
+                      </Box>*/
+
+/*         <Flex gap="20px">
+            <Box className="table" width="50%" mt="-20px">
+              <Box className="tableTitle">House Ranking</Box>
+              <Table variant="striped" color="#848484">
+                <Thead>
+                  <Tr>
+                    <Td>#</Td>
+                    <Td>Name</Td>
+                    <Td>Moodle ID</Td>
+                    <Td>Points</Td>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {members.slice(0, 5).map((member, index) => (
+                    <Tr key={member?.mid}>
+                      <Td>{index + 1}</Td>
+                      <Td>
+                        {member?.fname} {member?.lname}
+                      </Td>
+                      <Td>{member?.mid}</Td>
+                      <Td>{member?.totalPoints}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+
+              <Box
+                float="right"
+                height="32.8px"
+                borderBottom="1px solid #8484849c"
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-end"
+              >
+                <Text
+                  textTransform="lowercase"
+                  fontSize="15px"
+                  mr="15px"
+                  onClick={onOpen}
+                  cursor="pointer"
+                >
+                  View All
+                </Text>
+              </Box>
+            </Box>
+
+            <Box className="table" width="50%" mt="-20px">
+              <Box className="tableTitle">House Ranking</Box>
+              <Table variant="striped" color="#848484">
+                <Thead>
+                  <Tr>
+                    <Td>#</Td>
+                    <Td>Name</Td>
+                    <Td>Moodle ID</Td>
+                    <Td>Points</Td>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {members.slice(0, 5).map((member, index) => (
+                    <Tr key={member?.mid}>
+                      <Td>{index + 1}</Td>
+                      <Td>
+                        {member?.fname} {member?.lname}
+                      </Td>
+                      <Td>{member?.mid}</Td>
+                      <Td>{member?.totalPoints}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+
+              <Box
+                float="right"
+                height="32.8px"
+                borderBottom="1px solid #8484849c"
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-end"
+              >
+                <Text
+                  textTransform="lowercase"
+                  fontSize="15px"
+                  mr="15px"
+                  onClick={onOpen}
+                  cursor="pointer"
+                >
+                  View All
+                </Text>
+              </Box>
+            </Box>
+          </Flex>
+          
+          
+            <Box
+                  float="right"
+                  height="32.8px"
+                  borderBottom="1px solid #8484849c"
+                  width="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="flex-end"
+                >
+                  <Text
+                    textTransform="lowercase"
+                    fontSize="15px"
+                    mr="15px"
+                    onClick={onOpen}
+                    cursor="pointer"
+                  >
+                    View All
+                  </Text>
+                </Box>
+                
+                
+                
+                
+                
+                */

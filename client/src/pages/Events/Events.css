@@ -1,5 +1,5 @@
 .AdminEvents {
-  padding: 30px 70px;
+  padding: 0 70px 30px 70px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -8,8 +8,8 @@
 
 .AdminEvents .events {
   display: flex;
-  justify-content: flex-start;
-  gap: 20px;
+  justify-content: center;
+  gap: 50px;
   flex-wrap: wrap;
 }
 
@@ -24,4 +24,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   height: 200px;
   width: 25%;
+}
+
+@media screen and (max-width: 1250px) {
+  .AdminEvents {
+    padding: 30px 20px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
 }
