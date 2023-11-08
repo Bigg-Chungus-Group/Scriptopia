@@ -234,11 +234,7 @@ const Settings = () => {
   };
 
   const setDark = () => {
-    if (colorMode === "dark") {
-      toggleColorMode();
-    } else {
-      toggleColorMode();
-    }
+    toggleColorMode();
 
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/profile/updateTheme`, {
       method: "POST",

@@ -9,7 +9,7 @@ const socketConnection = () => {
     });
   });
 
-  io.on("disconnect", () => {a
+  io.on("disconnect", () => {
   });
 };
 

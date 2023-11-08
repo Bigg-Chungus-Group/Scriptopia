@@ -13,7 +13,7 @@
   cursor: pointer;
 }
 
-.navAdmin .darker {
+.navFaculty .darker {
   background-color: var(--name-bg);
   color: var(--text);
   margin-right: -20px;
