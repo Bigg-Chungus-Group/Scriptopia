@@ -154,6 +154,7 @@ const Enrollments = () => {
                 cursor="pointer"
                 onClick={() => openModal(enrollment?._id, index)}
                 alignSelf="center"
+                boxShadow="0px 0px 10px 0px rgba(0,0,0,0.2)"
               >
                 <CardBody>
                   <Stack mt="6" spacing="3">

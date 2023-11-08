@@ -98,7 +98,10 @@ const Certificates = () => {
   const prevPrevYear = year - 2;
   const prevPrevPrevYear = year - 3;
 
+  const [uploadLoading, setUploadLoading] = React.useState(false);
+
   const handleUpload = () => {
+    setUploadLoading(true);
     const uploadedCertificate = document.querySelector("#upload").files[0];
 
     const formData = new FormData();
@@ -185,9 +188,13 @@ const Certificates = () => {
               duration: 5000,
               isClosable: true,
             });
+          })
+          .finally(() => {
+            setUploadLoading(false);
           });
       }
     } else {
+      setUploadLoading(false);
       toast({
         title: "Error",
         description: "Please fill either URL or upload certificate",
@@ -250,7 +257,10 @@ const Certificates = () => {
               width="50%"
             />
 
-            <CheckboxGroup onChange={(e) => filterType(e)} defaultValue={["internal", "external"]}>
+            <CheckboxGroup
+              onChange={(e) => filterType(e)}
+              defaultValue={["internal", "external"]}
+            >
               <Checkbox value="internal">Internal</Checkbox>
               <Checkbox value="external">External</Checkbox>
             </CheckboxGroup>
@@ -490,7 +500,11 @@ const Certificates = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="green" onClick={handleUpload}>
+                <Button
+                  colorScheme="green"
+                  onClick={handleUpload}
+                  isLoading={uploadLoading}
+                >
                   Submit for Approval
                 </Button>
               </ModalFooter>

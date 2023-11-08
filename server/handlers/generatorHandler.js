@@ -29,11 +29,12 @@ router.post("/:id", verifyToken, async (req, res) => {
     });
     const certifications = await certificationsDB.find({ mid }).toArray();
     const events = [];
-    for (let event of user.events) {
-      const ePart = await eventsDB.findOne({ _id: new ObjectId(event.id) });
-      events.push(ePart);
+    if (user.events) {
+      for (let event of user?.events) {
+        const ePart = await eventsDB.findOne({ _id: new ObjectId(event.id) });
+        events.push(ePart);
+      }
     }
-
     res
       .status(200)
       .send({ allHouses, userHouse: userHouse, user, certifications, events });

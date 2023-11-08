@@ -237,11 +237,20 @@ router.post("/update", async (req, res) => {
         hno = 3;
       }
 
+      const house = await houseDB.findOne({ fc: mid.toString() });
+      if (house) {
+        await houseDB.updateOne(
+          { fc: mid.toString() },
+          { $pull: { fc: mid.toString() } }
+        );
+      }
+
       await houseDB.updateOne(
         { no: hno },
         { $push: { fc: mid.toString() } },
         { upsert: false }
       );
+      
     }
 
     return res.status(200).send({ success: true });

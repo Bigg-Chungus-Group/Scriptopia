@@ -16,7 +16,7 @@ const Guest = () => {
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/certificates/:id" element={<Certificate />} />
       <Route path="/profile/:id/generate/report" element={<Report />} />
-      <Route path="/profile/faculty/:id" element={<ProfileFaculty />} sensitive={true} />
+      <Route path="/profile/faculty/:id" element={<ProfileFaculty />} sensitive22204011={true} />
 
     </>
   );
