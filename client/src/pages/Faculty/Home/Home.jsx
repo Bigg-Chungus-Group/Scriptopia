@@ -574,7 +574,7 @@ const Home = () => {
                                 <Text>{cert?.certificateName}</Text>
                                 <Text fontSize="12px">{cert?.issuingOrg}</Text>
                               </Td>
-                              <Td>{cert?.points || "0"}</Td>
+                              <Td>{cert?.xp || "0"}</Td>
                               <Td>{cert?.submissionDate || null}</Td>
                               <Td>{cert?.status}</Td>
                             </Tr>

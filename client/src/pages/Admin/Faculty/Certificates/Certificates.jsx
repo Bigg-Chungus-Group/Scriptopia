@@ -95,6 +95,17 @@ const Certificates = () => {
   };
 
   const updateCert = () => {
+    if (action === "") {
+      toast({
+        title: "Error",
+        description: "Please select an action",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(
       `${
         import.meta.env.VITE_BACKEND_ADDRESS

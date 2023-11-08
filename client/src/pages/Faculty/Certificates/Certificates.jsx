@@ -81,7 +81,7 @@ const Certificates = () => {
   };
 
   const updateCert = () => {
-    if (action == "") {
+    if (action == undefined) {
       console.log(action)
       toast({
         title: "Error",

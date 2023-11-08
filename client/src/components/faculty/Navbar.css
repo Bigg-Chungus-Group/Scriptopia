@@ -13,6 +13,20 @@
   cursor: pointer;
 }
 
+.navAdmin .darker {
+  background-color: var(--name-bg);
+  color: var(--text);
+  margin-right: -20px;
+  padding-right: 35px;
+  padding-left: 15px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+
 .navFaculty i {
   font-size: 1.5rem;
   cursor: pointer;

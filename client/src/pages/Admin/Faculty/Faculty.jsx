@@ -77,7 +77,7 @@ const Faculty = () => {
   const [gender, setGender] = useState("");
   const [facOID, setFacOID] = useState("");
 
-  const [perms, setPerms] = React.useState([]);
+  const [perms, setPerms] = React.useState(["UFC"]);
 
   const {
     isOpen: isDeleteOpen,
@@ -530,7 +530,7 @@ const Faculty = () => {
                     <CheckboxGroup value={perms} onChange={(e) => setPerms(e)}>
                       <Tr>
                         <Td>
-                          <Checkbox value="UFC" readOnly checked>
+                          <Checkbox value="UFC" readOnly>
                             Upload Faculty Certificates
                           </Checkbox>
                         </Td>

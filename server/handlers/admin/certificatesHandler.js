@@ -8,7 +8,9 @@ import logger from "../../configs/logger.js";
 
 router.post("/", verifyToken, verifyAdminPrivilges, async (req, res) => {
   try {
-    const certificates = await certificationsDB.find({}).toArray();
+    const certificates = await certificationsDB
+      .find({ role: { $ne: "F" } })
+      .toArray();
     res.json({ certificates });
   } catch (error) {
     res.json({ error });

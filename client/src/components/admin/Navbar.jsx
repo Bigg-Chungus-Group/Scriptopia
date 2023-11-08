@@ -34,6 +34,7 @@ import {
   Textarea,
   FormLabel,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 
 const Navbar = () => {
@@ -336,6 +337,7 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+            <Text className="darker">{decoded.fname} {decoded.lname}</Text>
           <MenuButton>
             <Avatar src={picture} size="sm" />{" "}
           </MenuButton>

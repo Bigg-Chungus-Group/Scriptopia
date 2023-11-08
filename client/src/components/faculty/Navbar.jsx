@@ -81,10 +81,13 @@ const Navbar = () => {
 
   useEffect(() => {
     try {
-      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/receive`, {
-        method: "GET",
-        credentials: "include",
-      }).then((res) => {
+      fetch(
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/notifications/receive`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      ).then((res) => {
         if (res.status === 200) {
           res.json().then((data) => {
             setNotifications(data.notifications);
@@ -370,6 +373,9 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+          <Text className="darker">
+            {decoded.fname} {decoded.lname}
+          </Text>
           <MenuButton>
             <Avatar src={picture} size="sm" />{" "}
           </MenuButton>
@@ -404,7 +410,11 @@ const Navbar = () => {
               </Alert>
             ) : (
               notifications.map((notification) => (
-                <Alert status={notification.scope == "all" ? "info" : "warning"} key={notification._id} marginBottom="5px">
+                <Alert
+                  status={notification.scope == "all" ? "info" : "warning"}
+                  key={notification._id}
+                  marginBottom="5px"
+                >
                   <AlertIcon />
 
                   <AlertDialogBody width="100%">
