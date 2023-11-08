@@ -249,7 +249,8 @@ const Settings = () => {
       body: JSON.stringify({
         theme: colorMode === "dark" ? "light" : "dark",
       }),
-    });
+    }).then((res) => {});
+    window.location.reload();
   };
 
   if (!loading) {

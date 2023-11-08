@@ -112,7 +112,6 @@ const Forgot = () => {
     }).then((res) => {
       setLoading(false);
       if (res.status === 200) {
-        setStep(1);
         toast({
           title: "Password Set",
           description: "Password has been set",
@@ -120,6 +119,7 @@ const Forgot = () => {
           duration: 9000,
           isClosable: true,
         });
+        window.location.href = "/auth";
       } else if (res.status === 400) {
         toast({
           title: "Error",

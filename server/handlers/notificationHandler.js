@@ -14,16 +14,31 @@ router.post("/receive", verifyToken, async (req, res) => {
     const readNotifications = [];
 
     const notifications = await notificationDB
-      .find({ expiry: { $gte: dateToday }, scope: "all" })
+      .find({ expiry: { $gte: dateToday }, scope: { $in: ["all", mid] } })
       .toArray();
 
     const user = await userDB.findOne({ mid });
     const houseNotification = await notificationDB
-      .find({ expiry: { $gte: dateToday }, scope: user.house.id })
+      .find({
+        expiry: { $gte: dateToday },
+        "scope.houses": user.house.id,
+      })
       .toArray();
 
-    const notificationsArr = [...notifications, ...houseNotification];
-    console.log(notificationsArr);
+    let eventNotification;
+    if (user.registeredEvents) {
+      eventNotification = await notificationDB
+        .find({
+          expiry: { $gte: dateToday },
+          "scope.events": { $in: user.registeredEvents },
+        })
+        .toArray();
+    }
+    const notificationsArr = [
+      ...notifications,
+      ...houseNotification,
+      ...eventNotification,
+    ];
 
     res.send({ status: "success", notifications: notificationsArr });
   } catch (err) {

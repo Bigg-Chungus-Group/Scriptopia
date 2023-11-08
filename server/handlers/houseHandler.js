@@ -20,10 +20,10 @@ router.get("/:id", async (req, res) => {
         const memInfo = await userDB.findOne({ mid: member });
         return {
           mid: member,
-          fname: memInfo.fname,
-          lname: memInfo.lname,
-          pfp: memInfo.profilePicture,
-          contr: memInfo.house.points,
+          fname: memInfo?.fname,
+          lname: memInfo?.lname,
+          pfp: memInfo?.profilePicture,
+          contr: memInfo?.house.points,
         };
       });
 
@@ -31,16 +31,22 @@ router.get("/:id", async (req, res) => {
       const validMembers = memberResults.filter((result) => result !== null);
       members.push(...validMembers);
 
-      const facCord = await userDB.findOne({ mid: house.fc });
-      let facCordInfo = null;
-      if (facCord) {
-        facCordInfo = {
+      let facCordInfo = [];
+      if (!house.fc)
+        return res.status(200).json({ house, members, facCordInfo });
+      
+      for (const fc of house.fc) {
+        const facCord = await userDB.findOne({ mid: fc });
+
+        const finfo = {
           id: facCord._id,
           fname: facCord.fname,
           lname: facCord.lname,
           pfp: facCord.profilePicture,
           mid: facCord.mid,
         };
+
+        facCordInfo.push(finfo);
       }
 
       const studentCord = await userDB.findOne({ mid: house.sc });
@@ -60,6 +66,7 @@ router.get("/:id", async (req, res) => {
       res.status(404).send("House not found");
     }
   } catch (err) {
+    console.log(err);
     res.status(500).send(err);
     logger.error({ code: "HOH100", message: err, err });
   }
@@ -78,13 +85,12 @@ router.post("/:id/update", verifyToken, async (req, res) => {
   }
 
   try {
+
     await houseDB.updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
           name: name.toString(),
-          fc: fc.toString(),
-          sc: sc.toString(),
           color: color.toString(),
           abstract: abstract.toString(),
           desc: desc.toString(),

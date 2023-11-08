@@ -158,12 +158,12 @@ const House = () => {
         setStudentCord(data.studentCordInfo);
         setHid(data.house.no);
 
-        setHouseName(data.house.name);
-        setHouseColor(data.house.color);
-        setHouseAbstract(data.house.abstract);
-        setHouseDesc(data.house.desc);
-        setFacCordID(data.facCordInfo.mid);
-        setStudentCordID(data.studentCordInfo.mid);
+        setHouseName(data?.house.name);
+        setHouseColor(data?.house.color);
+        setHouseAbstract(data?.house.abstract);
+        setHouseDesc(data?.house.desc);
+        setFacCordID(data?.facCordInfo?.mid);
+        setStudentCordID(data?.studentCordInfo?.mid);
         setBanner(data.house.banner);
 
         setLogo(data.house.logo);
@@ -172,7 +172,7 @@ const House = () => {
         console.error(err);
         toast({
           title: "Error",
-          description: "Something went wrong",
+          description: data.msg,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -186,9 +186,9 @@ const House = () => {
 
       for (const month in houses.points[currentYear]) {
         const points =
-          houses.points[currentYear][month].internal +
-          houses.points[currentYear][month].external +
-          houses.points[currentYear][month].events;
+          houses.points[currentYear][month].internal ?? 0 +
+          houses.points[currentYear][month].external ?? 0 +
+          houses.points[currentYear][month].events ?? 0;
         setTotalPoints((prev) => prev + points);
         setInternalPoints(
           (prev) => prev + houses.points[currentYear][month].internal
@@ -199,15 +199,12 @@ const House = () => {
         setEventPoints(
           (prev) => prev + houses.points[currentYear][month].events
         );
-
-        console.log(houses.points[currentYear][month]);
       }
     }
   }, [houses]);
 
   useEffect(() => {
     if (members) {
-      console.log(members);
       members.forEach((member) => {
         let totalPoints = 0;
         for (const year in member.contr) {
@@ -229,13 +226,7 @@ const House = () => {
   });
 
   const updateHouse = () => {
-    if (
-      !houseName ||
-      !houseColor ||
-      !houseAbstract ||
-      !facCordID ||
-      !studentCordID
-    ) {
+    if (!houseName || !houseColor || !houseAbstract) {
       toast({
         title: "Error",
         description: "Please fill all the required fields",
@@ -272,11 +263,12 @@ const House = () => {
           isClosable: true,
         });
         setUpdate((prev) => !prev);
-        return await res.json();
+        return;
       } else {
+        const data = await res.json();
         toast({
           title: "Error",
-          description: "Something went wrong",
+          description: data.msg,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -388,7 +380,10 @@ const House = () => {
     document.getElementById("bannerfile").click();
   };
 
+  const [logoLoading, setLogoLoading] = useState(false);
+
   const saveLogo = () => {
+    setLogoLoading(true);
     const canvas = logoRef.current
       .getImageScaledToCanvas()
       .toDataURL("image/png");
@@ -396,31 +391,39 @@ const House = () => {
       method: "POST",
       credentials: "include",
       body: canvas,
-    }).then(async (res) => {
-      if (res.status === 200) {
-        toast({
-          title: "Success",
-          description: "Logo updated successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        setUpdate((prev) => !prev);
-        return await res.json();
-      } else {
-        toast({
-          title: "Error",
-          description: "Something went wrong",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    });
-    onLogoClose();
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          toast({
+            title: "Success",
+            description: "Logo updated successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          setUpdate((prev) => !prev);
+          return await res.json();
+        } else {
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      })
+      .finally(() => {
+        setLogoLoading(false);
+        onLogoClose();
+        window.location.reload();
+      });
   };
 
+  const [bannerLoading, setBannerLoading] = useState(false);
+
   const saveBanner = () => {
+    setBannerLoading(true);
     const canvas = bannerRef.current
       .getImageScaledToCanvas()
       .toDataURL("image/png");
@@ -428,28 +431,33 @@ const House = () => {
       method: "POST",
       credentials: "include",
       body: canvas,
-    }).then(async (res) => {
-      if (res.status === 200) {
-        toast({
-          title: "Success",
-          description: "Banner updated successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        setUpdate((prev) => !prev);
-        return await res.json();
-      } else {
-        toast({
-          title: "Error",
-          description: "Something went wrong",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    });
-    onBannerClose();
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
+          toast({
+            title: "Success",
+            description: "Banner updated successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          setUpdate((prev) => !prev);
+          return await res.json();
+        } else {
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      })
+      .finally(() => {
+        setBannerLoading(false);
+        onBannerClose();
+        window.location.reload();
+      });
   };
 
   if (houses) {
@@ -578,31 +586,39 @@ const House = () => {
                             ></i>
                           ) : null}
                         </Heading>
-                        <Flex align="center" gap="10px">
-                          <a>
-                            <Text
-                              fontSize="15px"
-                              _hover={{
-                                textDecor: "underline",
-                                cursor: "pointer",
-                              }}
-                            >
-                              @{facCord?.fname} {facCord?.lname}
-                            </Text>
-                          </a>
+                        <Flex align="center" gap="10px" direction="column">
+                          <Flex gap="10px">
+                            {facCord.map((fac) => (
+                              <Text
+                                key={fac?.mid}
+                                fontSize="15px"
+                                _hover={{
+                                  textDecor: "underline",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() =>
+                                  navigate(`/profile/faculty/${fac?.mid}`)
+                                }
+                              >
+                                @{fac?.fname} {fac?.lname}
+                              </Text>
+                            ))}
+                          </Flex>
 
-                          <a href="">
-                            <i className="fa-brands fa-linkedin"></i>
-                          </a>
-                          <a href="">
-                            <i className="fa-brands fa-instagram"></i>
-                          </a>
-                          <a href="">
-                            <i className="fa-brands fa-twitter"></i>
-                          </a>
+                          <Flex gap="10px">
+                            <a href="">
+                              <i className="fa-brands fa-linkedin"></i>
+                            </a>
+                            <a href="">
+                              <i className="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="">
+                              <i className="fa-brands fa-twitter"></i>
+                            </a>
+                          </Flex>
                         </Flex>
                       </Flex>
-                      <Box height="180px" mt="50px">
+                      <Box height="180px" mt="20px">
                         <Heading fontSize="20px">{houses?.abstract}</Heading>
                         <Text overflowY="auto" mt="5px" pr="20px" width="50vw">
                           {houses?.desc}
@@ -829,7 +845,7 @@ const House = () => {
               </FormControl>
 
               <Flex gap="20px">
-                <FormControl>
+                {/*}<FormControl>
                   <FormLabel>Faculty Coordinator Moodle ID*</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>@</InputLeftAddon>
@@ -850,9 +866,9 @@ const House = () => {
                       ></i>{" "}
                     </InputRightElement>
                   </InputGroup>
-                </FormControl>
+                    </FormControl>{*/}
 
-                <FormControl>
+                {/*} <FormControl>
                   <FormLabel>Student Coordinator Moodle ID*</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>@</InputLeftAddon>
@@ -865,7 +881,7 @@ const House = () => {
                       }}
                     />
                   </InputGroup>
-                </FormControl>
+                    </FormControl>{*/}
               </Flex>
             </ModalBody>
 
@@ -949,7 +965,9 @@ const House = () => {
               <Button colorScheme="blue" mr={3} onClick={onLogoClose}>
                 Close
               </Button>{" "}
-              <Button onClick={saveLogo}>Set</Button>
+              <Button onClick={saveLogo} isLoading={logoLoading}>
+                Set
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -998,7 +1016,9 @@ const House = () => {
               <Button colorScheme="blue" mr={3} onClick={onBannerClose}>
                 Close
               </Button>
-              <Button onClick={saveBanner}>Set</Button>
+              <Button onClick={saveBanner} isLoading={bannerLoading}>
+                Set
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

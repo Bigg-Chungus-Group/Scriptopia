@@ -48,7 +48,7 @@ import "./Event.css";
 
 import { Link as domLink, useNavigate, useNavigation } from "react-router-dom";
 import Houses from "../../Houses/Houses";
-import papa from "papaparse"
+import papa from "papaparse";
 
 const Event = () => {
   const navigate = useNavigate();
@@ -77,7 +77,6 @@ const Event = () => {
     onOpen: onParticipantsOpen,
     onClose: onParticipantsClose,
   } = useDisclosure();
-  
 
   const [eventName, setEventName] = useState("");
   const [eventImage, setEventImage] = useState("");
@@ -262,7 +261,7 @@ const Event = () => {
       });
       return;
     }
-    if (eventEnds < date) {
+    /*if (eventEnds < date) {
       toast({
         title: "Error",
         description: "Event End Date cannot be before today",
@@ -272,7 +271,7 @@ const Event = () => {
       });
 
       return;
-    }
+    }*/
 
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/events/${event._id}/update`,
@@ -476,8 +475,10 @@ const Event = () => {
 
   const viewParticipants = () => {};
 
+  const [allocateLoading, setAllocateLoading] = useState(false);
+
   const allocate = () => {
-    console.error("REQUEST SENDING");
+    setAllocateLoading(true);
     fetch(
       `${import.meta.env.VITE_BACKEND_ADDRESS}/events/${event._id}/allocate`,
       {
@@ -491,7 +492,6 @@ const Event = () => {
     )
       .then(async (res) => await res.json())
       .then((res) => {
-        console.error("REQUEST SENT");
         if (res.status === "success") {
           toast({
             title: "Success",
@@ -521,7 +521,7 @@ const Event = () => {
           duration: 5000,
           isClosable: true,
         });
-      });
+      }).finally(() => setAllocateLoading(false));
   };
 
   const exportCSV = () => {
@@ -532,7 +532,7 @@ const Event = () => {
     tempLink.href = csvURL;
     tempLink.setAttribute("download", "participants.csv");
     tempLink.click();
-  }
+  };
 
   if (!loading) {
     return (
@@ -725,7 +725,7 @@ const Event = () => {
                   mr="10px"
                   colorScheme="green"
                   onClick={onParticipantsOpen}
-                >
+                > 
                   View Participants
                 </Button>
 
@@ -786,6 +786,8 @@ const Event = () => {
                 onClick={deregister}
                 isLoading={deregisterLoading}
               >
+                {console.log(event.registerationEnds)}
+                {console.log(date)}
                 De-register from this Event
               </Button>
             ) : (
@@ -1091,14 +1093,18 @@ const Event = () => {
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button onClick={onAllocateClose}>Cancel</Button>
-              <Button colorScheme="red" ml={3} onClick={allocate}>
+              <Button colorScheme="red" ml={3} onClick={allocate} isLoading={allocateLoading}>
                 Allocate!
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        <Modal isOpen={isParticipantsOpen} onClose={onParticipantsClose} size="3xl">
+        <Modal
+          isOpen={isParticipantsOpen}
+          onClose={onParticipantsClose}
+          size="3xl"
+        >
           <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Participants</ModalHeader>
@@ -1116,7 +1122,9 @@ const Event = () => {
                     return (
                       <Tr key={participant.mid}>
                         <Td>{participant?.mid}</Td>
-                        <Td>{participant?.fname} {participant?.lname}</Td>
+                        <Td>
+                          {participant?.fname} {participant?.lname}
+                        </Td>
                       </Tr>
                     );
                   })}

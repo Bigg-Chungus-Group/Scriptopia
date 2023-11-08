@@ -32,7 +32,7 @@ router.post("/:id", async (req, res) => {
       code: "STU-DSH-100",
       message: "Error fetching dashboard data",
       err: error.message,
-      mid: req.user.mid,
+      mid: req?.user?.mid,
     });
     res.status(500).send({ success: false });
   }

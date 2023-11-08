@@ -63,6 +63,12 @@ const Faculty = () => {
     onClose: onPermsClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isAlertDeleteOpen,
+    onOpen: onAlertDeleteOpen,
+    onClose: onAlertDeleteClose,
+  } = useDisclosure();
+
   const [delItem, setDelItem] = useState({});
   const [mid, setMid] = useState("");
   const [fname, setFname] = useState("");
@@ -122,6 +128,27 @@ const Faculty = () => {
   const deleteCustomer = (id) => {
     setDelItem(id);
     onDeleteOpen();
+  };
+
+  const alertDelete = (id) => {
+    let fac;
+    faculty.filter((faculty) => {
+      if (faculty.mid === delItem) {
+        fac = faculty;
+      }
+    });
+
+    console.log(fac);
+   if (
+      fac?.perms?.includes("HCO0") ||
+      fac?.perms?.includes("HCO1") ||
+      fac?.perms?.includes("HCO2") ||
+      fac?.perms?.includes("HCO3")
+    ) {
+      onAlertDeleteOpen();
+    } else {
+      confirmDelete();
+    }
   };
 
   const confirmDelete = () => {
@@ -318,7 +345,6 @@ const Faculty = () => {
                       onClick={() =>
                         navigate(`/profile/faculty/${faculty.mid}`)
                       }
-
                       textDecor="underline"
                       cursor="pointer"
                     >
@@ -448,6 +474,35 @@ const Faculty = () => {
 
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={onDeleteClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme="red" onClick={alertDelete} ml={3}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
+        <AlertDialog
+          isOpen={isAlertDeleteOpen}
+          leastDestructiveRef={cancelDeleteRef}
+          onClose={onAlertDeleteClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Delete House Coordinator
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                This faculty is a house coordinator. Please assign another house
+                coordinator immediately or before deleting to avoid
+                crashes.
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onAlertDeleteClose}>
                   Cancel
                 </Button>
                 <Button colorScheme="red" onClick={confirmDelete} ml={3}>
