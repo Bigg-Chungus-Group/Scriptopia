@@ -450,7 +450,7 @@ const Faculty = () => {
               >
                 Configure Permissions
               </Button>
-              <Button variant="ghost" onClick={() => updateFaculty(facOID)}>
+              <Button variant="ghost" onClick={() => updateFaculty()}>
                 Update
               </Button>
             </ModalFooter>

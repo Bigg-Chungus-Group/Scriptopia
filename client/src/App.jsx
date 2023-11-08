@@ -54,7 +54,6 @@ function App() {
         <Routes>
           {maintainanceMode ? (
             <>
-              // * When Maintainance Mode is Enabled
               <Route path="*" element={<Fzt />} />
               <Route path="/auth" element={<Auth />} />
               {Admin()}

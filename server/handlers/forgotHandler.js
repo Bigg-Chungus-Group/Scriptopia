@@ -36,7 +36,6 @@ router.post("/send", async (req, res) => {
     
 
     const templateParams = {
-      to: email.email,
       o: otp[0],
       t: otp[1],
       tt: otp[2],

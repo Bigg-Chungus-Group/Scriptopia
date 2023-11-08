@@ -1,4 +1,3 @@
-0;
 import React, { useEffect } from "react";
 import Navbar from "../../../components/faculty/Navbar/";
 import {
