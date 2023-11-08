@@ -28,6 +28,7 @@ import {
   AlertDialogBody,
   useToast,
   Avatar,
+  Text,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
@@ -38,6 +39,7 @@ const Navbar = () => {
   const token = Cookies.get("token");
   const [notifications, setNotifications] = React.useState([]);
   const [picture, setPicture] = React.useState(null);
+  const decoded = jwt_decode(token);
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -209,6 +211,9 @@ const Navbar = () => {
             ref={btnRef}
             onClick={onOpen}
           ></i>{" "}
+          <Text className="darker">
+            {decoded.fname} {decoded.lname}
+          </Text>
           {picture ? (
             <MenuButton>
               <Avatar src={picture} size="sm" />{" "}

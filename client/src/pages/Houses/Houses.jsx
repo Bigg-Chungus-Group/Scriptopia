@@ -83,9 +83,12 @@ const Houses = () => {
           const { internal, external, events } = monthlyPoints[month];
 
           // Add them to their respective totals
-          totalInternalPoints += internal;
-          totalExternalPoints += external;
-          totalEventsPoints += events;
+          if (internal) totalInternalPoints += internal;
+          else totalInternalPoints += 0;
+          if (external) totalExternalPoints += external;
+          else totalExternalPoints += 0;
+          if (events) totalEventsPoints += events;
+          else totalEventsPoints += 0;
         }
       }
     }
@@ -112,27 +115,59 @@ const Houses = () => {
         house4 = calculateTotalPoints(houses[3]);
 
         house1 =
-          house1.totalInternal + house1.totalExternal + house1.totalEvents;
+          house1?.totalInternal ??
+          0 + house1?.totalExternal ??
+          0 + house1?.totalEvents ??
+          0;
         house2 =
-          house2.totalInternal + house2.totalExternal + house2.totalEvents;
+          house2?.totalInternal ??
+          0 + house2?.totalExternal ??
+          0 + house2?.totalEvents ??
+          0;
         house3 =
-          house3.totalInternal + house3.totalExternal + house3.totalEvents;
+          house3?.totalInternal ??
+          0 + house3?.totalExternal ??
+          0 + house3?.totalEvents ??
+          0;
         house4 =
-          house4.totalInternal + house4.totalExternal + house4.totalEvents;
+          house4?.totalInternal ??
+          0 + house4?.totalExternal ??
+          0 + house4?.totalEvents ??
+          0;
       } else {
         const currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         currentYear = currentYear.toString();
 
-        house1 = houses[0]?.points[2023] ? houses[0]?.points[2023][selectedMonth] : 0;
-        house2 = houses[1]?.points[2023] ? houses[1]?.points[2023][selectedMonth] : 0;
-        house3 = houses[2]?.points[2023] ? houses[2]?.points[2023][selectedMonth] : 0;
-        house4 = houses[3]?.points[2023] ? houses[3]?.points[2023][selectedMonth] : 0;
+        house1 = houses[0]?.points[2023]
+          ? houses[0]?.points[2023][selectedMonth]
+          : 0;
+        house2 = houses[1]?.points[2023]
+          ? houses[1]?.points[2023][selectedMonth]
+          : 0;
+        house3 = houses[2]?.points[2023]
+          ? houses[2]?.points[2023][selectedMonth]
+          : 0;
+        house4 = houses[3]?.points[2023]
+          ? houses[3]?.points[2023][selectedMonth]
+          : 0;
 
-        house1 = house1.internal + house1.external + house1.events;
-        house2 = house2.internal + house2.external + house2.events;
-        house3 = house3.internal + house3.external + house3.events;
-        house4 = house4.internal + house4.external + house4.events;
+        house1 =
+          (house1?.internal ?? 0) +
+          (house1?.external ?? 0) +
+          (house1?.events ?? 0);
+        house2 =
+          (house2?.internal ?? 0) +
+          (house2?.external ?? 0) +
+          (house2?.events ?? 0);
+        house3 =
+          (house3?.internal ?? 0) +
+          (house3?.external ?? 0) +
+          (house3?.events ?? 0);
+        house4 =
+          (house4?.internal ?? 0) +
+          (house4?.external ?? 0) +
+          (house4?.events ?? 0);
       }
 
       const houseLeaderboard = document.getElementById("monthly");
@@ -162,7 +197,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
-              borderRadius: 10
+              borderRadius: 10,
             },
           ],
         },
@@ -238,10 +273,14 @@ const Houses = () => {
         house3 = houses[2].points[2023] ? houses[2].points[2023][prevMonth] : 0;
         house4 = houses[3].points[2023] ? houses[3].points[2023][prevMonth] : 0;
 
-        house1 = house1?.internal + house1?.external + house1?.events;
-        house2 = house2?.internal + house2?.external + house2?.events;
-        house3 = house3?.internal + house3?.external + house3?.events;
-        house4 = house4?.internal + house4?.external + house4?.events;
+        house1 =
+          house1?.internal ?? 0 + house1?.external ?? 0 + house1?.events ?? 0;
+        house2 =
+          house2?.internal ?? 0 + house2?.external ?? 0 + house2?.events ?? 0;
+        house3 =
+          house3?.internal ?? 0 + house3?.external ?? 0 + house3?.events ?? 0;
+        house4 =
+          house4?.internal ?? 0 + house4?.external ?? 0 + house4?.events ?? 0;
       }
 
       const houseLeaderboard = document?.getElementById("prev");
@@ -271,7 +310,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
-              borderRadius: 10
+              borderRadius: 10,
             },
           ],
         },
@@ -330,13 +369,21 @@ const Houses = () => {
       house4 = calculateTotalPoints(houses[3]);
 
       house1 =
-        house1?.totalInternal + house1?.totalExternal + house1?.totalEvents;
+        (house1?.totalInternal ?? 0) +
+        (house1?.totalExternal ?? 0) +
+        (house1?.totalEvents ?? 0);
       house2 =
-        house2?.totalInternal + house2?.totalExternal + house2?.totalEvents;
+        (house2?.totalInternal ?? 0) +
+        (house2?.totalExternal ?? 0) +
+        (house2?.totalEvents ?? 0);
       house3 =
-        house3?.totalInternal + house3?.totalExternal + house3?.totalEvents;
+        (house3?.totalInternal ?? 0) +
+        (house3?.totalExternal ?? 0) +
+        (house3?.totalEvents ?? 0);
       house4 =
-        house4?.totalInternal + house4?.totalExternal + house4?.totalEvents;
+        (house4?.totalInternal ?? 0) +
+        (house4?.totalExternal ?? 0) +
+        (house4?.totalEvents ?? 0);
 
       const houseLeaderboard = document.getElementById("yearly");
       hcl = new Chart(houseLeaderboard, {
@@ -365,7 +412,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
-              borderRadius: 10
+              borderRadius: 10,
             },
           ],
         },
@@ -495,13 +542,7 @@ const Houses = () => {
                 </Box>
               </Box>
 
-              <Box
-                
-                p="20px"
-                width="32%"
-                className="graphs"
-                height="65vh"
-              >
+              <Box p="20px" width="32%" className="graphs" height="65vh">
                 <Text
                   fontSize="25px"
                   mb="50px"

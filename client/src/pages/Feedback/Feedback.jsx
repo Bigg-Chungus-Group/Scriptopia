@@ -26,7 +26,7 @@ const Feedback = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ rating, review: wfeedback }),
+      body: JSON.stringify({ rating, review: feedback }),
     })
       .then((res) => {
         if (res.status === 200) {

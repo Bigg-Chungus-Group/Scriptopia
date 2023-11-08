@@ -190,7 +190,6 @@ const House = () => {
           (houses.points[currentYear][month].external ?? 0) +
           (houses.points[currentYear][month].events ?? 0);
 
-        console.log(points);
         setTotalPoints((prev) => prev + points);
         setInternalPoints(
           (prev) => prev + houses.points[currentYear][month].internal
@@ -205,21 +204,24 @@ const House = () => {
     }
   }, [houses]);
 
+  const [updateMembers, setUpdateMembers] = useState(false);
+
   useEffect(() => {
     if (members) {
+      let newArr = [];
       members.forEach((member) => {
         let totalPoints = 0;
         for (const year in member.contr) {
           for (const month in member.contr[year]) {
             const points =
-              member.contr[year][month]?.internal ??
-              0 + member.contr[year][month]?.external ??
-              0 + member.contr[year][month]?.events ??
-              0;
+              (member.contr[year][month]?.internal ?? 0) +
+              (member.contr[year][month]?.external ?? 0) +
+              (member.contr[year][month]?.events ?? 0);
             const p = parseInt(points);
             totalPoints += p;
           }
         }
+        // member.totalPoints = parseInt(totalPoints);
         member.totalPoints = parseInt(totalPoints);
       });
 
@@ -330,8 +332,9 @@ const House = () => {
 
   useEffect(() => {
     let myPieChart;
+
     if (houses) {
-      if (internalPoints !== 0 && externalPoints !== 0 && eventPoints !== 0) {
+      if (internalPoints !== undefined && externalPoints !== undefined && eventPoints !== undefined) {
         var ctx = document.getElementById("myChart").getContext("2d");
         var data = {
           labels: ["Internal Points", "External Points", "Event Points"],
