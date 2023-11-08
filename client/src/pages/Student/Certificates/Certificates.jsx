@@ -254,9 +254,10 @@ const Certificates = () => {
               width="50%"
             />
 
-            <CheckboxGroup onChange={(e) => filterType(e)}>
+            <CheckboxGroup onChange={(e) => filterType(e)} defaultValue={["internal", "external", "events"]}>
               <Checkbox value="internal">Internal</Checkbox>
               <Checkbox value="external">External</Checkbox>
+              <Checkbox value="events">Events</Checkbox>
             </CheckboxGroup>
           </Flex>
           <Box className="table">

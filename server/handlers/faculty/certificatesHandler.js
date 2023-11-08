@@ -76,7 +76,9 @@ router.post("/update", verifyToken, async (req, res) => {
     const month = monthNames[currentMonthIndex];
     const certType = cert.certificateType;
 
-    await userDB.updateOne(
+    console.log
+
+    const update = await userDB.updateOne(
       { mid: cert.mid },
       {
         $inc: {
@@ -85,6 +87,8 @@ router.post("/update", verifyToken, async (req, res) => {
         },
       }
     );
+
+    console.log(update);
 
     await houseDB.updateOne(
       { _id: new ObjectId(cert.house) },

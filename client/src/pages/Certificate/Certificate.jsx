@@ -468,15 +468,17 @@ const Certificate = () => {
                   certificate?.issuingOrg?.slice(1)}
               </Text>
 
-              <Button
-                colorScheme="green"
-                onClick={handleDownload}
-                isLoading={loader3}
-                width="fit-content"
-                alignSelf="center"
-              >
-                Download / View Certificate
-              </Button>
+              {certificate.uploadType !== "print" ? (
+                <Button
+                  colorScheme="green"
+                  onClick={handleDownload}
+                  isLoading={loader3}
+                  width="fit-content"
+                  alignSelf="center"
+                >
+                  Download / View Certificate
+                </Button>
+              ) : null}
               {certificate.uploadType === "file" ? (
                 <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
                   Verify Hashes
@@ -756,138 +758,161 @@ const Certificate = () => {
             <GuestNavbar />
           )}
           <Box className="StudentCertificate">
-            <Box className="info" display="flex" flexDir="column" gap="15px">
-              <Text textAlign="center">
-                {certificate?.certificateType?.charAt(0).toUpperCase() +
-                  certificate?.certificateType?.slice(1)}{" "}
-                Certification -{" "}
-                {certificate?.certificateLevel?.charAt(0).toUpperCase() +
-                  certificate?.certificateLevel?.slice(1)}{" "}
-                Level
-              </Text>
-              <Text textAlign="center" mt="-17px">
-                Uploaded By {certificate.name}
-              </Text>
-              {certificate?.expires === "true" ? (
-                !calculateExpiry() ? (
-                  <Text color="red" textAlign="center" mt="-17px">
-                    Certificate Expired On{" "}
-                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
-                      certificate?.expiryMonth.slice(1)}{" "}
-                    {certificate?.expiryYear}
-                  </Text>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignContent="center"
+              height="80vh"
+            >
+              <Box className="info" display="flex" flexDir="column" gap="15px">
+                <Text textAlign="center">
+                  {certificate?.certificateType?.charAt(0).toUpperCase() +
+                    certificate?.certificateType?.slice(1)}{" "}
+                  Certification -{" "}
+                  {certificate?.certificateLevel?.charAt(0).toUpperCase() +
+                    certificate?.certificateLevel?.slice(1)}{" "}
+                  Level
+                </Text>
+                <Text textAlign="center" mt="-17px">
+                  Uploaded By {certificate.name}
+                </Text>
+                {certificate?.expires === "true" ? (
+                  !calculateExpiry() ? (
+                    <Text color="red" textAlign="center" mt="-17px">
+                      Certificate Expired On{" "}
+                      {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                        certificate?.expiryMonth.slice(1)}{" "}
+                      {certificate?.expiryYear}
+                    </Text>
+                  ) : (
+                    <Text color="green" textAlign="center" mt="-17px">
+                      Certificate Expires On{" "}
+                      {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
+                        certificate?.expiryMonth.slice(1)}{" "}
+                      {certificate?.expiryYear}
+                    </Text>
+                  )
+                ) : null}
+                <Heading textAlign="center">
+                  {certificate?.certificateName?.charAt(0).toUpperCase() +
+                    certificate?.certificateName?.slice(1)}{" "}
+                </Heading>
+                <Text textAlign="center">
+                  By{" "}
+                  {certificate?.issuingOrg?.charAt(0).toUpperCase() +
+                    certificate?.issuingOrg?.slice(1)}
+                </Text>
+                {certificate.uploadType !== "print" ? (
+                  <Button
+                    colorScheme="green"
+                    onClick={handleDownload}
+                    isLoading={loader3}
+                    width="fit-content"
+                    alignSelf="center"
+                  >
+                    Download / View Certificate
+                  </Button>
                 ) : (
-                  <Text color="green" textAlign="center" mt="-17px">
-                    Certificate Expires On{" "}
-                    {certificate?.expiryMonth.slice(0, 1).toUpperCase() +
-                      certificate?.expiryMonth.slice(1)}{" "}
-                    {certificate?.expiryYear}
-                  </Text>
-                )
-              ) : null}
-              <Heading textAlign="center">
-                {certificate?.certificateName?.charAt(0).toUpperCase() +
-                  certificate?.certificateName?.slice(1)}{" "}
-              </Heading>
-              <Text textAlign="center">
-                By{" "}
-                {certificate?.issuingOrg?.charAt(0).toUpperCase() +
-                  certificate?.issuingOrg?.slice(1)}
-              </Text>
+                  <Button
+                    colorScheme="green"
+                    onClick={() => window.print()}
+                    isLoading={loader3}
+                    width="fit-content"
+                    alignSelf="center"
+                  >
+                    Print Certificate
+                  </Button>
+                )}
+                {certificate.uploadType === "file" ? (
+                  <Link
+                    textAlign="center"
+                    color="blue.600"
+                    onClick={onHashOpen}
+                  >
+                    Verify Hashes
+                  </Link>
+                ) : null}
 
-              <Button
-                colorScheme="green"
-                onClick={handleDownload}
-                isLoading={loader3}
-                width="fit-content"
-                alignSelf="center"
-              >
-                Download / View Certificate
-              </Button>
-              {certificate.uploadType === "file" ? (
-                <Link textAlign="center" color="blue.600" onClick={onHashOpen}>
-                  Verify Hashes
-                </Link>
-              ) : null}
+                <Text textAlign="center">
+                  Issued On{" "}
+                  {certificate?.issueMonth?.charAt(0).toUpperCase() +
+                    certificate?.issueMonth?.slice(1)}{" "}
+                  {certificate?.issueYear}
+                </Text>
+              </Box>
 
-              <Text textAlign="center">
-                Issued On{" "}
-                {certificate?.issueMonth?.charAt(0).toUpperCase() +
-                  certificate?.issueMonth?.slice(1)}{" "}
-                {certificate?.issueYear}
-              </Text>
-            </Box>
+              <Box className="track-wrapper">
+                <Flex align="center" justify="center" mt="20px">
+                  <Stepper
+                    index={activeStep}
+                    width="50vw"
+                    alignSelf="center"
+                    colorScheme={colorStatus}
+                    mb="20px"
+                  >
+                    {steps?.map((step, index) => (
+                      <Step key={index}>
+                        <StepIndicator>
+                          <StepStatus
+                            complete={<StepIcon />}
+                            incomplete={<StepNumber />}
+                            active={<StepNumber />}
+                          />
+                        </StepIndicator>
 
-            <Box className="track-wrapper">
-              <Flex align="center" justify="center" mt="20px">
-                <Stepper
-                  index={activeStep}
-                  width="50vw"
-                  alignSelf="center"
-                  colorScheme={colorStatus}
-                  mb="20px"
-                >
-                  {steps?.map((step, index) => (
-                    <Step key={index}>
-                      <StepIndicator>
-                        <StepStatus
-                          complete={<StepIcon />}
-                          incomplete={<StepNumber />}
-                          active={<StepNumber />}
-                        />
-                      </StepIndicator>
+                        <Box flexShrink="0">
+                          <StepTitle>{step?.title}</StepTitle>
+                          <StepDescription>{step?.description}</StepDescription>
+                        </Box>
 
-                      <Box flexShrink="0">
-                        <StepTitle>{step?.title}</StepTitle>
-                        <StepDescription>{step?.description}</StepDescription>
-                      </Box>
+                        <StepSeparator />
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Flex>
+              </Box>
 
-                      <StepSeparator />
-                    </Step>
-                  ))}
-                </Stepper>
-              </Flex>
-            </Box>
+              <Box className="comments" mb="20px">
+                <Textarea
+                  readOnly
+                  resize="none"
+                  value={
+                    certificate?.comments
+                      ? certificate?.comments
+                      : "No Comments Yet"
+                  }
+                />
+              </Box>
 
-            <Box className="comments" mb="20px">
-              <Textarea
-                readOnly
-                resize="none"
-                value={
-                  certificate?.comments
-                    ? certificate?.comments
-                    : "No Comments Yet"
-                }
-              />
-            </Box>
-
-            <Box className="buttons">
-              {certificate?.status !== "approved" && editPrivilege ? (
-                <Button colorScheme="blue" onClick={onEditOpen}>
-                  Edit Certificate
-                </Button>
-              ) : editPrivilege ? (
-                <>
-                  <Text color="green" fontWeight="500">
-                    Your House Earned{" "}
-                    {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
-                    this Certificate
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text color="green" fontWeight="500">
-                    {certificate.name} Earned{" "}
-                    {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
-                    this Certificate
-                  </Text>
-                </>
-              )}{" "}
-              {editPrivilege ? (
-                <Button colorScheme="red" onClick={onOpen}>
-                  Delete Certificate
-                </Button>
-              ) : null}
+              <Box className="buttons">
+                {certificate?.status !== "approved" && editPrivilege ? (
+                  <Button colorScheme="blue" onClick={onEditOpen}>
+                    Edit Certificate
+                  </Button>
+                ) : editPrivilege ? (
+                  <>
+                    <Text color="green" fontWeight="500">
+                      Your House Earned{" "}
+                      {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
+                      this Certificate
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text color="green" fontWeight="500">
+                      {certificate.name} Earned{" "}
+                      {certificate?.xp ? certificate?.xp + " XP" : "0 XP"} from
+                      this Certificate
+                    </Text>
+                  </>
+                )}{" "}
+                {editPrivilege && certificate?.status !== "approved" ? (
+                  <Button colorScheme="red" onClick={onOpen}>
+                    Delete Certificate
+                  </Button>
+                ) : null}
+              </Box>
             </Box>
 
             <AlertDialog

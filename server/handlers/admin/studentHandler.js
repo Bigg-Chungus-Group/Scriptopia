@@ -84,19 +84,12 @@ router.post("/import", async (req, res) => {
         gender: gender.toString(),
         AY: parseInt(20 + mid.slice(0, 2)),
         dse: dse,
+        createdOn: new Date(),
         branch: branch.toString(),
         house: {
           id: "64eb6fe4826e49f72ada177f",
-          contribution: 0,
+          points: {},
         },
-        rank: {
-          alltime: 0,
-          monthly: 0,
-        },
-        badges: [],
-        activity: [],
-        courses: [],
-
         firstTime,
         approved,
         defaultPW,
@@ -138,7 +131,6 @@ router.post(
     const ay = 20 + mid.slice(0, 2);
     const branch = "IT";
     const dse = mid.slice(2, 3) == 1 ? false : true; //22204016
-    const houseContr = 0;
 
     const userSchema = {
       mid: mid.toString(),
@@ -150,20 +142,13 @@ router.post(
       gender: gender.toString(),
       role: "S",
       XP: 0,
-      lastOnline: new Date(),
+      createdOn: new Date(),
       AY: parseInt(ay),
       dse,
       branch: branch.toString(),
-      rank: {
-        alltime: 0,
-        monthly: 0,
-      },
-      badges: [],
-      activity: [],
-      courses: [],
       house: {
         id: house,
-        contribution: houseContr,
+        points: {},
       },
       firstTime,
       approved,
@@ -236,26 +221,32 @@ router.post(
       const oldHouse = await userDB.findOne({ mid: mid.toString() });
       console.log(house.toString());
 
-      await houseDB.updateOne(
-        { _id: new ObjectId(oldHouse.house.id.toString()) },
-        {
-          $pull: {
-            members: mid.toString(),
-          },
-        }
-      );
+      if (oldHouse.house.id !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(oldHouse.house.id.toString()) },
+          {
+            $pull: {
+              members: mid.toString(),
+            },
+          }
+        );
+      }
 
-      await houseDB.updateOne(
-        { _id: new ObjectId(house.toString()) },
-        {
-          $push: {
-            members: mid.toString(),
-          },
-        }
-      );
+      if (house !== "") {
+        await houseDB.updateOne(
+          { _id: new ObjectId(house.toString()) },
+          {
+            $push: {
+              members: mid.toString(),
+            },
+          }
+        );
 
+      }
+     
       return res.status(200).send({ success: true });
     } catch (error) {
+      console.log(error);
       logger.error({
         code: "ADM-STH-103",
         message: "Failed to update student",

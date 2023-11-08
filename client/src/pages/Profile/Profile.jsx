@@ -690,7 +690,7 @@ const Profile = () => {
   };
 
   const generateReport = () => {
-    navigator("generate/report")
+    navigator(`/profile/${mid}/generate/report`)
   };
 
   if (!loading) {
@@ -1035,6 +1035,9 @@ const Profile = () => {
                       <Td>{certification?.certificateType}</Td>
                       <Td>
                         {certification?.issueMonth} {certification.issueYear}
+                      </Td>
+                      <Td _hover={{cursor: "pointer", textDecor: "underline"}} onClick={() => navigator(`/certificates/${certification._id}`)}>
+                        View
                       </Td>
                     </Tr>
                   ))}

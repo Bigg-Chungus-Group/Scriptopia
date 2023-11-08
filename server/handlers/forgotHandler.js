@@ -78,7 +78,6 @@ router.post("/verify", async (req, res) => {
     }
 
     if (otpData.otp === otp) {
-      await otpDB.deleteOne({ mid });
       res.status(200).json({ message: "OTP Verified" });
     } else {
       res.status(400).json({ message: "OTP Incorrect" });

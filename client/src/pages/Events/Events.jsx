@@ -172,11 +172,11 @@ const Events = () => {
       });
       return;
     }
-    if (eventStarts < date) {
+    /* if (eventStarts < date) {
       toast({
         title: "Error",
         description: "Event Start Date cannot be before today",
-        status: "error",
+        status: "error  ",
         duration: 5000,
         isClosable: true,
       });
@@ -193,7 +193,7 @@ const Events = () => {
 
       return;
     }
-
+*/
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/events/create`, {
       method: "POST",
       credentials: "include",
@@ -278,22 +278,28 @@ const Events = () => {
 
   const filterEvents = (e) => {
     const query = e;
-    if (query.length === 0) {
+    if (query.length === 3) {
       setFilteredEvents(events); // Reset the events to their original state
       return;
     }
 
-    const fe = events.filter((event) => {
+    let fe = [];
+
+    events.filter((event) => {
       if (query.includes("active")) {
-        return (
-          event?.eventStarts < date &&
-          event?.eventEnds > date &&
-          event?.registerationEnds > date
-        );
-      } else if (query.includes("upcoming")) {
-        return event?.eventStarts > date;
-      } else if (query.includes("expired")) {
-        return event?.eventEnds < date;
+        if (event?.eventStarts < date && event?.eventEnds > date) {
+          fe.push(event);
+        }
+      }
+      if (query.includes("upcoming")) {
+        if (event?.eventStarts > date) {
+          fe.push(event);
+        }
+      }
+      if (query.includes("expired")) {
+        if (event?.eventEnds < date) {
+          fe.push(event);
+        }
       }
     });
     setFilteredEvents(fe);
@@ -324,6 +330,7 @@ const Events = () => {
             <CheckboxGroup
               colorScheme="green"
               onChange={(e) => filterEvents(e)}
+              defaultValue={["active", "upcoming", "expired"]}
             >
               <Checkbox value="active">Active</Checkbox>
               <Checkbox value="upcoming">Upcoming</Checkbox>

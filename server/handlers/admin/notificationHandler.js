@@ -11,7 +11,9 @@ router.post("/add", async (req, res) => {
     await notificationDB.insertOne({
       body: notificationBody.toString(),
       expiry: new Date(notificationExpiry),
-      scope: "all",
+      scope: {
+        all: true,
+      },
     });
 
     io.emit("onNotification");

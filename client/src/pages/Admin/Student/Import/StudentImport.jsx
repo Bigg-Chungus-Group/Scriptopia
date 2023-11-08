@@ -45,6 +45,32 @@ const StudentImport = () => {
 
   const startImport = () => {
     setAdding(true);
+    tableData.forEach((row) => {
+      if (row.length !== 5) {
+        toast({
+          title: "Error",
+          description: "Invalid CSV File",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setAdding(false);
+        return;
+      }
+
+      if (row[0].length !== 8) {
+        toast({
+          title: "Error",
+          description: "Invalid Student ID",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setAdding(false);
+        return;
+      }
+    });
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/import`, {
       method: "POST",
       credentials: "include",

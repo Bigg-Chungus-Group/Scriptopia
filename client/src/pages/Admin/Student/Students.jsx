@@ -177,6 +177,7 @@ const Students = () => {
             duration: 5000,
             isClosable: true,
           });
+          console.log(data.error);
         } else {
           toast({
             title: "Success",

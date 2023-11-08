@@ -50,6 +50,17 @@ const StudentAdd = ({ setModal, houses }) => {
       gender: gender,
     };
 
+    if(moodleid.length !== 8) {
+      toast({
+        title: "Error",
+        description: "Moodle ID must be 8 digits",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/add`, {
       method: "POST",
       credentials: "include",

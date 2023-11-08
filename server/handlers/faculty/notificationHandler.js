@@ -18,11 +18,14 @@ router.post("/add", async (req, res) => {
     }
 
     const { notificationBody, notificationExpiry } = req.body;
+    const notificationB = "House Notification: " + notificationBody.toString();
     const house = await houseDB.findOne({ no: hno });
     await notificationDB.insertOne({
-      body: notificationBody.toString(),
+      body: notificationB,
       expiry: new Date(notificationExpiry),
-      scope: house._id.toString(),
+      scope: {
+        houses: [house._id.toString()],
+      },
     });
 
     res

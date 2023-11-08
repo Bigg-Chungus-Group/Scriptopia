@@ -25,20 +25,19 @@ const Home = () => {
   const [certifications, setCertifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedHouse, setSelectedHouse] = useState(0);
-  
 
   function calculateTotalPoints(data, year) {
     const currentDate = new Date();
-    const currentYear = year || currentDate.getFullYear(); // Get the current year
+    const currentYear = year || currentDate?.getFullYear(); // Get the current year
 
     let totalInternalPoints = 0;
     let totalExternalPoints = 0;
     let totalEventsPoints = 0;
 
-    if (data && data.points && data.points[currentYear.toString()]) {
-      const monthlyPoints = data.points[currentYear.toString()];
+    if (data && data?.points && data?.points[currentYear?.toString()]) {
+      const monthlyPoints = data?.points[currentYear?.toString()];
       for (const month in monthlyPoints) {
-        if (monthlyPoints.hasOwnProperty(month)) {
+        if (monthlyPoints?.hasOwnProperty(month)) {
           // Separate internal, external, and events points
           const { internal, external, events } = monthlyPoints[month];
 
@@ -67,8 +66,8 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setHouses(data.houses);
-        setCertifications(data.certifications);
+        setHouses(data?.houses);
+        setCertifications(data?.certifications);
         setLoading(false);
       })
       .catch((err) => {
@@ -84,28 +83,32 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const housePoints = document.getElementById("housePoints");
+    const housePoints = document?.getElementById("housePoints");
     if (!loading) {
       let house1 = calculateTotalPoints(houses[0]);
-      house1 = house1.totalInternal + house1.totalExternal + house1.totalEvents;
+      house1 =
+        house1?.totalInternal + house1?.totalExternal + house1?.totalEvents;
 
       let house2 = calculateTotalPoints(houses[1]);
-      house2 = house2.totalInternal + house2.totalExternal + house2.totalEvents;
+      house2 =
+        house2?.totalInternal + house2?.totalExternal + house2?.totalEvents;
 
       let house3 = calculateTotalPoints(houses[2]);
-      house3 = house3.totalInternal + house3.totalExternal + house3.totalEvents;
+      house3 =
+        house3?.totalInternal + house3?.totalExternal + house3?.totalEvents;
 
       let house4 = calculateTotalPoints(houses[3]);
-      house4 = house4.totalInternal + house4.totalExternal + house4.totalEvents;
+      house4 =
+        house4?.totalInternal + house4?.totalExternal + house4?.totalEvents;
 
       const housePointChart = new Chart(housePoints, {
         type: "bar",
         data: {
           labels: [
-            houses[0].name,
-            houses[1].name,
-            houses[2].name,
-            houses[3].name,
+            houses[0]?.name,
+            houses[1]?.name,
+            houses[2]?.name,
+            houses[3]?.name,
           ],
           datasets: [
             {
@@ -115,10 +118,10 @@ const Home = () => {
               barPercentage: 5,
               categoryPercentage: 0.1,
               backgroundColor: [
-                houses[0].color,
-                houses[1].color,
-                houses[2].color,
-                houses[3].color,
+                houses[0]?.color,
+                houses[1]?.color,
+                houses[2]?.color,
+                houses[3]?.color,
               ],
               borderRadius: 5,
             },
@@ -150,14 +153,14 @@ const Home = () => {
 
       return () => {
         if (housePointChart) {
-          housePointChart.destroy();
+          housePointChart?.destroy();
         }
       };
     }
   }, [houses]);
 
   useEffect(() => {
-    const cert = document.getElementById("certifications");
+    const cert = document?.getElementById("certifications");
     if (!loading) {
       let fe = 0;
       let se = 0;
@@ -165,11 +168,11 @@ const Home = () => {
       let be = 0;
       for (const certification of certifications) {
         const { mid } = certification; // 22204016 /
-        const year = `20${mid.slice(0, 2)}`; // 22
-        const dse = parseInt(mid.slice(2, 3)); // 2
+        const year = `20${mid?.slice(0, 2)}`; // 22
+        const dse = parseInt(mid?.slice(2, 3)); // 2
 
         const currentDate = new Date();
-        const currentYear = currentDate.getFullYear(); // Get the current year
+        const currentYear = currentDate?.getFullYear(); // Get the current year
 
         let ay = currentYear - parseInt(year) + 1;
         if (dse === 2) {
@@ -235,7 +238,7 @@ const Home = () => {
 
       return () => {
         if (certChart) {
-          certChart.destroy();
+          certChart?.destroy();
         }
       };
     }
@@ -243,77 +246,134 @@ const Home = () => {
 
   useEffect(() => {
     const currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    currentYear = currentYear.toString();
+    let currentYear = currentDate?.getFullYear();
+    currentYear = currentYear?.toString();
 
     let selectedHouseChart;
 
-    if (!loading) {
+    if (!loading && selectedHouse !== null && houses?.length > 0) {
       const jan =
-        houses[selectedHouse].points[currentYear.toString()]["january"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["january"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["january"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.january
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.january
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.january
+            ?.events ??
+        0;
       const feb =
-        houses[selectedHouse].points[currentYear.toString()]["february"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["february"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["february"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.february
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.february
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.february
+            ?.events ??
+        0;
       const mar =
-        houses[selectedHouse].points[currentYear.toString()]["march"].internal +
-        houses[selectedHouse].points[currentYear.toString()]["march"].external +
-        houses[selectedHouse].points[currentYear.toString()]["march"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.march
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.march
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.march
+            ?.events ??
+        0;
       const apr =
-        houses[selectedHouse].points[currentYear.toString()]["april"].internal +
-        houses[selectedHouse].points[currentYear.toString()]["april"].external +
-        houses[selectedHouse].points[currentYear.toString()]["april"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.april
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.april
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.april
+            ?.events ??
+        0;
       const may =
-        houses[selectedHouse].points[currentYear.toString()]["may"].internal +
-        houses[selectedHouse].points[currentYear.toString()]["may"].external +
-        houses[selectedHouse].points[currentYear.toString()]["may"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.may
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.may
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.may
+            ?.events ??
+        0;
       const jun =
-        houses[selectedHouse].points[currentYear.toString()]["june"].internal +
-        houses[selectedHouse].points[currentYear.toString()]["june"].external +
-        houses[selectedHouse].points[currentYear.toString()]["june"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.june
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.june
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.june
+            ?.events ??
+        0;
       const jul =
-        houses[selectedHouse].points[currentYear.toString()]["july"].internal +
-        houses[selectedHouse].points[currentYear.toString()]["july"].external +
-        houses[selectedHouse].points[currentYear.toString()]["july"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.july
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.july
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.july
+            ?.events ??
+        0;
       const aug =
-        houses[selectedHouse].points[currentYear.toString()]["august"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["august"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["august"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.august
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.august
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.august
+            ?.events ??
+        0;
       const sep =
-        houses[selectedHouse].points[currentYear.toString()]["september"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["september"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["september"]
-          .events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.september
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.september
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.september
+            ?.events ??
+        0;
       const oct =
-        houses[selectedHouse].points[currentYear.toString()]["october"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["october"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["october"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.october
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.october
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.october
+            ?.events ??
+        0;
       const nov =
-        houses[selectedHouse].points[currentYear.toString()]["november"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["november"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["november"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.november
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.november
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.november
+            ?.events ??
+        0;
       const dec =
-        houses[selectedHouse].points[currentYear.toString()]["december"]
-          .internal +
-        houses[selectedHouse].points[currentYear.toString()]["december"]
-          .external +
-        houses[selectedHouse].points[currentYear.toString()]["december"].events;
+        houses[selectedHouse]?.points[currentYear?.toString()]?.december
+          ?.internal ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.december
+            ?.external ??
+        0 +
+          houses[selectedHouse]?.points[currentYear?.toString()]?.december
+            ?.events ??
+        0;
 
-      const houseAssesment = document.getElementById("houseAssesment");
+      const houseAssesment = document?.getElementById("houseAssesment");
       selectedHouseChart = new Chart(houseAssesment, {
         type: "line",
         data: {
@@ -383,7 +443,7 @@ const Home = () => {
 
     return () => {
       if (selectedHouseChart) {
-        selectedHouseChart.destroy();
+        selectedHouseChart?.destroy();
       }
     };
   }, [loading, selectedHouse]);
@@ -419,13 +479,20 @@ const Home = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {certifications.slice(0, 3).map((certification) => {
+                  {certifications?.slice(0, 3)?.map((certification) => {
                     return (
-                      <Tr key={certification._id}>
-                        <Td>{certification.name}</Td>
-                        <Td whiteSpace="nowrap" maxW="50px" overflow="hidden" textOverflow="ellipsis">{certification.certificateName}</Td>
-                        <Td>{certification.submittedYear}</Td>
-                        <Td>{certification.status}</Td>
+                      <Tr key={certification?._id}>
+                        <Td>{certification?.name}</Td>
+                        <Td
+                          whiteSpace="nowrap"
+                          maxW="50px"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                        >
+                          {certification?.certificateName}
+                        </Td>
+                        <Td>{certification?.submittedYear}</Td>
+                        <Td>{certification?.status}</Td>
                       </Tr>
                     );
                   })}
@@ -443,14 +510,14 @@ const Home = () => {
                   </Text>
                   <Select
                     width="150px"
-                    onChange={(e) => setSelectedHouse(e.target.value)}
+                    onChange={(e) => setSelectedHouse(e?.target?.value)}
                     variant="filled"
                     colorScheme="green"
                   >
-                    {houses.map((house, index) => {
+                    {houses?.map((house, index) => {
                       return (
-                        <option key={house._id} value={index}>
-                          {house.name}
+                        <option key={house?._id} value={index}>
+                          {house?.name}
                         </option>
                       );
                     })}
@@ -467,7 +534,7 @@ const Home = () => {
       </>
     );
   } else {
-    return <Loader/>
+    return <Loader />;
   }
 };
 

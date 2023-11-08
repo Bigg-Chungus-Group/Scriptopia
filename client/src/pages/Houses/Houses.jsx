@@ -63,8 +63,6 @@ const Houses = () => {
     setSelectedMonth(monthNames[currentMonth + 1]);
     setPrevMonth(monthNames[currentMonth]);
 
-    console.error(monthNames[currentMonth + 1]);
-
     const currentYear = currentDate.getFullYear();
     setCurrentYear(currentYear);
   }, []);
@@ -126,10 +124,10 @@ const Houses = () => {
         let currentYear = currentDate.getFullYear();
         currentYear = currentYear.toString();
 
-        house1 = houses[0].points[2023][selectedMonth];
-        house2 = houses[1].points[2023][selectedMonth];
-        house3 = houses[2].points[2023][selectedMonth];
-        house4 = houses[3].points[2023][selectedMonth];
+        house1 = houses[0]?.points[2023] ? houses[0]?.points[2023][selectedMonth] : 0;
+        house2 = houses[1]?.points[2023] ? houses[1]?.points[2023][selectedMonth] : 0;
+        house3 = houses[2]?.points[2023] ? houses[2]?.points[2023][selectedMonth] : 0;
+        house4 = houses[3]?.points[2023] ? houses[3]?.points[2023][selectedMonth] : 0;
 
         house1 = house1.internal + house1.external + house1.events;
         house2 = house2.internal + house2.external + house2.events;
@@ -235,10 +233,10 @@ const Houses = () => {
         let currentYear = currentDate?.getFullYear();
         currentYear = currentYear?.toString();
 
-        house1 = houses[0].points[2023][prevMonth];
-        house2 = houses[1].points[2023][prevMonth];
-        house3 = houses[2].points[2023][prevMonth];
-        house4 = houses[3].points[2023][prevMonth];
+        house1 = houses[0].points[2023] ? houses[0].points[2023][prevMonth] : 0;
+        house2 = houses[1].points[2023] ? houses[1].points[2023][prevMonth] : 0;
+        house3 = houses[2].points[2023] ? houses[2].points[2023][prevMonth] : 0;
+        house4 = houses[3].points[2023] ? houses[3].points[2023][prevMonth] : 0;
 
         house1 = house1?.internal + house1?.external + house1?.events;
         house2 = house2?.internal + house2?.external + house2?.events;

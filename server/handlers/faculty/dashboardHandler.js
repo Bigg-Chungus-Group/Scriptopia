@@ -29,7 +29,7 @@ Router.post("/", verifyToken, async (req, res) => {
 
     let userHouse;
     let certifications;
-    if (hno) {
+    if (hno !== undefined) {
       userHouse = await houseDB.findOne({
         no: hno,
       });

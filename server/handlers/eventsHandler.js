@@ -1,5 +1,11 @@
 import express from "express";
-import { eventsDB, userDB, houseDB } from "../configs/mongo.js";
+import {
+  eventsDB,
+  userDB,
+  houseDB,
+  notificationDB,
+  certificationsDB,
+} from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 import { verifyPerms } from "./verifyPermissions.js";
@@ -29,14 +35,16 @@ router.get("/:id", async (req, res) => {
     const event = await eventsDB.findOne({ _id: new ObjectId(id) });
     const registered = event.registered;
     const regInfo = [];
-    for (const element of registered) {
-      const result = await userDB.findOne({ mid: element });
-      regInfo.push({
-        fname: result.fname,
-        lname: result.lname,
-        mid: result.mid,
-        id: result._id,
-      });
+    if (registered) {
+      for (const element of registered) {
+        const result = await userDB.findOne({ mid: element });
+        regInfo.push({
+          fname: result.fname,
+          lname: result.lname,
+          mid: result.mid,
+          id: result._id,
+        });
+      }
     }
 
     event.participants = regInfo;
@@ -47,6 +55,7 @@ router.get("/:id", async (req, res) => {
       res.status(404).json({ message: "Event not found" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error in getting event" });
   }
 });
@@ -69,8 +78,10 @@ router.post(
       eventStarts,
       eventEnds,
       registerationStarts,
-      registeratinEnds,
+      registerationEnds,
     } = req.body;
+
+    console.log(registerationEnds);
 
     try {
       await eventsDB.updateOne(
@@ -88,7 +99,7 @@ router.post(
             eventStarts: new Date(eventStarts),
             eventEnds: new Date(eventEnds),
             registerationStarts: new Date(registerationStarts),
-            registeratinEnds: new Date(registeratinEnds),
+            registerationEnds: new Date(registerationEnds),
           },
         }
       );
@@ -159,6 +170,7 @@ router.post("/create", verifyToken, verifyPerms("MHI"), async (req, res) => {
       registerationEnds: new Date(registerationEnds),
       createdAt: new Date(),
       registerationType: registerationMode.toString(),
+      pointsAllocated: false,
     };
 
     if (registerationMode === "internal") {
@@ -186,6 +198,12 @@ router.post("/:id/register", verifyToken, async (req, res) => {
       { _id: new ObjectId(id) },
       { $addToSet: { registered: mid } }
     );
+
+    await userDB.updateOne(
+      { mid: mid },
+      { $addToSet: { registeredEvents: id } }
+    );
+
     res.status(200).json({ status: "success" });
   } catch (error) {
     res.status(500).json({ message: "Error in registering for event" });
@@ -206,6 +224,9 @@ router.post("/:id/deregister", verifyToken, async (req, res) => {
       { _id: new ObjectId(id) },
       { $pull: { registered: mid } }
     );
+
+    await userDB.updateOne({ mid: mid }, { $pull: { registeredEvents: id } });
+
     res.status(200).json({ status: "success" });
   } catch (error) {
     res.status(500).json({ message: "Error in registering for event" });
@@ -261,12 +282,31 @@ router.post(
           {
             $inc: {
               [houseString]: parseInt(points),
-              "certificates.internal": 1,
+              "certificates.event": 1,
             },
           }
         );
 
         const user = await userDB.findOne({ mid: participant });
+
+        await certificationsDB.insertOne({
+          mid: participant,
+          certificateName: event.name.toString() + " Participant",
+          issuingOrg: "APSIT",
+          issueMonth: monthName,
+          issueYear: currentYear,
+          certificateType: "event",
+          certificateLevel: "Department",
+          uploadType: "print",
+          status: "approved",
+          name: user.fname + " " + user.lname,
+          submittedMonth: monthName,
+          submittedYear: currentYear,
+          type: "internal",
+          xp: parseInt(points),
+          date: new Date(),
+        });
+
         const userhouse = user.house;
 
         await houseDB.updateOne(
@@ -287,6 +327,20 @@ router.post(
           }
         );
       }
+
+      const date = new Date();
+      const threedays = date.getTime() + 86400000 * 3;
+      const ISOString = new Date(threedays).toISOString();
+
+      await notificationDB.insertOne({
+        body: `Points for ${event.name} Event have been allocated. You got ${points} points.`,
+        expiry: new Date(ISOString),
+        scope: {
+          all: false,
+          houses: [],
+          events: [event._id.toString()],
+        },
+      });
 
       res.status(200).json({ status: "success" });
     } catch (error) {

@@ -179,7 +179,8 @@ const Settings = () => {
           theme: colorMode === "dark" ? "light" : "dark",
         }),
       }
-    );
+    ).then((res) => {});
+    window.location.reload();
   };
 
   useEffect(() => {

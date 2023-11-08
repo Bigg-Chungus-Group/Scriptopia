@@ -123,7 +123,6 @@ const Enrollments = () => {
         return res.json();
       })
       .then((data) => {
-        console.error(data);
         setUpdate(!update);
         onClose();
       })
