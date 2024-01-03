@@ -21,6 +21,7 @@ router.post("/", verifyToken, async (req, res) => {
       err: err.message,
       mid: req.user.mid,
     });
+    console.log(err);
     res.status(401).send("Invalid Token");
   }
 });
@@ -36,6 +37,29 @@ router.post("/updatePW", verifyToken, async (req, res) => {
 
     const oldMatch = await bcrypt.compare(oldPass, result.password);
     if (!oldMatch) {
+      return res.status(401).send();
+    }
+
+    function isPasswordValid(password) {
+      if (password.length < 9) {
+        return false;
+      }
+      if (!/[A-Z]/.test(password)) {
+        return false;
+      }
+      if (!/[a-z]/.test(password)) {
+        return false;
+      }
+      if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
+        return false;
+      }
+      if (!/\d/.test(password)) {
+        return false;
+      }
+      return true;
+    }
+
+    if (!isPasswordValid(newPass)) {
       return res.status(401).send();
     }
 
@@ -58,5 +82,23 @@ router.post("/updatePW", verifyToken, async (req, res) => {
     res.status(401).send("Invalid Token");
   }
 });
+
+router.post("/updateTheme", async (req, res) => {
+  const { theme } = req.body;
+  try {
+    await userDB.updateOne(
+      { mid: req.user.mid },
+      { $set: { colorMode: theme } }
+    );
+  } catch (error) {
+    logger.error({
+      code: "STU-PRF-102",
+      message: "Error updating theme",
+      err: err.message,
+      mid: req.user.mid,
+    });
+    res.status(401).send("Invalid Token");
+  }
+})
 
 export default router;

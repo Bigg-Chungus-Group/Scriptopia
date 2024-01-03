@@ -19,7 +19,7 @@ export const verifyPerms = (...perms) => {
       }
 
       // Check if any of the specified permissions match the decoded permissions
-      if (!perms.every((perm) => decoded.perms?.includes(perm)) & decoded.role !== "A") {
+      if (!perms.every((perm) => decoded.perms?.includes(perm)) && decoded.role !== "A") {
         logger.error({  
           code: "ADM-VA-101",
           message: "Unauthorized Permission Access with Token: " + token,

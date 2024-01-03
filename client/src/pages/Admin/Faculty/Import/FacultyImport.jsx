@@ -65,13 +65,21 @@ const FacultyImport = () => {
       },
       body: JSON.stringify({ tableData }),
     }).then((res) => {
-      console.log(res);
+      console.error(res);
       setAdding(false);
       if (res.status === 200) {
         toast({
           title: "Faculty Imported",
           description: "Staff has been successfully imported",
           status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else if (res.status === 409) {
+        toast({
+          title: "Error",
+          description: "Moodle ID already exists",
+          status: "error",
           duration: 3000,
           isClosable: true,
         });
@@ -114,7 +122,7 @@ const FacultyImport = () => {
             </label>
           </Box>
           <Alert status="warning">
-            <AlertIcon />
+            <AlertIcon className="hide" />
 
             <AlertDescription>
               Please Upload a .CSV file with the following columns in the same
@@ -123,14 +131,7 @@ const FacultyImport = () => {
               be present in the .CSV file.
             </AlertDescription>
           </Alert>
-          <Alert status="info">
-            <AlertIcon />
-            <AlertTitle>
-              The following permission will be auto assigned for import: View
-              Student Profile, View Faculty Information
-            </AlertTitle>
-            <AlertDescription></AlertDescription>
-          </Alert>
+
           <input
             id="file-upload"
             type="file"

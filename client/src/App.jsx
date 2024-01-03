@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import socket, { io } from "./events/socketConnection";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
+import Forgot from "./pages/Forgot/Forgot";
+import Feedback from "./pages/Feedback/Feedback";
 
 function App() {
   const [maintainanceMode, setMaintainanceMode] = useState(false);
@@ -52,7 +54,6 @@ function App() {
         <Routes>
           {maintainanceMode ? (
             <>
-              // * When Maintainance Mode is Enabled
               <Route path="*" element={<Fzt />} />
               <Route path="/auth" element={<Auth />} />
               {Admin()}
@@ -60,6 +61,8 @@ function App() {
           ) : (
             <>
               <Route path="/auth" element={<Auth />} />
+              <Route path="/forgot" element={<Forgot />} />
+              <Route path="/feedback" element={<Feedback />} />
               <Route path="*" element={<Fzf />} />
               {Admin()}
               {Student()}

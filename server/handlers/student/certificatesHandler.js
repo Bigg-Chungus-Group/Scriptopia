@@ -9,12 +9,14 @@ import multer from "multer";
 import fsExtra from "fs-extra"; // Import fs-extra for directory creation
 import { ObjectId } from "mongodb";
 import logger from "../../configs/logger.js";
+import { app } from "../../firebase.js";
+import admin from "firebase-admin";
+import crypto from "crypto";
 
-// Define the storage engine for multer
-const storage = multer.memoryStorage(); // Store the file in memory
-
-// Initialize multer with the defined storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: 8000000 });
+
+const fbstorage = app.storage().bucket("gs://scriptopia-90b1a.appspot.com");
 
 router.post("/", verifyToken, async (req, res) => {
   const { mid } = req.user;
@@ -32,7 +34,6 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// Use multer middleware to handle file uploads
 router.post(
   "/upload",
   verifyToken,
@@ -44,6 +45,9 @@ router.post(
         issuingOrg,
         issueMonth,
         issueYear,
+        expires,
+        expiryMonth,
+        expiryYear,
         certificateType,
         certificateURL,
         certificateLevel,
@@ -57,6 +61,7 @@ router.post(
       }
 
       const _id = new ObjectId();
+      const user = await userDB.findOne({ mid });
 
       if (certificateURL) {
         await certificationsDB.insertOne({
@@ -65,29 +70,43 @@ router.post(
           issuingOrg: issuingOrg.toString(),
           issueMonth: issueMonth.toString(),
           issueYear: parseInt(issueYear),
+          expires: expires,
+          expiryMonth: expiryMonth.toString(),
+          expiryYear: expiryYear.toString(),
           certificateType: certificateType.toString(),
           certificateLevel: certificateLevel.toString(),
           uploadType: "url",
           certificateURL: certificateURL.toString(),
           status: "pending",
+
+          house: user.house.id,
+          name: user.fname + " " + user.lname,
+          submittedYear: new Date().getFullYear(),
+          submittedMonth: new Date().getMonth(),
         });
         return res.status(200).send("Certificate uploaded");
       }
 
-      const user = await userDB.findOne({ mid });
+      const originalFileName = certificate.originalname;
+      const certificateName = `certificates/${mid}/${_id}`;
+      const file = fbstorage.file(certificateName);
 
-      const originalFileName = req.file.originalname;
-      const certificateName = `${Date.now()}_${originalFileName}`;
+      const sha256 = crypto
+        .createHash("sha256")
+        .update(certificate.buffer)
+        .digest("hex");
+      const md5 = crypto
+        .createHash("md5")
+        .update(certificate.buffer)
+        .digest("hex");
 
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = dirname(__filename);
-      const certificatePath = `${__dirname}/../../../public/certificates/${_id}`;
+      console.log(sha256, md5);
 
-      // Ensure that the directory exists before writing the file
-      await fsExtra.ensureDir(`${__dirname}/../../../public/certificates`);
-
-      // Write the file to the specified path
-      await fs.writeFile(certificatePath, certificate.buffer, "base64");
+      file.save(certificate.buffer, {
+        metadata: {
+          contentType: certificate.mimetype,
+        },
+      });
 
       await certificationsDB.insertOne({
         _id,
@@ -96,6 +115,9 @@ router.post(
         issuingOrg: issuingOrg.toString(),
         issueMonth: issueMonth.toString(),
         issueYear: parseInt(issueYear),
+        expires: expires,
+        expiryMonth: expiryMonth.toString(),
+        expiryYear: expiryYear.toString(),
         certificateType: certificateType.toString(),
         certificateLevel: certificateLevel.toString(),
         uploadType: "file",
@@ -105,9 +127,13 @@ router.post(
         house: user.house.id,
         name: user.fname + " " + user.lname,
         submittedYear: new Date().getFullYear(),
+        submittedMonth: new Date().getMonth(),
+        sha256,
+        md5,
       });
       res.status(200).send("Certificate uploaded");
     } catch (error) {
+      console.log(error);
       logger.error({
         code: "STU-CHH-101",
         message: "Error uploading certificate",
@@ -121,28 +147,59 @@ router.post(
 
 router.post("/download", async (req, res) => {
   const { id } = req.body;
+  console.log("DOWNLOAD");
+
   try {
     const certificate = await certificationsDB.findOne({
       _id: new ObjectId(id),
     });
 
     if (!certificate) {
-      return res.status(400).send("Certificate not found");
+      return res.status(404).send("Certificate not found");
     }
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const certificatePath = `${__dirname}/../../../public/certificates/${certificate._id}`;
+    if (certificate.uploadType === "url") {
+      return res.status(400).send("Invalid certificate type for download");
+    }
 
-    res.download(certificatePath, certificate.certificateName);
+    const certificatePath = certificate.certificateURL;
+    const file = fbstorage.file(certificatePath);
+    const fileExists = await file.exists();
+    console.log(fileExists);
+
+    console.log(certificatePath);
+    if (!fileExists) {
+      console.log("FILE NOT FOUND");
+      return res
+        .status(404)
+        .send("Certificate file not found in Firebase Storage");
+    }
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${certificate.certificateName}.${certificate.ext}"`
+    );
+    res.setHeader("Content-Type", "application/pdf"); // Set the appropriate content type
+
+    file
+      .createReadStream()
+      .on("error", (err) => {
+        console.error("Error streaming the file:", err);
+        res.status(500).send("Error streaming the file");
+      })
+      .on("end", () => {
+        console.log("File streaming complete.");
+      })
+      .pipe(res);
   } catch (error) {
+    console.log(error);
     logger.error({
       code: "STU-CHH-103",
-      message: "Certificate with ID " + id + "not found",
+      message: `Error while trying to download certificate with ID ${id}`,
       mid: req.user.mid,
       err: error.message,
     });
-    res.status(400).send("Certificate not found");
+    res.status(500).send("Internal server error");
   }
 });
 
@@ -157,11 +214,14 @@ router.post("/delete", verifyToken, async (req, res) => {
       return res.status(400).send("Certificate not found");
     }
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const certificatePath = `${__dirname}/../../../public/certificates/${certificate._id}`;
-
-    await fs.unlink(certificatePath);
+    if (certificate.uploadType === "file") {
+      const certificatePath = certificate.certificateURL;
+      const file = fbstorage.file(certificatePath);
+      const fileExists = await file.exists();
+      if (fileExists) {
+        await file.delete();
+      }
+    }
 
     await certificationsDB.deleteOne({ _id: new ObjectId(id) });
 

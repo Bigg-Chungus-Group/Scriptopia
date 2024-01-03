@@ -24,12 +24,15 @@ import {
 import Navbar from "../../../components/admin/Navbar";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
-  useAuthCheck("A")
+  useAuthCheck("A");
   const [toastDispatched, setToastDispatched] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const toast = useToast();
+
+  const Navigate = useNavigate();
 
   const [show1, setShow1] = React.useState(false);
   const handleClick1 = () => setShow1(!show1);
@@ -230,6 +233,22 @@ const Settings = () => {
       });
   };
 
+  const setDark = () => {
+    toggleColorMode();
+
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/profile/updateTheme`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        theme: colorMode === "dark" ? "light" : "dark",
+      }),
+    }).then((res) => {});
+    window.location.reload();
+  };
+
   if (!loading) {
     return (
       <>
@@ -261,7 +280,7 @@ const Settings = () => {
                     <Switch
                       id="dark-mode"
                       onChange={(e) => {
-                        toggleColorMode();
+                        setDark();
                       }}
                       isChecked={colorMode === "dark" ? true : false}
                     />
@@ -327,7 +346,7 @@ const Settings = () => {
                     variant="solid"
                     colorScheme="green"
                     onClick={() => {
-                      window.location.href = "/admin/logs";
+                      Navigate("/admin/logs");
                     }}
                   >
                     Check Server Logs

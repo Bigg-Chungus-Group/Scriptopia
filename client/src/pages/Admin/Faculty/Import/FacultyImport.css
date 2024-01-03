@@ -1,5 +1,5 @@
 .FacultyImport {
-  background-color: #f7f6fa;
+  background-color: var(--bg);
   height: 77vh;
   padding: 20px 70px;
 }
@@ -48,4 +48,17 @@
 .FacultyImport .btn {
   display: flex;
   gap: 20px;
+}
+
+@media (max-width: 1250px) {
+}
+
+@media (max-width: 768px) {
+  .FacultyImport {
+    padding: 20px 20px;
+  }
+
+  .hide {
+    display: none !important;
+  }
 }

@@ -1,0 +1,15 @@
+.FacultyProfile .left {
+  background-color: var(--darker);
+  height: 55vh;
+  border-radius: 20px;
+  width: 30%;
+  padding: 20px;
+}
+
+.FacultyProfile .right {
+  background-color: var(--darker);
+  height: 81vh;
+  border-radius: 20px;
+  width: 70%;
+  padding: 20px;
+}

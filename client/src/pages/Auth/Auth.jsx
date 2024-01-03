@@ -10,6 +10,7 @@ import {
   InputRightElement,
   InputGroup,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import APSIT from "./../../assets/img/apsit-logo.png";
 import Logo from "./../../assets/img/logo.png";
@@ -49,7 +50,7 @@ const Auth = () => {
       setErr("Too Many Attempts");
       setDisabled(true);
       const now = new Date();
-      const expirationTime = new Date(now.getTime() + 5000); // 2 minutes in milliseconds2 * 60 *
+      const expirationTime = new Date(now.getTime() + 1000 * 60 * 2); // 2 minutes in milliseconds2 * 60 *
       document.cookie =
         "blocked=true; expires=" + expirationTime.toUTCString() + "; path=/";
 
@@ -186,26 +187,27 @@ const Auth = () => {
           setIsLoading(false);
           if (res.status === 200) {
             const response = await res.json();
-            console.log(response);
+            console.error(response);
             io.emit("onLogin", response.mid);
+            localStorage.setItem("chakra-ui-color-mode", response?.colorMode ?? "light");
 
             if (redirectURL !== "/") {
               navigate(redirectURL);
               return;
             } else {
               if (response.role === "A") {
-                navigate("/admin");
+                window.location.href = "/admin";
               } else if (response.role === "F") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
-                  navigate("/faculty");
+                  window.location.href = "/faculty";
                 }
               } else if (response.role === "S") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
-                  navigate("/");
+                 window.location.href = "/";
                 }
               }
             }
@@ -224,7 +226,7 @@ const Auth = () => {
         })
         .catch((err) => {
           setIsLoading(false);
-          console.log(err);
+          console.error(err);
           toast({
             title: "An Error Occured.",
             description: "Something Went Wrong!",
@@ -302,6 +304,7 @@ const Auth = () => {
         >
           Login
         </Button>
+        <Link onClick={() => navigate("/forgot")}>Forgot Password?</Link>
         <p style={{ color: "red" }}>{err}</p>
       </Box>
       <CreatePW isFirstTime={open} mid={mid} />

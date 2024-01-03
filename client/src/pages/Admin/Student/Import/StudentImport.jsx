@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./StudentImport.css";
 import {
   Box,
@@ -26,6 +26,8 @@ const StudentImport = () => {
   const [tableData, setTableData] = useState([]);
   const [adding, setAdding] = useState(false);
   const [addIndividual, setAddIndividual] = useState(false);
+  const [houses, setHouses] = useState([]);
+
   const toast = useToast();
 
   const handleFileUpload = (event) => {
@@ -43,6 +45,32 @@ const StudentImport = () => {
 
   const startImport = () => {
     setAdding(true);
+    tableData.forEach((row) => {
+      if (row.length !== 5) {
+        toast({
+          title: "Error",
+          description: "Invalid CSV File",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setAdding(false);
+        return;
+      }
+
+      if (row[0].length !== 8) {
+        toast({
+          title: "Error",
+          description: "Invalid Student ID",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setAdding(false);
+        return;
+      }
+    });
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/import`, {
       method: "POST",
       credentials: "include",
@@ -62,6 +90,14 @@ const StudentImport = () => {
             duration: 3000,
             isClosable: true,
           });
+        } else if (res.status === 409) {
+          toast({
+            title: "Error",
+            description: "Moodle ID already exists",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
         } else {
           toast({
             title: "Error",
@@ -73,7 +109,7 @@ const StudentImport = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setAdding(false);
         toast({
           title: "Error",
@@ -84,6 +120,31 @@ const StudentImport = () => {
         });
       });
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setHouses(data.houses);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: "Error",
+          description: "Error fetching students",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
+  }, []);
 
   return (
     <>
@@ -112,7 +173,7 @@ const StudentImport = () => {
             </label>
           </Box>
           <Alert status="warning">
-            <AlertIcon />
+            <AlertIcon className="hide" />
 
             <AlertDescription>
               Please Upload a .CSV file with the following columns in the same
@@ -167,7 +228,11 @@ const StudentImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <StudentAdd setModal={handleModal} /> : <></>}
+      {addIndividual ? (
+        <StudentAdd setModal={handleModal} houses={houses} />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

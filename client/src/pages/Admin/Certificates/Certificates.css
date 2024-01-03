@@ -1,0 +1,18 @@
+.AdminCertificates {
+  padding: 30px 70px;
+}
+
+.AdminCertificates .table {
+  overflow-x: auto;
+  width: 90vw;
+}
+
+@media (max-width: 1250px) {
+}
+
+@media (max-width: 768px) {
+  .AdminCertificates {
+    padding: 30px 20px;
+    width: 90vw;
+  }
+}

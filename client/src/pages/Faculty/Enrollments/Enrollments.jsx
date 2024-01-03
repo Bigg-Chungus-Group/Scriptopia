@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../../components/faculty/Navbar";
+import "./Enrollments.css";
 import {
   Box,
   Card,
@@ -27,8 +28,14 @@ import {
   Textarea,
   Flex,
 } from "@chakra-ui/react";
+import Loader from "../../../components/Loader";
+
+import { useToast } from "@chakra-ui/react"
+import { useAuthCheck } from "../../../hooks/useAuthCheck";
 
 const Enrollments = () => {
+  const decoded = useAuthCheck("F");
+
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);
@@ -40,6 +47,8 @@ const Enrollments = () => {
   const [cgpa, setCgpa] = useState();
   const [technical, setTechnical] = useState();
   const [projects, setProjects] = useState();
+
+  const toast = useToast()
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/enrollments`, {
@@ -55,12 +64,19 @@ const Enrollments = () => {
       })
       .then((data) => {
         setEnrollments(data.enrollments);
-        console.log(data.enrollments);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
-  }, []);
+  }, [update]);
 
   function truncateText(text, maxLines, maxLength) {
     const lines = text.split("\n");
@@ -107,12 +123,19 @@ const Enrollments = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setUpdate(!update);
         onClose();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 
@@ -121,15 +144,17 @@ const Enrollments = () => {
     return (
       <>
         <Navbar />
-        <Flex p="30px 70px" gap="20px">
-          {enrollments.map((enrollment, index) => {
-            const truncatedAbout = truncateText(enrollment.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
+        <Flex gap="20px" className="FacultyEnrollments" wrap="wrap">
+          {enrollments?.map((enrollment, index) => {
+            const truncatedAbout = truncateText(enrollment?.about, 3, 100); // Truncate "about" text to 3 lines and 100 characters
             return (
               <Card
-                minW="sm"
+                minW="xs"
                 key={enrollment._id}
                 cursor="pointer"
-                onClick={() => openModal(enrollment._id, index)}
+                onClick={() => openModal(enrollment?._id, index)}
+                alignSelf="center"
+                boxShadow="0px 0px 10px 0px rgba(0,0,0,0.2)"
               >
                 <CardBody>
                   <Stack mt="6" spacing="3">
@@ -139,7 +164,7 @@ const Enrollments = () => {
                     <Text>TECHNICAL: {enrollment.technical}</Text>
                     <Text>PROJECTS: {enrollment.projects}</Text>
                     <Text color="blue.600" fontSize="2xl">
-                      CGPA {enrollment.cgpa}
+                      CGPA {enrollment?.cgpa}
                     </Text>
                   </Stack>
                 </CardBody>
@@ -149,7 +174,7 @@ const Enrollments = () => {
         </Flex>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay
+          <ModalOverlay 
             bg="blackAlpha.300"
             backdropFilter="blur(10px) hue-rotate(90deg)"
           />
@@ -220,6 +245,8 @@ const Enrollments = () => {
         </Modal>
       </>
     );
+  } else {
+    return <Loader/>
   }
 };
 

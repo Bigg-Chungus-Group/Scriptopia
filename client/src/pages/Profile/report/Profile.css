@@ -1,0 +1,36 @@
+.GenerateProfile {
+  padding: 20px;
+  width: 700px;
+  background-color: var(--darker);
+}
+
+.GenerateProfile .events {
+  background-color: var(--container);
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.GenerateProfile .events .event {
+  padding: 20px;
+  margin: 20px 10px;
+  border-radius: 7px;
+  background-color: var(--darker);
+  height: 200px;
+  width: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.174);
+}
+
+.GenerateProfile .stopOverflow {
+  overflow: hidden;
+  height: 100px;
+  text-overflow: ellipsis;
+}
+
+.GenerateProfile .headings {
+  color: rgba(0, 0, 0, 0.551);
+  margin: 0;
+  padding: 0;
+}

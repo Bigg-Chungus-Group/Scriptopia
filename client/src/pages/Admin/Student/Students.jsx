@@ -36,6 +36,7 @@ import Navbar from "../../../components/admin/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Loader from "../../../components/Loader";
 import { useAuthCheck } from "../../../hooks/useAuthCheck";
+import { useNavigate } from "react-router-dom";
 
 const Students = () => {
   useAuthCheck("A");
@@ -47,6 +48,8 @@ const Students = () => {
   const [selectedYear, setSelectedYear] = useState("all");
   const [selectedHouse, setSelectedHouse] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState([]);
+
+  const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -93,7 +96,7 @@ const Students = () => {
         setHouses(data.houses);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error",
           description: "Error fetching students",
@@ -174,6 +177,7 @@ const Students = () => {
             duration: 5000,
             isClosable: true,
           });
+          console.log(data.error);
         } else {
           toast({
             title: "Success",
@@ -306,7 +310,7 @@ const Students = () => {
           ]}
           relatedLinks={[{ href: "/admin/students/add", name: "Add Students" }]}
         />
-        <Box className="AdminStudents">
+        <Box className="AdminStudents-Admin">
           <Box className="filters">
             <Box className="filters">
               <Box className="ipgroup">
@@ -394,7 +398,7 @@ const Students = () => {
                         }
                       />
                     </Td>
-                    <Td>{student.mid}</Td>
+                    <Td textDecor="underline" cursor="pointer" onClick={() => navigate(`/profile/${student.mid}`)}>{student.mid}</Td>
                     <Td>{student.name}</Td>
                     <Td>{student.year}</Td>
                     <Td>{student.academicYear}</Td>
@@ -499,7 +503,7 @@ const Students = () => {
         </AlertDialog>
 
         <Modal isOpen={isEditOpen} onClose={onEditClose}>
-          <ModalOverlay />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
           <ModalContent>
             <ModalHeader>Update Student</ModalHeader>
             <ModalCloseButton />
@@ -523,18 +527,12 @@ const Students = () => {
                 </Box>
                 <Input
                   type="text"
-                  placeholder="Moodle ID"
-                  value={moodleid}
-                  onChange={(e) => setMoodleid(e.target.value)}
-                />
-                <Input
-                  type="text"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <Select
+                {/*}                <Select
                   placeholder="Select a House"
                   onChange={(e) => setHouse(e.target.value)}
                   value={house}
@@ -544,7 +542,7 @@ const Students = () => {
                       {house.name}
                     </option>
                   ))}
-                </Select>
+                  </Select>{*/}
 
                 <RadioGroup onChange={setGender} value={gender}>
                   <Stack direction="row">

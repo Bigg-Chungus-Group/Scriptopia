@@ -19,7 +19,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-const StudentAdd = ({ setModal }) => {
+const StudentAdd = ({ setModal, houses }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [gender, setGender] = React.useState("Male");
 
@@ -50,6 +50,17 @@ const StudentAdd = ({ setModal }) => {
       gender: gender,
     };
 
+    if(moodleid.length !== 8) {
+      toast({
+        title: "Error",
+        description: "Moodle ID must be 8 digits",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students/add`, {
       method: "POST",
       credentials: "include",
@@ -57,17 +68,37 @@ const StudentAdd = ({ setModal }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((res) => {
-      if (res.status === 200) {
-        setClose();
-        toast({
-          title: "Student Added",
-          description: "Student has been added successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setClose();
+          toast({
+            title: "Student Added",
+            description: "Student has been added successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else if (res.status === 409) {
+          toast({
+            title: "Error",
+            description: "Moodle ID already exists",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
         toast({
           title: "Error",
           description: "Something went wrong",
@@ -75,23 +106,13 @@ const StudentAdd = ({ setModal }) => {
           duration: 3000,
           isClosable: true,
         });
-      }
-    }).catch((err) => {
-      console.log(err);
-      toast({
-        title: "Error",
-        description: "Something went wrong",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
       });
-    });
   };
 
   return (
     <>
       <Modal isOpen={isOpen} onClose={setClose}>
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
         <ModalContent>
           <ModalHeader>Add Student</ModalHeader>
           <ModalCloseButton />
@@ -131,10 +152,11 @@ const StudentAdd = ({ setModal }) => {
                 onChange={(e) => setHouse(e.target.value)}
                 value={house}
               >
-                <option value="64d631f442fe4077719e0e34">Scarlet</option>
-                <option value="64ef10e266653caff05d86ce">Violet</option>
-                <option value="64ef10f266653caff05d86d0">Sun</option>
-                <option value="64ef110d66653caff05d86d1">Moon</option>
+                {houses.map((house) => (
+                  <option value={house._id} key={house._id}>
+                    {house.name}
+                  </option>
+                ))}
               </Select>
 
               <RadioGroup onChange={setGender} value={gender}>
